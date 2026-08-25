@@ -3,21 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formatos de Restaurante - Proyecto Escolar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Formatos de Formularios - Restaurante de Categoría</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Lato:wght@300;400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js">
+    </script>
+
     <style>
+        /* ========== VARIABLES Y RESET ========== */
         :root {
-            --color-madera-oscuro: #3e2723;
-            --color-madera-medio: #5d4037;
-            --color-madera-claro: #8d6e63;
-            --color-crema: #f5f0e6;
-            --color-dorado: #c9a84c;
-            --color-vino: #722f37;
-            --color-texto: #2c2c2c;
-            --color-blanco: #ffffff;
-            --sombra: 0 6px 20px rgba(0,0,0,0.15);
-            --radio: 10px;
-            --transicion: 0.3s ease;
+            --color-bg: #faf6ef;
+            --color-bg-dark: #f0e8d8;
+            --color-primary: #2c1810;
+            --color-primary-light: #4a3020;
+            --color-secondary: #8b4513;
+            --color-accent: #c9a96e;
+            --color-accent-light: #e8d5b0;
+            --color-wine: #722f37;
+            --color-wine-light: #a0522d;
+            --color-text: #3d2b1f;
+            --color-text-light: #6b5a4a;
+            --color-white: #ffffff;
+            --color-card: #fffdf9;
+            --color-border: #d4c5a9;
+            --color-success: #4a7c59;
+            --color-shadow: rgba(44, 24, 16, 0.12);
+            --color-shadow-hover: rgba(44, 24, 16, 0.2);
+            --font-title: 'Playfair Display', 'Cormorant Garamond', serif;
+            --font-body: 'Lato', 'Segoe UI', sans-serif;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -27,279 +51,607 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--color-crema);
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(139,69,19,0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(139,69,19,0.05) 0%, transparent 50%);
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            background-image:
+                radial-gradient(ellipse at top left, rgba(201, 169, 110, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at bottom right, rgba(114, 47, 55, 0.05) 0%, transparent 60%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: var(--color-text);
             min-height: 100vh;
-            color: var(--color-texto);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             line-height: 1.6;
-            padding: 0;
         }
 
-        /* ===== HEADER ===== */
-        .header-restaurante {
-            background: linear-gradient(135deg, var(--color-madera-oscuro) 0%, var(--color-madera-medio) 50%, var(--color-madera-oscuro) 100%);
-            color: var(--color-crema);
+        /* ========== HEADER ========== */
+        .app-header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 1.5rem 1.5rem 0.8rem;
             text-align: center;
-            padding: 2.5rem 1rem;
-            border-bottom: 5px solid var(--color-dorado);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .app-header::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--color-accent), transparent);
+            margin: 0.8rem auto 0;
+            border-radius: 2px;
+        }
+
+        .app-header .restaurant-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .app-header h1 {
+            font-family: var(--font-title);
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
+            font-weight: 900;
+            color: var(--color-primary);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+        }
+
+        .app-header .subtitle {
+            font-family: var(--font-title);
+            font-style: italic;
+            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            color: var(--color-wine);
+            margin-top: 0.25rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* ========== BREADCRUMB ========== */
+        .breadcrumb {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            min-height: 2.2rem;
+        }
+
+        .breadcrumb button {
+            background: none;
+            border: none;
+            color: var(--color-secondary);
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .breadcrumb button:hover {
+            color: var(--color-wine);
+            background: rgba(201, 169, 110, 0.15);
+        }
+
+        .breadcrumb .separator {
+            color: var(--color-accent);
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .breadcrumb .current {
+            color: var(--color-text);
+            font-weight: 700;
+            background: rgba(201, 169, 110, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.82rem;
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0.5rem 1.5rem 2rem;
+            flex: 1;
+        }
+
+        /* ========== VISTA: CATEGORÍAS ========== */
+        .view {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .view-categories .section-label {
+            text-align: center;
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--color-text-light);
+            margin-bottom: 1.8rem;
+            letter-spacing: 0.04em;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .category-card {
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px var(--color-shadow);
             position: relative;
             overflow: hidden;
-        }
-
-        .header-restaurante::before {
-            content: "🍽️";
-            font-size: 3rem;
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.3;
-        }
-
-        .header-restaurante::after {
-            content: "🍷";
-            font-size: 2.5rem;
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.3;
-        }
-
-        .header-restaurante h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            letter-spacing: 2px;
-            margin-bottom: 0.3rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .header-restaurante .subtitulo {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-style: italic;
-        }
-
-        /* ===== CONTENEDOR PRINCIPAL ===== */
-        .contenedor {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1.5rem 4rem;
-        }
-
-        /* ===== CATEGORÍAS (VIÑETAS PRINCIPALES) ===== */
-        .categoria {
-            background: var(--color-blanco);
-            border-radius: var(--radio);
-            box-shadow: var(--sombra);
-            margin-bottom: 2rem;
-            overflow: hidden;
-            border-left: 8px solid var(--color-dorado);
-            transition: all var(--transicion);
-        }
-
-        .categoria:hover {
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform: translateY(-2px);
-        }
-
-        .categoria-header {
-            background: linear-gradient(135deg, var(--color-madera-medio), var(--color-madera-oscuro));
-            color: var(--color-crema);
-            padding: 1.3rem 2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             user-select: none;
         }
 
-        .categoria-header:hover {
-            background: linear-gradient(135deg, var(--color-madera-claro), var(--color-madera-medio));
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--color-accent), var(--color-wine));
+            opacity: 0;
+            transition: var(--transition);
         }
 
-        .categoria-header .titulo-categoria {
-            font-family: 'Playfair Display', serif;
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px var(--color-shadow-hover);
+            border-color: var(--color-accent);
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-card .icon {
+            font-size: 3.2rem;
+            display: block;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .category-card:hover .icon {
+            transform: scale(1.15);
+        }
+
+        .category-card h3 {
+            font-family: var(--font-title);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .category-card .item-count {
+            font-size: 0.82rem;
+            color: var(--color-text-light);
+            font-weight: 300;
+            letter-spacing: 0.03em;
+        }
+
+        /* ========== VISTA: SUBTEMAS ========== */
+        .subtopics-header {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .subtopics-header .cat-icon {
+            font-size: 2.5rem;
+            display: block;
+        }
+
+        .subtopics-header h2 {
+            font-family: var(--font-title);
             font-size: 1.6rem;
             font-weight: 700;
+            color: var(--color-primary);
+            margin-top: 0.3rem;
+        }
+
+        .subtopics-list {
             display: flex;
-            align-items: center;
-            gap: 1rem;
+            flex-direction: column;
+            gap: 0.8rem;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        .categoria-header .icono-categoria {
-            font-size: 2rem;
-        }
-
-        .categoria-header .indicador {
-            font-size: 1.5rem;
-            transition: transform var(--transicion);
-        }
-
-        .categoria.abierta .indicador {
-            transform: rotate(90deg);
-        }
-
-        .categoria-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            background: #fdfbf7;
-        }
-
-        .categoria.abierta .categoria-body {
-            max-height: 3000px;
-        }
-
-        /* ===== SUBTEMAS ===== */
-        .subtema {
-            border-bottom: 1px solid #e8e0d5;
-        }
-
-        .subtema:last-child {
-            border-bottom: none;
-        }
-
-        .subtema-header {
-            padding: 1rem 1.5rem;
+        .subtopic-item {
+            background: var(--color-card);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: 1.1rem 1.4rem;
             cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 1rem;
-            background: #faf6f0;
-            transition: background var(--transicion);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text);
+            box-shadow: 0 2px 8px var(--color-shadow);
             user-select: none;
+            position: relative;
         }
 
-        .subtema-header:hover {
-            background: #f0e8dd;
+        .subtopic-item:hover {
+            border-color: var(--color-accent);
+            transform: translateX(6px);
+            box-shadow: 0 6px 18px var(--color-shadow-hover);
+            background: #fffefb;
         }
 
-        .subtema-header .numero {
-            background: var(--color-dorado);
-            color: white;
+        .subtopic-item .number {
+            background: var(--color-accent-light);
+            color: var(--color-primary);
             width: 32px;
             height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.85rem;
             flex-shrink: 0;
+            transition: var(--transition);
         }
 
-        .subtema-header .titulo-subtema {
-            font-weight: 500;
-            flex: 1;
-            font-size: 1.1rem;
+        .subtopic-item:hover .number {
+            background: var(--color-accent);
+            color: var(--color-white);
+            transform: scale(1.1);
         }
 
-        .subtema-header .flecha {
+        .subtopic-item .arrow {
+            margin-left: auto;
+            color: var(--color-accent);
             font-size: 1.2rem;
-            transition: transform var(--transicion);
+            transition: var(--transition);
         }
 
-        .subtema.abierto .flecha {
-            transform: rotate(90deg);
+        .subtopic-item:hover .arrow {
+            transform: translateX(4px);
+            color: var(--color-wine);
         }
 
-        .subtema-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            background: white;
-            padding: 0 1.5rem;
-        }
-
-        .subtema.abierto .subtema-body {
-            max-height: 2000px;
-            padding: 1.5rem;
-        }
-
-        /* ===== CONTENEDOR DE IMÁGENES Y DESCRIPCIÓN ===== */
-        .contenedor-imagenes {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .slot-imagen {
-            flex: 1;
-            min-width: 250px;
-            background: #f5f0e6;
-            border: 2px dashed #c9a84c;
-            border-radius: var(--radio);
-            padding: 1rem;
+        /* ========== VISTA: DETALLE ========== */
+        .detail-header {
             text-align: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-header h2 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            line-height: 1.3;
+        }
+
+        .detail-header .breadcrumb-hint {
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            font-style: italic;
+            margin-top: 0.2rem;
+        }
+
+        .official-description-box {
+            background: rgba(201, 169, 110, 0.1);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem 1.2rem;
+            margin: 0.5rem auto 1.5rem;
+            max-width: 800px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--color-text);
+            font-style: italic;
+            box-shadow: 0 2px 8px var(--color-shadow);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .image-panel {
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--color-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-panel:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 8px 25px var(--color-shadow-hover);
+        }
+
+        .panel-label {
+            text-align: center;
+            font-family: var(--font-title);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-text-light);
+            padding: 0.7rem 1rem;
+            background: rgba(201, 169, 110, 0.1);
+            border-bottom: 1px solid var(--color-border);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .image-area {
+            flex: 1;
+            min-height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            min-height: 200px;
+            background: rgba(240, 232, 216, 0.4);
+            cursor: pointer;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .image-area.has-image {
+            cursor: default;
+        }
+
+        .image-area .placeholder {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            gap: 0.6rem;
+            color: var(--color-text-light);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
         }
 
-        .slot-imagen .etiqueta {
-            font-weight: bold;
-            color: var(--color-madera-medio);
-            margin-bottom: 0.5rem;
+        .image-area .placeholder .icon {
+            font-size: 3.5rem;
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .image-area .placeholder p {
             font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 400;
+            max-width: 200px;
         }
 
-        .slot-imagen img {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 6px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        .image-area .btn-add-image {
+            background: var(--color-accent);
+            color: var(--color-white);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.03em;
+            box-shadow: 0 3px 10px rgba(201, 169, 110, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .image-area .btn-add-image:hover {
+            background: var(--color-wine);
+            box-shadow: 0 6px 18px rgba(114, 47, 55, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .image-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            padding: 0.5rem;
+            max-height: 380px;
+        }
+
+        .description-area {
+            padding: 0.8rem 1rem 1rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .description-area label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .description-area textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 0.6rem 0.8rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-xs);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--color-text);
+            background: var(--color-white);
+            resize: vertical;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .description-area textarea:focus {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+        }
+
+        .description-area textarea::placeholder {
+            color: #b8a99a;
+            font-style: italic;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+
+            .category-card {
+                padding: 1.2rem 0.8rem;
+            }
+
+            .category-card .icon {
+                font-size: 2.2rem;
+            }
+
+            .category-card h3 {
+                font-size: 1rem;
+            }
+
+            .image-area {
+                min-height: 180px;
+            }
+
+            .image-area img {
+                max-height: 250px;
+            }
+
+            .subtopic-item {
+                padding: 0.9rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .app-header h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+
+            .category-card {
+                padding: 1rem 0.6rem;
+                border-radius: var(--radius-sm);
+            }
+
+            .category-card .icon {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .category-card h3 {
+                font-size: 0.85rem;
+            }
+
+            .detail-grid {
+                gap: 0.8rem;
+            }
+
+            .image-area {
+                min-height: 150px;
+            }
+
+            .image-area .placeholder .icon {
+                font-size: 2.5rem;
+            }
+
+            .breadcrumb {
+                font-size: 0.75rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .app-header {
+                padding: 1rem 1rem 0.5rem;
+            }
+
+            .app-header .restaurant-icon {
+                font-size: 2rem;
+            }
+        }
+
+        /* ========== UTILIDADES ========== */
+        .hidden-input {
             display: none;
         }
 
-        .slot-imagen img.visible {
-            display: block;
+        .text-center {
+            text-align: center;
         }
 
-        .slot-imagen .boton-agregar {
-            background: var(--color-dorado);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all var(--transicion);
-            margin-top: 0.5rem;
-        }
-
-        .slot-imagen .boton-agregar:hover {
-            background: #b8963c;
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(201,168,76,0.4);
-        }
-
-        .slot-imagen .boton-agregar:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* ===== MODAL PARA AGREGAR IMAGEN ===== */
-        .modal-overlay {
+        /* ========== INDICADOR DE CARGA ========== */
+        .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
+            right: 0;
+            bottom: 0;
+            background: rgba(250, 246, 239, 0.85);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -309,497 +661,659 @@
             transition: opacity 0.3s;
         }
 
-        .modal-overlay.activo {
+        .loading-overlay.visible {
             opacity: 1;
-            pointer-events: auto;
+            pointer-events: all;
         }
 
-        .modal-contenido {
-            background: white;
-            border-radius: var(--radio);
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            position: relative;
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--color-accent-light);
+            border-top-color: var(--color-wine);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .modal-contenido h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--color-madera-oscuro);
-            margin-bottom: 1.5rem;
-            text-align: center;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        .modal-opciones {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .modal-opciones .opcion {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .modal-opciones label {
+        /* ========== TOAST NOTIFICACIÓN ========== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
             font-weight: 500;
-            color: var(--color-madera-medio);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            z-index: 2000;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            opacity: 0;
         }
 
-        .modal-opciones input[type="file"] {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-
-        .modal-opciones input[type="url"] {
-            padding: 0.7rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        .modal-botones {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            justify-content: center;
-        }
-
-        .modal-botones button {
-            padding: 0.7rem 1.8rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all var(--transicion);
-        }
-
-        .btn-confirmar {
-            background: var(--color-dorado);
-            color: white;
-        }
-
-        .btn-confirmar:hover {
-            background: #b8963c;
-        }
-
-        .btn-cancelar {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .btn-cancelar:hover {
-            background: #cccccc;
-        }
-
-        /* ===== DESCRIPCIÓN ===== */
-        .area-descripcion {
-            background: #fdfbf7;
-            border: 1px solid #e0d6c8;
-            border-radius: var(--radio);
-            padding: 1.2rem;
-        }
-
-        .area-descripcion label {
-            font-weight: 500;
-            color: var(--color-madera-medio);
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .area-descripcion textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 0.8rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.95rem;
-            resize: vertical;
-            background: white;
-        }
-
-        .area-descripcion textarea:focus {
-            outline: none;
-            border-color: var(--color-dorado);
-            box-shadow: 0 0 0 2px rgba(201,168,76,0.2);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .header-restaurante h1 {
-                font-size: 2rem;
-            }
-            .header-restaurante::before,
-            .header-restaurante::after {
-                display: none;
-            }
-            .categoria-header .titulo-categoria {
-                font-size: 1.3rem;
-            }
-            .contenedor-imagenes {
-                flex-direction: column;
-            }
-            .slot-imagen {
-                min-width: auto;
-            }
-            .subtema-header {
-                padding: 0.8rem 1rem;
-            }
-            .subtema-body {
-                padding: 0 1rem;
-            }
-            .subtema.abierto .subtema-body {
-                padding: 1rem;
-            }
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
-    <header class="header-restaurante">
-        <h1>🍽️ Formatos de Restaurante</h1>
-        <p class="subtitulo">Formularios utilizados en restaurantes de categoría</p>
+    <!-- ========== OVERLAY DE CARGA ========== -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- ========== TOAST ========== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ========== HEADER ========== -->
+    <header class="app-header">
+        <span class="restaurant-icon">🍷</span>
+        <h1>Formatos de Formularios</h1>
+        <p class="subtitle">Restaurante de Categoría</p>
     </header>
 
-    <!-- ===== CONTENEDOR PRINCIPAL ===== -->
-    <div class="contenedor" id="contenedor-principal">
-        <!-- El contenido se genera dinámicamente con JavaScript -->
-    </div>
+    <!-- ========== BREADCRUMB ========== -->
+    <nav class="breadcrumb" id="breadcrumb">
+        <button onclick="navigateHome()">Inicio</button>
+    </nav>
 
-    <!-- ===== MODAL PARA AGREGAR IMAGEN ===== -->
-    <div class="modal-overlay" id="modal-imagen">
-        <div class="modal-contenido">
-            <h3>Agregar Imagen</h3>
-            <div class="modal-opciones">
-                <div class="opcion">
-                    <label for="input-archivo">📁 Subir archivo:</label>
-                    <input type="file" id="input-archivo" accept="image/*">
+    <!-- ========== CONTENEDOR PRINCIPAL ========== -->
+    <main class="main-container">
+
+        <!-- Vista de Categorías -->
+        <section class="view active" id="viewCategories">
+            <p class="section-label">— Seleccione un departamento —</p>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Vista de Subtemas -->
+        <section class="view" id="viewSubtopics">
+            <div class="subtopics-header" id="subtopicsHeader">
+                <!-- Se genera dinámicamente -->
+            </div>
+            <div class="subtopics-list" id="subtopicsList">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Vista de Detalle -->
+        <section class="view" id="viewDetail">
+            <div class="detail-header" id="detailHeader">
+                <!-- Se genera dinámicamente -->
+            </div>
+            <div class="official-description-box" id="officialDescription">
+                <!-- Descripción oficial del formato -->
+            </div>
+            <div class="detail-grid" id="detailGrid">
+                <!-- Panel Izquierdo -->
+                <div class="image-panel" id="panelLeft">
+                    <div class="panel-label">📄 Imagen Izquierda</div>
+                    <div class="image-area" id="imageAreaLeft" onclick="triggerFileInput('left')">
+                        <!-- Contenido dinámico -->
+                    </div>
+                    <div class="description-area">
+                        <label for="descLeft">Descripción</label>
+                        <textarea id="descLeft" placeholder="Escribe la descripción de la imagen izquierda..." oninput="onDescriptionInput('left', this.value)"></textarea>
+                    </div>
+                    <input type="file" accept="image/*" class="hidden-input" id="fileInputLeft" onchange="handleFileUpload('left', this)">
                 </div>
-                <div class="opcion">
-                    <label for="input-url">🔗 Pegar URL de imagen:</label>
-                    <input type="url" id="input-url" placeholder="https://ejemplo.com/imagen.jpg">
+
+                <!-- Panel Derecho -->
+                <div class="image-panel" id="panelRight">
+                    <div class="panel-label">📄 Imagen Derecha</div>
+                    <div class="image-area" id="imageAreaRight" onclick="triggerFileInput('right')">
+                        <!-- Contenido dinámico -->
+                    </div>
+                    <div class="description-area">
+                        <label for="descRight">Descripción</label>
+                        <textarea id="descRight" placeholder="Escribe la descripción de la imagen derecha..." oninput="onDescriptionInput('right', this.value)"></textarea>
+                    </div>
+                    <input type="file" accept="image/*" class="hidden-input" id="fileInputRight" onchange="handleFileUpload('right', this)">
                 </div>
             </div>
-            <div class="modal-botones">
-                <button class="btn-confirmar" id="btn-confirmar-imagen">Aceptar</button>
-                <button class="btn-cancelar" id="btn-cancelar-imagen">Cancelar</button>
-            </div>
-        </div>
-    </div>
+        </section>
 
+    </main>
+
+    <!-- ========== SCRIPT PRINCIPAL ========== -->
     <script>
         // ============================================================
-        // 📌 DATOS DEL PROYECTO - Estructura de categorías y subtemas
-        //    con descripciones precargadas
+        // CONFIGURACIÓN DE FIREBASE
         // ============================================================
-
-        const datosCategorias = [
-            {
-                titulo: "Sala/Servicio",
-                icono: "🍽️",
-                subtemas: [
-                    { titulo: "Comanda (cocina/barra/caja)", descripcion: "Ticket interno que comunica a cocina, barra y caja los pedidos de los clientes." },
-                    { titulo: "Hoja de reservas", descripcion: "Registro de clientes con hora, n.º de comensales y peticiones especiales para el servicio." },
-                    { titulo: "Plano de distribución de mesas", descripcion: "Esquema visual para organizar la asignación de mesas y optimizar el rango de los camareros." },
-                    { titulo: "Ficha de alérgenos por comensal", descripcion: "Registro puntual de las restricciones alimentarias e intolerancias de un cliente específico." },
-                    { titulo: "BEO (Banquet Event Order)", descripcion: "Documento con todos los detalles técnicos, menú y horarios de un evento o banquete." }
-                ]
-            },
-            {
-                titulo: "Cocina",
-                icono: "👨‍🍳",
-                subtemas: [
-                    { titulo: "Ficha técnica de plato", descripcion: "Documento con la receta paso a paso, ingredientes, costes y escandallo del plato." },
-                    { titulo: "Control de temperaturas APPCC/HACCP", descripcion: "Registro diario para asegurar que los equipos de frío conservan los alimentos a temperatura segura." },
-                    { titulo: "Control de trazabilidad", descripcion: "Registro del origen, lote y recorrido de los ingredientes desde su origen hasta el plato." },
-                    { titulo: "Hoja de mermas y desperdicios", descripcion: "Control del alimento descartado por deterioro, mal estado o errores en cocina." },
-                    { titulo: "Control de caducidades (PEPS/FIFO)", descripcion: "Sistema para organizar los productos garantizando que lo primero en entrar sea lo primero en salir." }
-                ]
-            },
-            {
-                titulo: "Almacén/Compras",
-                icono: "📦",
-                subtemas: [
-                    { titulo: "Hoja de pedido a proveedores", descripcion: "Lista oficial de insumos solicitados para reponer el stock." },
-                    { titulo: "Albarán de recepción", descripcion: "Documento de entrega para verificar que lo recibido coincide con lo pedido y está en buen estado." },
-                    { titulo: "Control de stock e inventario", descripcion: "Registro físico de la cantidad de materia prima disponible en el almacén." },
-                    { titulo: "Control de temperatura de cámaras", descripcion: "Verificación de las zonas de almacenamiento frío del almacén para evitar roturas de cadena de frío." },
-                    { titulo: "Control de rotación de stock (FIFO)", descripcion: "Organización física en estanterías para ubicar al frente los productos con fecha de expiración más próxima." }
-                ]
-            },
-            {
-                titulo: "Administración",
-                icono: "💼",
-                subtemas: [
-                    { titulo: "Control de caja diario", descripcion: "Registro continuo de las entradas y salidas de efectivo y cobros con tarjeta durante la jornada." },
-                    { titulo: "Arqueo/cierre de caja", descripcion: "Conteo físico del dinero al final del día para comprobar que coincide con las ventas registradas." },
-                    { titulo: "Control de turnos y horarios", descripcion: "Planificación del cuadrante laboral del personal, horas trabajadas y libranzas." },
-                    { titulo: "Balance diario de ventas", descripcion: "Resumen financiero del día que analiza ingresos totales, ticket medio y platos más vendidos." },
-                    { titulo: "Parte de incidencias", descripcion: "Informe de contratiempos, averías de maquinaria, desperfectos o problemas con clientes/personal." }
-                ]
-            }
-        ];
-
-        // ============================================================
-        // ESTADO INICIAL - Se carga desde localStorage o se crea con
-        //    las descripciones precargadas
-        // ============================================================
-        const CLAVE_STORAGE = 'formatos_restaurante_v1';
-
-        function cargarEstado() {
-            const guardado = localStorage.getItem(CLAVE_STORAGE);
-            if (guardado) {
-                try {
-                    const estadoParseado = JSON.parse(guardado);
-                    // Asegurar que las descripciones precargadas no se pierdan si el usuario borra localStorage
-                    return estadoParseado;
-                } catch (e) {
-                    console.warn('Error al leer localStorage, usando estado con descripciones');
-                }
-            }
-            return crearEstadoVacio();
-        }
-
-        function crearEstadoVacio() {
-            const estado = {};
-            datosCategorias.forEach((cat, idxCat) => {
-                estado[idxCat] = {};
-                cat.subtemas.forEach((sub, idxSub) => {
-                    estado[idxCat][idxSub] = {
-                        imagenIzquierda: null,
-                        imagenDerecha: null,
-                        descripcion: sub.descripcion  // <-- Descripción precargada
-                    };
-                });
-            });
-            return estado;
-        }
-
-        let estadoActual = cargarEstado();
-
-        function guardarEstado() {
-            localStorage.setItem(CLAVE_STORAGE, JSON.stringify(estadoActual));
-        }
-
-        // ============================================================
-        // RENDERIZADO DE LA INTERFAZ
-        // ============================================================
-        const contenedor = document.getElementById('contenedor-principal');
-
-        function renderizarTodo() {
-            let html = '';
-            datosCategorias.forEach((categoria, idxCat) => {
-                const abiertaCat = estadoActual._categoriasAbiertas ? estadoActual._categoriasAbiertas.includes(idxCat) : false;
-                html += `
-                    <div class="categoria ${abiertaCat ? 'abierta' : ''}" data-cat="${idxCat}">
-                        <div class="categoria-header" data-cat="${idxCat}">
-                            <div class="titulo-categoria">
-                                <span class="icono-categoria">${categoria.icono}</span>
-                                ${categoria.titulo}
-                            </div>
-                            <span class="indicador">▶</span>
-                        </div>
-                        <div class="categoria-body">
-                `;
-                categoria.subtemas.forEach((subtemaObj, idxSub) => {
-                    const subEstado = estadoActual[idxCat]?.[idxSub] || {};
-                    const abiertoSub = estadoActual._subtemasAbiertos ? estadoActual._subtemasAbiertos.includes(`${idxCat}-${idxSub}`) : false;
-                    html += `
-                        <div class="subtema ${abiertoSub ? 'abierto' : ''}" data-sub="${idxCat}-${idxSub}">
-                            <div class="subtema-header" data-sub="${idxCat}-${idxSub}">
-                                <span class="numero">${idxSub + 1}</span>
-                                <span class="titulo-subtema">${subtemaObj.titulo}</span>
-                                <span class="flecha">▶</span>
-                            </div>
-                            <div class="subtema-body">
-                                <div class="contenedor-imagenes">
-                                    <!-- Imagen Izquierda -->
-                                    <div class="slot-imagen" data-slot="izquierda" data-cat="${idxCat}" data-sub="${idxSub}">
-                                        <div class="etiqueta">Imagen Izquierda</div>
-                                        <img id="img-izq-${idxCat}-${idxSub}" class="${subEstado.imagenIzquierda ? 'visible' : ''}" 
-                                             src="${subEstado.imagenIzquierda || '#'}" alt="Imagen izquierda">
-                                        <button class="boton-agregar" data-slot="izquierda" data-cat="${idxCat}" data-sub="${idxSub}"
-                                            ${subEstado.imagenIzquierda ? 'disabled' : ''}>
-                                            ${subEstado.imagenIzquierda ? '✔ Imagen agregada' : '➕ Agregar imagen'}
-                                        </button>
-                                    </div>
-                                    <!-- Imagen Derecha -->
-                                    <div class="slot-imagen" data-slot="derecha" data-cat="${idxCat}" data-sub="${idxSub}">
-                                        <div class="etiqueta">Imagen Derecha</div>
-                                        <img id="img-der-${idxCat}-${idxSub}" class="${subEstado.imagenDerecha ? 'visible' : ''}" 
-                                             src="${subEstado.imagenDerecha || '#'}" alt="Imagen derecha">
-                                        <button class="boton-agregar" data-slot="derecha" data-cat="${idxCat}" data-sub="${idxSub}"
-                                            ${subEstado.imagenDerecha ? 'disabled' : ''}>
-                                            ${subEstado.imagenDerecha ? '✔ Imagen agregada' : '➕ Agregar imagen'}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="area-descripcion">
-                                    <label for="desc-${idxCat}-${idxSub}">📝 Descripción de las imágenes:</label>
-                                    <textarea id="desc-${idxCat}-${idxSub}" 
-                                              placeholder="Escribe aquí la descripción de este formato..."
-                                              data-cat="${idxCat}" data-sub="${idxSub}">${subEstado.descripcion || ''}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            contenedor.innerHTML = html;
-            adjuntarEventos();
-        }
-
-        // ============================================================
-        // EVENTOS
-        // ============================================================
-        function adjuntarEventos() {
-            document.querySelectorAll('.categoria-header').forEach(header => {
-                header.addEventListener('click', (e) => {
-                    const idxCat = parseInt(e.currentTarget.dataset.cat);
-                    toggleCategoria(idxCat);
-                });
-            });
-
-            document.querySelectorAll('.subtema-header').forEach(header => {
-                header.addEventListener('click', (e) => {
-                    const subKey = e.currentTarget.dataset.sub;
-                    toggleSubtema(subKey);
-                });
-            });
-
-            document.querySelectorAll('.boton-agregar').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const slot = e.currentTarget.dataset.slot;
-                    const idxCat = parseInt(e.currentTarget.dataset.cat);
-                    const idxSub = parseInt(e.currentTarget.dataset.sub);
-                    abrirModalImagen(slot, idxCat, idxSub);
-                });
-            });
-
-            document.querySelectorAll('textarea[data-cat]').forEach(textarea => {
-                textarea.addEventListener('input', (e) => {
-                    const idxCat = parseInt(e.target.dataset.cat);
-                    const idxSub = parseInt(e.target.dataset.sub);
-                    estadoActual[idxCat][idxSub].descripcion = e.target.value;
-                    guardarEstado();
-                });
-            });
-        }
-
-        function toggleCategoria(idxCat) {
-            if (!estadoActual._categoriasAbiertas) {
-                estadoActual._categoriasAbiertas = [];
-            }
-            const index = estadoActual._categoriasAbiertas.indexOf(idxCat);
-            if (index > -1) {
-                estadoActual._categoriasAbiertas.splice(index, 1);
-            } else {
-                estadoActual._categoriasAbiertas.push(idxCat);
-            }
-            guardarEstado();
-            renderizarTodo();
-        }
-
-        function toggleSubtema(subKey) {
-            if (!estadoActual._subtemasAbiertos) {
-                estadoActual._subtemasAbiertos = [];
-            }
-            const index = estadoActual._subtemasAbiertos.indexOf(subKey);
-            if (index > -1) {
-                estadoActual._subtemasAbiertos.splice(index, 1);
-            } else {
-                estadoActual._subtemasAbiertos.push(subKey);
-            }
-            guardarEstado();
-            renderizarTodo();
-        }
-
-        // ============================================================
-        // MODAL PARA AGREGAR IMAGEN
-        // ============================================================
-        const modalOverlay = document.getElementById('modal-imagen');
-        const inputArchivo = document.getElementById('input-archivo');
-        const inputUrl = document.getElementById('input-url');
-        const btnConfirmar = document.getElementById('btn-confirmar-imagen');
-        const btnCancelar = document.getElementById('btn-cancelar-imagen');
-
-        let modalContexto = {
-            slot: null,
-            idxCat: null,
-            idxSub: null
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsgV2Wwu97gIiOe5aIMfJ7U-p01GYLGOs",
+            authDomain: "ftdr-61eb7.firebaseapp.com",
+            databaseURL: "https://ftdr-61eb7-default-rtdb.firebaseio.com",
+            projectId: "ftdr-61eb7",
+            storageBucket: "ftdr-61eb7.firebasestorage.app",
+            messagingSenderId: "1014103741073",
+            appId: "1:1014103741073:web:4753fc3c56fd3b8dc6e530",
+            measurementId: "G-7FJ5N0MZB8"
         };
 
-        function abrirModalImagen(slot, idxCat, idxSub) {
-            modalContexto = { slot, idxCat, idxSub };
-            inputArchivo.value = '';
-            inputUrl.value = '';
-            modalOverlay.classList.add('activo');
-        }
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        function cerrarModalImagen() {
-            modalOverlay.classList.remove('activo');
-            modalContexto = { slot: null, idxCat: null, idxSub: null };
-        }
-
-        btnCancelar.addEventListener('click', cerrarModalImagen);
-
-        btnConfirmar.addEventListener('click', () => {
-            const { slot, idxCat, idxSub } = modalContexto;
-            if (slot === null) return;
-
-            if (inputArchivo.files && inputArchivo.files.length > 0) {
-                const archivo = inputArchivo.files[0];
-                const lector = new FileReader();
-                lector.onload = (e) => {
-                    const dataUrl = e.target.result;
-                    if (slot === 'izquierda') {
-                        estadoActual[idxCat][idxSub].imagenIzquierda = dataUrl;
-                    } else {
-                        estadoActual[idxCat][idxSub].imagenDerecha = dataUrl;
-                    }
-                    guardarEstado();
-                    renderizarTodo();
-                    cerrarModalImagen();
-                };
-                lector.readAsDataURL(archivo);
-            } 
-            else if (inputUrl.value.trim() !== '') {
-                const url = inputUrl.value.trim();
-                if (slot === 'izquierda') {
-                    estadoActual[idxCat][idxSub].imagenIzquierda = url;
-                } else {
-                    estadoActual[idxCat][idxSub].imagenDerecha = url;
+        // ============================================================
+        // DATOS DE LA APLICACIÓN CON DESCRIPCIONES
+        // ============================================================
+        const appData = [{
+            name: "Sala/Servicio",
+            icon: "🍽️",
+            color: "#c9a96e",
+            subtopics: [
+                {
+                    title: "Comanda (cocina/barra/caja)",
+                    description: "Registra los pedidos de los clientes para enviarlos al instante a cocina, barra o caja."
+                }, {
+                    title: "Hoja de reservas",
+                    description: "Organiza las asignaciones de mesas, horarios y número de comensales del día."
+                }, {
+                    title: "Plano de distribución de mesas",
+                    description: "Diagrama visual del comedor para optimizar la asignación del espacio y el flujo del servicio."
+                }, {
+                    title: "Ficha de alérgenos por comensal",
+                    description: "Notifica restricciones alimentarias específicas de un cliente para evitar contaminación cruzada."
+                }, {
+                    title: "BEO (Parte de banquetes y eventos)",
+                    description: "Documento con las instrucciones detalladas para la ejecución de eventos especiales."
                 }
-                guardarEstado();
-                renderizarTodo();
-                cerrarModalImagen();
+            ]
+        }, {
+            name: "Cocina",
+            icon: "👨‍🍳",
+            color: "#e07b39",
+            subtopics: [
+                {
+                    title: "Ficha técnica de plato",
+                    description: "Especifica ingredientes, gramajes, costes y pasos de preparación para estandarizar las recetas."
+                }, {
+                    title: "Control de temperaturas APPCC/HACCP",
+                    description: "Registro obligatorio que garantiza la seguridad alimentaria en la conservación y cocción."
+                }, {
+                    title: "Control de trazabilidad de alimentos",
+                    description: "Rastrea el origen, lote y recorrido de cada ingrediente desde su llegada."
+                }, {
+                    title: "Hoja de mermas y desperdicios",
+                    description: "Cuantifica la materia prima perdida en elaboración o por deterioro para ajustar costes."
+                }, {
+                    title: "Control de caducidades (PEPS/FIFO)",
+                    description: "Garantiza que lo primero en entrar sea lo primero en salir para evitar caducidades."
+                }
+            ]
+        }, {
+            name: "Almacén/Compras",
+            icon: "📦",
+            color: "#6b8e4e",
+            subtopics: [
+                {
+                    title: "Hoja de pedido a proveedores",
+                    description: "Solicitud formal de compra de insumos según las necesidades de inventario."
+                }, {
+                    title: "Albarán de recepción de mercancía",
+                    description: "Comprueba que lo entregado por el proveedor coincida en cantidad y calidad con lo pedido."
+                }, {
+                    title: "Control de stock e inventario",
+                    description: "Recuento físico del almacén para mantener el nivel óptimo de existencias."
+                }, {
+                    title: "Control de temperatura de cámaras",
+                    description: "Monitoreo diario del funcionamiento de cámaras frigoríficas y congeladores."
+                }, {
+                    title: "Control de rotación de stock (FIFO)",
+                    description: "Organización física del almacén para garantizar el uso prioritario de los productos más antiguos."
+                }
+            ]
+        }, {
+            name: "Administración",
+            icon: "📊",
+            color: "#8b6f9e",
+            subtopics: [
+                {
+                    title: "Control de caja diario",
+                    description: "Registro detallado de las entradas y salidas de efectivo durante la jornada."
+                }, {
+                    title: "Arqueo/cierre de caja",
+                    description: "Verificación del dinero real disponible frente al reporte de ventas al finalizar el turno."
+                }, {
+                    title: "Control de turnos y horarios",
+                    description: "Planificación de la jornada laboral, descansos y asistencia de la plantilla."
+                }, {
+                    title: "Balance diario de ventas",
+                    description: "Resumen de los ingresos totales generados por canal, área o turno."
+                }, {
+                    title: "Parte de incidencias",
+                    description: "Documenta imprevistos, averías o problemas operativos ocurridos durante el servicio."
+                }
+            ]
+        }];
+
+        // ============================================================
+        // ESTADO DE LA APLICACIÓN
+        // ============================================================
+        let currentCategoryIndex = null;
+        let currentSubtopicIndex = null;
+        let currentImageData = {
+            left: null,
+            right: null
+        };
+        let currentDescriptions = {
+            left: '',
+            right: ''
+        };
+        let debounceTimer = null;
+        let isLoadingData = false;
+
+        // ============================================================
+        // FUNCIONES DE SANITIZACIÓN PARA FIREBASE
+        // ============================================================
+        function sanitizeKey(str) {
+            return str
+                .toLowerCase()
+                .replace(/á/g, 'a')
+                .replace(/é/g, 'e')
+                .replace(/í/g, 'i')
+                .replace(/ó/g, 'o')
+                .replace(/ú/g, 'u')
+                .replace(/ñ/g, 'n')
+                .replace(/[^a-z0-9_]/g, '_')
+                .replace(/_+/g, '_')
+                .replace(/^_|_$/g, '');
+        }
+
+        function getFirebasePath(catIndex, subIndex) {
+            const catKey = sanitizeKey(appData[catIndex].name);
+            const subKey = sanitizeKey(appData[catIndex].subtopics[subIndex].title);
+            return `formats/${catKey}/${subKey}`;
+        }
+
+        // ============================================================
+        // NAVEGACIÓN
+        // ============================================================
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function navigateHome() {
+            currentCategoryIndex = null;
+            currentSubtopicIndex = null;
+            showView('viewCategories');
+            updateBreadcrumb();
+        }
+
+        function navigateToSubtopic(catIndex, subIndex) {
+            currentCategoryIndex = catIndex;
+            currentSubtopicIndex = subIndex;
+            openDetailView();
+        }
+
+        function openDetailView() {
+            showView('viewDetail');
+            updateBreadcrumb();
+            loadDetailData();
+            renderDetailHeader();
+        }
+
+        function updateBreadcrumb() {
+            const bc = document.getElementById('breadcrumb');
+            let html = '<button onclick="navigateHome()">Inicio</button>';
+
+            if (currentCategoryIndex !== null) {
+                html += '<span class="separator">›</span>';
+                html +=
+                    `<button onclick="openSubtopics(${currentCategoryIndex})">${appData[currentCategoryIndex].icon} ${appData[currentCategoryIndex].name}</button>`;
+            }
+
+            if (currentCategoryIndex !== null && currentSubtopicIndex !== null) {
+                html += '<span class="separator">›</span>';
+                html +=
+                    `<span class="current">${appData[currentCategoryIndex].subtopics[currentSubtopicIndex].title}</span>`;
+            }
+
+            bc.innerHTML = html;
+        }
+
+        function openSubtopics(catIndex) {
+            currentCategoryIndex = catIndex;
+            currentSubtopicIndex = null;
+            showView('viewSubtopics');
+            renderSubtopics(catIndex);
+            updateBreadcrumb();
+        }
+
+        // ============================================================
+        // RENDERIZADO DE VISTAS
+        // ============================================================
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = '';
+
+            appData.forEach((cat, index) => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <span class="icon">${cat.icon}</span>
+                    <h3>${cat.name}</h3>
+                    <span class="item-count">${cat.subtopics.length} formatos disponibles</span>
+                `;
+                card.addEventListener('click', () => openSubtopics(index));
+                card.style.borderTop = `3px solid ${cat.color}`;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderSubtopics(catIndex) {
+            const cat = appData[catIndex];
+            const header = document.getElementById('subtopicsHeader');
+            header.innerHTML = `
+                <span class="cat-icon">${cat.icon}</span>
+                <h2>${cat.name}</h2>
+            `;
+
+            const list = document.getElementById('subtopicsList');
+            list.innerHTML = '';
+
+            cat.subtopics.forEach((sub, index) => {
+                const item = document.createElement('div');
+                item.className = 'subtopic-item';
+                item.innerHTML = `
+                    <span class="number">${index + 1}</span>
+                    <span>${sub.title}</span>
+                    <span class="arrow">→</span>
+                `;
+                item.addEventListener('click', () => navigateToSubtopic(catIndex, index));
+                list.appendChild(item);
+            });
+        }
+
+        function renderDetailHeader() {
+            const cat = appData[currentCategoryIndex];
+            const sub = cat.subtopics[currentSubtopicIndex];
+            const header = document.getElementById('detailHeader');
+            header.innerHTML = `
+                <h2>${sub.title}</h2>
+                <p class="breadcrumb-hint">${cat.icon} ${cat.name}</p>
+            `;
+
+            // Mostrar descripción oficial en el cuadro
+            const descBox = document.getElementById('officialDescription');
+            descBox.textContent = sub.description || '';
+        }
+
+        // ============================================================
+        // CARGA Y GUARDADO DE DATOS EN FIREBASE
+        // ============================================================
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('visible', show);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2500);
+        }
+
+        function loadDetailData() {
+            if (currentCategoryIndex === null || currentSubtopicIndex === null) return;
+
+            const path = getFirebasePath(currentCategoryIndex, currentSubtopicIndex);
+            const ref = database.ref(path);
+
+            isLoadingData = true;
+            showLoading(true);
+
+            ref.once('value')
+                .then((snapshot) => {
+                    const data = snapshot.val() || {};
+                    currentImageData.left = data.leftImage || null;
+                    currentImageData.right = data.rightImage || null;
+                    currentDescriptions.left = data.leftDescription !== undefined ? data
+                        .leftDescription : appData[currentCategoryIndex].subtopics[currentSubtopicIndex]
+                        .description;
+                    currentDescriptions.right = data.rightDescription !== undefined ? data
+                        .rightDescription : appData[currentCategoryIndex].subtopics[currentSubtopicIndex]
+                        .description;
+
+                    // Actualizar UI
+                    document.getElementById('descLeft').value = currentDescriptions.left;
+                    document.getElementById('descRight').value = currentDescriptions.right;
+                    updateImageArea('left');
+                    updateImageArea('right');
+
+                    isLoadingData = false;
+                    showLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error al cargar datos:', error);
+                    isLoadingData = false;
+                    showLoading(false);
+                    showToast('⚠️ Error al cargar datos guardados');
+                });
+        }
+
+        function saveData() {
+            if (currentCategoryIndex === null || currentSubtopicIndex === null) return;
+            if (isLoadingData) return;
+
+            const path = getFirebasePath(currentCategoryIndex, currentSubtopicIndex);
+            const ref = database.ref(path);
+
+            const dataToSave = {
+                leftImage: currentImageData.left,
+                rightImage: currentImageData.right,
+                leftDescription: currentDescriptions.left,
+                rightDescription: currentDescriptions.right
+            };
+
+            ref.set(dataToSave)
+                .then(() => {
+                    console.log('Datos guardados correctamente');
+                })
+                .catch((error) => {
+                    console.error('Error al guardar datos:', error);
+                    showToast('⚠️ Error al guardar en Firebase');
+                });
+        }
+
+        // ============================================================
+        // MANEJO DE IMÁGENES
+        // ============================================================
+        function triggerFileInput(side) {
+            if (currentImageData[side]) {
+                return; // Ya hay una imagen, no se puede agregar otra
+            }
+            const input = document.getElementById(`fileInput${side.charAt(0).toUpperCase() + side.slice(1)}`);
+            input.click();
+        }
+
+        function handleFileUpload(side, inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('⚠️ Por favor selecciona una imagen válida');
+                inputElement.value = '';
+                return;
+            }
+
+            // Comprimir imagen antes de guardar
+            compressImage(file, 800, 0.7)
+                .then((base64) => {
+                    currentImageData[side] = base64;
+                    updateImageArea(side);
+                    saveData();
+                    showToast(`✅ Imagen ${side === 'left' ? 'izquierda' : 'derecha'} agregada correctamente`);
+                    inputElement.value = ''; // Reset input
+                })
+                .catch((error) => {
+                    console.error('Error al procesar imagen:', error);
+                    showToast('⚠️ Error al procesar la imagen');
+                    inputElement.value = '';
+                });
+        }
+
+        function compressImage(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            const ratio = maxWidth / width;
+                            width = maxWidth;
+                            height = Math.round(height * ratio);
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const base64 = canvas.toDataURL('image/jpeg', quality);
+                        resolve(base64);
+                    };
+                    img.onerror = function() {
+                        reject(new Error('Error al cargar imagen'));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.onerror = function() {
+                    reject(new Error('Error al leer archivo'));
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateImageArea(side) {
+            const areaId = side === 'left' ? 'imageAreaLeft' : 'imageAreaRight';
+            const area = document.getElementById(areaId);
+            const hasImage = currentImageData[side] !== null;
+
+            if (hasImage) {
+                area.classList.add('has-image');
+                area.innerHTML = `<img src="${currentImageData[side]}" alt="Imagen ${side === 'left' ? 'izquierda' : 'derecha'}">`;
+                area.onclick = null;
             } else {
-                alert('Por favor selecciona un archivo o pega una URL de imagen.');
+                area.classList.remove('has-image');
+                area.innerHTML = `
+                    <div class="placeholder">
+                        <span class="icon">🖼️</span>
+                        <p>Sin imagen</p>
+                        <button class="btn-add-image" onclick="event.stopPropagation(); triggerFileInput('${side}')">
+                            📤 Agregar imagen
+                        </button>
+                        <small style="font-size:0.7rem; opacity:0.6;">Solo se puede agregar una imagen</small>
+                    </div>
+                `;
+                area.onclick = function() { triggerFileInput(side); };
             }
-        });
+        }
 
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                cerrarModalImagen();
+        // ============================================================
+        // MANEJO DE DESCRIPCIONES
+        // ============================================================
+        function onDescriptionInput(side, value) {
+            currentDescriptions[side] = value;
+            // Debounce para no guardar en cada tecla
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                saveData();
+            }, 800);
+        }
+
+        // ============================================================
+        // SOPORTE PARA PEGAR IMÁGENES (Ctrl+V)
+        // ============================================================
+        document.addEventListener('paste', function(e) {
+            // Solo si estamos en la vista de detalle
+            if (currentCategoryIndex === null || currentSubtopicIndex === null) return;
+            if (!document.getElementById('viewDetail').classList.contains('active')) return;
+
+            const items = e.clipboardData?.items;
+            if (!items) return;
+
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.startsWith('image/')) {
+                    e.preventDefault();
+                    const file = items[i].getAsFile();
+
+                    // Determinar a qué lado va la imagen (primero el que esté vacío)
+                    let targetSide = null;
+                    if (!currentImageData.left) {
+                        targetSide = 'left';
+                    } else if (!currentImageData.right) {
+                        targetSide = 'right';
+                    }
+
+                    if (!targetSide) {
+                        showToast('⚠️ Ambos espacios ya tienen imagen');
+                        return;
+                    }
+
+                    compressImage(file, 800, 0.7)
+                        .then((base64) => {
+                            currentImageData[targetSide] = base64;
+                            updateImageArea(targetSide);
+                            saveData();
+                            showToast(
+                                `✅ Imagen pegada en el espacio ${targetSide === 'left' ? 'izquierdo' : 'derecho'}`);
+                        })
+                        .catch((error) => {
+                            console.error('Error al procesar imagen pegada:', error);
+                            showToast('⚠️ Error al procesar la imagen pegada');
+                        });
+                    break;
+                }
             }
         });
 
         // ============================================================
-        // INICIAR
+        // INICIALIZACIÓN
         // ============================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            renderizarTodo();
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCategories();
+            updateBreadcrumb();
+            // Inicializar áreas de imagen vacías
+            currentImageData = { left: null, right: null };
+            updateImageArea('left');
+            updateImageArea('right');
+            showLoading(false);
         });
+
+        // ============================================================
+        // PROTECCIÓN: Evitar agregar más de una imagen por slot
+        // ============================================================
+        const originalTriggerFileInput = triggerFileInput;
+        triggerFileInput = function(side) {
+            if (currentImageData[side]) {
+                showToast('ℹ️ Ya hay una imagen en este espacio');
+                return;
+            }
+            originalTriggerFileInput(side);
+        };
     </script>
 </body>
 </html>
