@@ -1165,8 +1165,8 @@
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser && accountNames.some(name => normalizeString(name) === normalizeString(savedUser))) {
                 currentUser = savedUser;
-                loadGiftStateFromFirebase(); // Cargar estado de regalos inmediatamente
                 showMainApp();
+                loadGiftStateFromFirebase(); // cargar regalos al iniciar sesión automática
             } else {
                 document.getElementById('accountScreen').style.display = 'flex';
                 document.getElementById('accountSearch').value = '';
@@ -1184,8 +1184,7 @@
             document.querySelector('.main-container').style.display = 'block';
             renderCategories();
             updateBreadcrumb();
-            // No llamamos loadGiftStateFromFirebase aquí para evitar duplicados
-            updateGiftButton();
+            updateGiftButton(); // actualizar botón inmediatamente con estado actual (puede no estar cargado aún)
         }
 
         function hideMainApp() {
@@ -1199,8 +1198,8 @@
             currentUser = name;
             localStorage.setItem('currentUser', name);
             document.getElementById('accountScreen').style.display = 'none';
-            loadGiftStateFromFirebase(); // Cargar estado de regalos antes de mostrar
             showMainApp();
+            loadGiftStateFromFirebase(); // cargar regalos después de seleccionar
         }
 
         function logout() {
@@ -1280,39 +1279,59 @@
             });
         });
 
-        // ========== GESTIÓN DE REGALOS CON FIREBASE ==========
+        // ========== GESTIÓN DE REGALOS CON FIREBASE (CORREGIDO) ==========
         function getGiftRefForCurrentUser() {
             if (!currentUser) return null;
+            // Crear clave única para Firebase (sin caracteres especiales)
             const userKey = currentUser.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
             return database.ref(`giftStates/${userKey}`);
+        }
+
+        function isGiftStateValid(state) {
+            return state &&
+                typeof state.attemptsUsed === 'number' &&
+                Array.isArray(state.boxesOpened) &&
+                (state.winningBox === null || typeof state.winningBox === 'number') &&
+                (state.prize === null || typeof state.prize === 'string');
+        }
+
+        function initializeGiftState() {
+            return {
+                attemptsUsed: 0,
+                winningBox: Math.floor(Math.random() * 9),
+                prize: ['Chocolate', 'Paleta', 'Dulce'][Math.floor(Math.random() * 3)],
+                boxesOpened: []
+            };
         }
 
         function loadGiftStateFromFirebase() {
             if (!currentUser) return;
             const ref = getGiftRefForCurrentUser();
             if (!ref) return;
-            showLoading(true);
+
+            // Mostrar loading solo si no hay datos todavía
+            if (!giftState || giftState.winningBox === null) {
+                showLoading(true);
+            }
+
             ref.once('value').then(snapshot => {
                 const data = snapshot.val();
-                if (data) {
+                if (isGiftStateValid(data)) {
                     giftState = data;
                 } else {
-                    giftState = {
-                        attemptsUsed: 0,
-                        winningBox: Math.floor(Math.random() * 9),
-                        prize: ['Chocolate', 'Paleta', 'Dulce'][Math.floor(Math.random() * 3)],
-                        boxesOpened: []
-                    };
-                    ref.set(giftState);
+                    // Si los datos no son válidos, crear un estado nuevo
+                    giftState = initializeGiftState();
+                    ref.set(giftState).catch(err => console.error('Error al guardar estado inicial:', err));
                 }
                 updateGiftButton();
                 showLoading(false);
             }).catch(error => {
                 console.error('Error cargando estado de regalos:', error);
-                showLoading(false);
-                showToast('Error al cargar regalos');
-                giftState = { attemptsUsed: 0, winningBox: null, prize: null, boxesOpened: [] };
+                // Inicializar con valores por defecto en memoria para no bloquear la UI
+                giftState = initializeGiftState();
                 updateGiftButton();
+                showLoading(false);
+                showToast('Error al cargar regalos, usando estado temporal');
             });
         }
 
@@ -1326,12 +1345,15 @@
         function updateGiftButton() {
             const btn = document.getElementById('btnLuck');
             if (!btn) return;
+            // Si no hay usuario, deshabilitar
             if (!currentUser) {
                 btn.disabled = true;
                 btn.textContent = '🎁 Probar mi suerte';
                 return;
             }
-            const remaining = 2 - giftState.attemptsUsed;
+            // Asegurar que giftState tenga la propiedad attemptsUsed como número
+            const attempts = typeof giftState.attemptsUsed === 'number' ? giftState.attemptsUsed : 0;
+            const remaining = 2 - attempts;
             if (remaining <= 0) {
                 btn.disabled = true;
                 btn.textContent = '🎁 Sin intentos restantes';
@@ -1717,11 +1739,6 @@
                     break;
                 }
             }
-        });
-
-        // ========== INICIALIZACIÓN ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAccountScreen();
         });
     </script>
 </body>
