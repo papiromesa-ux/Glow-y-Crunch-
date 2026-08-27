@@ -840,6 +840,138 @@
             margin-bottom: 0.5rem;
         }
 
+        /* ========== MODAL DE EXAMEN ========== */
+        .exam-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .exam-modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .exam-modal {
+            background: var(--color-card);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            max-width: 600px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .exam-modal h3 {
+            font-family: var(--font-title);
+            font-size: 1.6rem;
+            color: var(--color-primary);
+            margin-bottom: 0.3rem;
+            text-align: center;
+        }
+
+        .exam-modal .exam-subtitle {
+            text-align: center;
+            color: var(--color-text-light);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .exam-question {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(201,169,110,0.08);
+            border-radius: 10px;
+            border-left: 4px solid var(--color-accent);
+        }
+
+        .exam-question p {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .exam-option {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.4rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            background: rgba(255,255,255,0.6);
+        }
+
+        .exam-option:hover {
+            background: rgba(201,169,110,0.2);
+        }
+
+        .exam-option input[type="radio"] {
+            accent-color: var(--color-secondary);
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .exam-option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .exam-submit-btn {
+            display: block;
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--color-accent), var(--color-wine));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            letter-spacing: 0.05em;
+            box-shadow: 0 6px 20px rgba(114,47,55,0.4);
+        }
+
+        .exam-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(114,47,55,0.5);
+        }
+
+        .exam-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.1);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--color-text);
+            transition: background 0.2s;
+        }
+
+        .exam-close-btn:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
         /* ========== PANTALLA DE SELECCIÓN DE CUENTA ========== */
         .account-screen {
             position: fixed;
@@ -946,6 +1078,7 @@
             .image-area img { max-height: 250px; }
             .subtopic-item { padding: 0.9rem 1rem; font-size: 0.9rem; }
             .app-header h1 { font-size: 1.4rem; }
+            .exam-modal { padding: 1rem; }
         }
 
         @media (max-width: 480px) {
@@ -1016,7 +1149,7 @@
             <div class="thanks-section" id="thanksSection">
                 <h2>¡Gracias por ver!</h2>
                 <p>Has explorado nuestros formatos. ¿Quieres probar tu suerte?</p>
-                <button class="btn-luck" id="btnLuck" onclick="openGiftModal()">🎁 Probar mi suerte</button>
+                <button class="btn-luck" id="btnLuck" onclick="handleLuckButton()">🎁 Probar mi suerte</button>
             </div>
         </section>
 
@@ -1068,6 +1201,17 @@
             <p class="attempts-info" id="attemptsInfo"></p>
             <div class="gift-grid" id="giftGrid"></div>
             <button class="gift-close-btn" onclick="closeGiftModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de examen -->
+    <div class="exam-modal-overlay" id="examModal">
+        <div class="exam-modal">
+            <button class="exam-close-btn" onclick="closeExamModal()">✕</button>
+            <h3>📝 Mini Examen</h3>
+            <p class="exam-subtitle">Responde correctamente al menos 2 de 3 preguntas para ganar tu oportunidad de regalo</p>
+            <div id="examQuestionsContainer"></div>
+            <button class="exam-submit-btn" onclick="submitExam()">Enviar respuestas</button>
         </div>
     </div>
 
@@ -1130,16 +1274,93 @@
             }
         ];
 
-        // ========== CUENTAS PREHECHAS ==========
+        // ========== CUENTAS PREHECHAS (actualizado) ==========
         const accountNames = [
             "Zulma Esmeralda", "Lennin Alexis", "Priscila Alexandra", "Gabriel Eduardo",
             "Brayan Omar", "Jackeline Elizabeth", "Eduardo Alexander", "Gabriela De Los Angeles",
             "Julia Ester", "Alejandra Patricia", "Andrea Rebeca", "María Fernanda",
             "Susana Yamileth", "Keny Aracely", "Angel Enrique", "Wily Matthew",
-            "Xiomara Yamileth", "Lucia Maite", "Julisa Elizabeth", "Dayana Yamileth",
+            "Xiomara Yamileth", "Lucia Maite", "Dayana Yamileth",
             "Adriana Sarai", "Mónica Denisse", "Jackeline Patricia", "Camila Sofía",
             "Alisson Azucena", "Katherine Lizeth", "Marco Andrés", "Jeferson Isaac",
-            "Claudia Raquel", "Alexi Antonio", "Eins", "Zwei", "Drei"
+            "Claudia Raquel", "Alexi Antonio", "Jaime Paxtor", "Andrea Preza",
+            "Eins", "Zwei", "Drei"
+        ];
+
+        // ========== BANCO DE PREGUNTAS ==========
+        const examQuestionsBank = [
+            {
+                question: "¿Qué documento se usa para transmitir un pedido a cocina, barra o caja?",
+                options: [
+                    { text: "Hoja de reservas", correct: false },
+                    { text: "Comanda", correct: true },
+                    { text: "Albarán de recepción", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué ficha garantiza que un plato se prepare siempre con las mismas cantidades y el mismo proceso?",
+                options: [
+                    { text: "Ficha técnica de plato", correct: true },
+                    { text: "Control de trazabilidad de alimentos", correct: false },
+                    { text: "Hoja de mermas y desperdicios", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué significan las siglas FIFO/PEPS?",
+                options: [
+                    { text: "Frecuencia Interna For Organization", correct: false },
+                    { text: "Primero en Entrar, Primero en Salir", correct: true },
+                    { text: "Formato de Inventario y Facturación Operativa", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué documento confirma que la mercancía recibida coincide con el pedido hecho al proveedor?",
+                options: [
+                    { text: "Control de stock e inventario", correct: false },
+                    { text: "Albarán de recepción de mercancía", correct: true },
+                    { text: "Hoja de pedido a proveedores", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué proceso se hace al cerrar el turno para comprobar que el dinero de caja cuadra con las ventas?",
+                options: [
+                    { text: "Balance diario de ventas", correct: false },
+                    { text: "Arqueo/cierre de caja", correct: true },
+                    { text: "Control de turnos y horarios", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué documento recoge las alergias de un comensal antes de servirle su plato?",
+                options: [
+                    { text: "Ficha de alérgenos por comensal", correct: true },
+                    { text: "BEO (parte de banquetes y eventos)", correct: false },
+                    { text: "Plano de distribución de mesas", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué sistema controla las temperaturas y la seguridad alimentaria en cocina?",
+                options: [
+                    { text: "Control de trazabilidad", correct: false },
+                    { text: "APPCC/HACCP", correct: true },
+                    { text: "Hoja de mermas y desperdicios", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué documento recoge todos los detalles de una boda o evento grande?",
+                options: [
+                    { text: "Comanda", correct: false },
+                    { text: "BEO (parte de banquetes y eventos)", correct: true },
+                    { text: "Hoja de reservas", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué parte se rellena cuando ocurre un problema o ausencia durante el servicio?",
+                options: [
+                    { text: "Control de turnos y horarios", correct: false },
+                    { text: "Parte de incidencias", correct: true },
+                    { text: "Balance diario de ventas", correct: false }
+                ]
+            }
         ];
 
         // ========== ESTADO GLOBAL ==========
@@ -1152,9 +1373,13 @@
             attemptsUsed: 0,
             winningBox: null,
             prize: null,
-            boxesOpened: []
+            boxesOpened: [],
+            examPassed: false
         };
+        let giftStateLoaded = false;
         let currentZoom = 1;
+        let currentExamQuestions = [];
+        let selectedAnswers = [];
 
         // ========== FUNCIONES DE CUENTA ==========
         function normalizeString(str) {
@@ -1166,7 +1391,7 @@
             if (savedUser && accountNames.some(name => normalizeString(name) === normalizeString(savedUser))) {
                 currentUser = savedUser;
                 showMainApp();
-                loadGiftStateFromFirebase(); // cargar regalos al iniciar sesión automática
+                loadGiftStateFromFirebase();
             } else {
                 document.getElementById('accountScreen').style.display = 'flex';
                 document.getElementById('accountSearch').value = '';
@@ -1184,7 +1409,7 @@
             document.querySelector('.main-container').style.display = 'block';
             renderCategories();
             updateBreadcrumb();
-            updateGiftButton(); // actualizar botón inmediatamente con estado actual (puede no estar cargado aún)
+            updateGiftButton();
         }
 
         function hideMainApp() {
@@ -1199,7 +1424,7 @@
             localStorage.setItem('currentUser', name);
             document.getElementById('accountScreen').style.display = 'none';
             showMainApp();
-            loadGiftStateFromFirebase(); // cargar regalos después de seleccionar
+            loadGiftStateFromFirebase();
         }
 
         function logout() {
@@ -1210,6 +1435,8 @@
             document.getElementById('searchResults').innerHTML = '';
             document.getElementById('searchResults').classList.remove('active');
             hideMainApp();
+            giftStateLoaded = false;
+            giftState = { attemptsUsed: 0, winningBox: null, prize: null, boxesOpened: [], examPassed: false };
         }
 
         // ========== BÚSQUEDA DE CUENTAS ==========
@@ -1270,19 +1497,20 @@
                 }
             });
 
-            // Cerrar modales al hacer clic fuera
             document.getElementById('imageModal').addEventListener('click', function(e) {
                 if (e.target === this) closeImageModal();
             });
             document.getElementById('giftModal').addEventListener('click', function(e) {
                 if (e.target === this) closeGiftModal();
             });
+            document.getElementById('examModal').addEventListener('click', function(e) {
+                if (e.target === this) closeExamModal();
+            });
         });
 
-        // ========== GESTIÓN DE REGALOS CON FIREBASE (CORREGIDO) ==========
+        // ========== GESTIÓN DE REGALOS Y EXAMEN CON FIREBASE ==========
         function getGiftRefForCurrentUser() {
             if (!currentUser) return null;
-            // Crear clave única para Firebase (sin caracteres especiales)
             const userKey = currentUser.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
             return database.ref(`giftStates/${userKey}`);
         }
@@ -1292,7 +1520,8 @@
                 typeof state.attemptsUsed === 'number' &&
                 Array.isArray(state.boxesOpened) &&
                 (state.winningBox === null || typeof state.winningBox === 'number') &&
-                (state.prize === null || typeof state.prize === 'string');
+                (state.prize === null || typeof state.prize === 'string') &&
+                typeof state.examPassed === 'boolean';
         }
 
         function initializeGiftState() {
@@ -1300,7 +1529,8 @@
                 attemptsUsed: 0,
                 winningBox: Math.floor(Math.random() * 9),
                 prize: ['Chocolate', 'Paleta', 'Dulce'][Math.floor(Math.random() * 3)],
-                boxesOpened: []
+                boxesOpened: [],
+                examPassed: false
             };
         }
 
@@ -1309,28 +1539,23 @@
             const ref = getGiftRefForCurrentUser();
             if (!ref) return;
 
-            // Mostrar loading solo si no hay datos todavía
-            if (!giftState || giftState.winningBox === null) {
-                showLoading(true);
-            }
+            giftStateLoaded = false;
+            updateGiftButton();
 
             ref.once('value').then(snapshot => {
                 const data = snapshot.val();
                 if (isGiftStateValid(data)) {
                     giftState = data;
                 } else {
-                    // Si los datos no son válidos, crear un estado nuevo
                     giftState = initializeGiftState();
                     ref.set(giftState).catch(err => console.error('Error al guardar estado inicial:', err));
                 }
+                giftStateLoaded = true;
                 updateGiftButton();
-                showLoading(false);
             }).catch(error => {
                 console.error('Error cargando estado de regalos:', error);
-                // Inicializar con valores por defecto en memoria para no bloquear la UI
-                giftState = initializeGiftState();
+                giftStateLoaded = true;
                 updateGiftButton();
-                showLoading(false);
                 showToast('Error al cargar regalos, usando estado temporal');
             });
         }
@@ -1345,13 +1570,11 @@
         function updateGiftButton() {
             const btn = document.getElementById('btnLuck');
             if (!btn) return;
-            // Si no hay usuario, deshabilitar
-            if (!currentUser) {
+            if (!currentUser || !giftStateLoaded) {
                 btn.disabled = true;
-                btn.textContent = '🎁 Probar mi suerte';
+                btn.textContent = '🎁 Cargando...';
                 return;
             }
-            // Asegurar que giftState tenga la propiedad attemptsUsed como número
             const attempts = typeof giftState.attemptsUsed === 'number' ? giftState.attemptsUsed : 0;
             const remaining = 2 - attempts;
             if (remaining <= 0) {
@@ -1363,8 +1586,89 @@
             }
         }
 
+        // ========== LÓGICA DEL EXAMEN ==========
+        function handleLuckButton() {
+            if (!currentUser || !giftStateLoaded) return;
+            if (giftState.attemptsUsed >= 2) {
+                showToast('Ya has usado tus 2 intentos');
+                return;
+            }
+            // Si ya pasó el examen, abrir directamente regalos
+            if (giftState.examPassed) {
+                openGiftModal();
+            } else {
+                openExamModal();
+            }
+        }
+
+        function openExamModal() {
+            // Seleccionar 3 preguntas aleatorias
+            const shuffled = [...examQuestionsBank].sort(() => Math.random() - 0.5);
+            currentExamQuestions = shuffled.slice(0, 3);
+            selectedAnswers = new Array(3).fill(null);
+            renderExamQuestions();
+            document.getElementById('examModal').classList.add('active');
+        }
+
+        function closeExamModal() {
+            document.getElementById('examModal').classList.remove('active');
+        }
+
+        function renderExamQuestions() {
+            const container = document.getElementById('examQuestionsContainer');
+            container.innerHTML = '';
+            currentExamQuestions.forEach((q, qIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'exam-question';
+                questionDiv.innerHTML = `<p>${qIndex + 1}. ${q.question}</p>`;
+                q.options.forEach((opt, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'exam-option';
+                    const radioId = `q${qIndex}_opt${optIndex}`;
+                    optionDiv.innerHTML = `
+                        <input type="radio" id="${radioId}" name="exam_q${qIndex}" value="${optIndex}" onchange="selectAnswer(${qIndex}, ${optIndex})">
+                        <label for="${radioId}">${opt.text}</label>
+                    `;
+                    questionDiv.appendChild(optionDiv);
+                });
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(qIndex, optIndex) {
+            selectedAnswers[qIndex] = optIndex;
+        }
+
+        function submitExam() {
+            // Verificar que todas las preguntas tengan respuesta
+            if (selectedAnswers.includes(null)) {
+                showToast('Por favor responde todas las preguntas');
+                return;
+            }
+            let correctCount = 0;
+            currentExamQuestions.forEach((q, idx) => {
+                if (q.options[selectedAnswers[idx]].correct) {
+                    correctCount++;
+                }
+            });
+
+            if (correctCount >= 2) {
+                // Aprobó el examen
+                giftState.examPassed = true;
+                saveGiftStateToFirebase();
+                closeExamModal();
+                showToast(`¡Aprobaste! Obtuviste ${correctCount}/3 correctas. Ahora puedes probar suerte.`);
+                openGiftModal();
+            } else {
+                // Reprobó
+                closeExamModal();
+                showToast(`Lo siento, obtuviste ${correctCount}/3. Necesitas al menos 2 correctas. Puedes intentarlo de nuevo.`);
+            }
+        }
+
+        // ========== LÓGICA DE REGALOS ==========
         function openGiftModal() {
-            if (!currentUser) return;
+            if (!currentUser || !giftStateLoaded) return;
             if (giftState.attemptsUsed >= 2) {
                 showToast('Ya has usado tus 2 intentos');
                 return;
@@ -1405,8 +1709,8 @@
         }
 
         function openGiftBox(index, boxElement) {
-            if (giftState.attemptsUsed >= 2) {
-                showToast('Sin intentos');
+            if (!giftStateLoaded || giftState.attemptsUsed >= 2) {
+                showToast('Sin intentos disponibles');
                 return;
             }
             if (giftState.boxesOpened.includes(index)) return;
