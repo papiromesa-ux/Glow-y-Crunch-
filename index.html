@@ -571,6 +571,11 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
           <input type="text" id="loginNombre" placeholder="Como te llamas?" autocomplete="name">
         </div>
 
+        <div class="campo" id="loginCodigoWrap" style="display:none">
+          <label for="loginCodigo">Codigo de verificacion (SMS)</label>
+          <input type="text" id="loginCodigo" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code">
+        </div>
+        <div id="recaptchaBox"></div>
         <button class="btn" id="btnLogin">Continuar</button>
       </div>
     </div>
@@ -763,6 +768,9 @@ import {
   getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
   collection, onSnapshot, getDocs, runTransaction
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDjaFVYXKncCU5ybtPRQXi4LKi8mkbXEe8",
@@ -776,6 +784,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 try { getAnalytics(app); } catch(e){}
 const db = getFirestore(app);
+const auth = getAuth(app);
+auth.languageCode = "es";
 
 /* ========== CONSTANTES ========== */
 let WHATSAPP = "50368405099";
@@ -935,6 +945,65 @@ $$("[data-go]").forEach(b => b.onclick = ()=> irPagina(b.dataset.go));
 /* =========================================================
    LOGIN
    ========================================================= */
+/* ---------- Verificacion por SMS (Firebase Authentication) ---------- */
+let confirmacion = null, telVerificado = null, recaptcha = null;
+
+function errorSMS(e){
+  const m = {
+    "auth/invalid-phone-number": "El numero no es valido.",
+    "auth/missing-phone-number": "Escribe tu numero.",
+    "auth/too-many-requests": "Demasiados intentos. Espera un rato y vuelve a probar.",
+    "auth/quota-exceeded": "Se acabaron los SMS de hoy. Intenta mas tarde.",
+    "auth/invalid-verification-code": "Codigo incorrecto.",
+    "auth/code-expired": "El codigo vencio. Pide uno nuevo.",
+    "auth/captcha-check-failed": "No se pudo comprobar que eres humano. Intenta de nuevo.",
+    "auth/network-request-failed": "Sin conexion. Revisa tu internet.",
+    "auth/operation-not-allowed": "Falta activar Telefono en Firebase Authentication.",
+    "auth/unauthorized-domain": "Este dominio no esta autorizado en Firebase Authentication."
+  };
+  return m[e && e.code] || ("No se pudo verificar (" + ((e && e.code) || e) + ").");
+}
+
+async function verificarTelefono(tel){
+  const btn = $("#btnLogin");
+  btn.disabled = true;
+  try{
+    if(!confirmacion || confirmacion.tel !== tel){
+      if(!recaptcha) recaptcha = new RecaptchaVerifier(auth, "recaptchaBox", { size:"invisible" });
+      confirmacion = await signInWithPhoneNumber(auth, "+" + tel, recaptcha);
+      confirmacion.tel = tel;
+      $("#loginCodigoWrap").style.display = "flex";
+      $("#loginCodigo").value = "";
+      $("#loginCodigo").focus();
+      btn.textContent = "Verificar codigo";
+      aviso("Te enviamos un codigo por SMS al +" + tel, true);
+      Sound.tap();
+      return false;
+    }
+    const codigo = $("#loginCodigo").value.trim();
+    if(codigo.length < 6){
+      aviso("Escribe el codigo de 6 digitos que te llego por SMS.");
+      Sound.error(); vib(40);
+      return false;
+    }
+    await confirmacion.confirm(codigo);
+    telVerificado = tel;
+    return true;
+  } catch(e){
+    aviso(errorSMS(e));
+    Sound.error(); vib(40);
+    if(!e || e.code !== "auth/invalid-verification-code"){
+      try{ recaptcha && recaptcha.clear(); }catch(_){}
+      $("#recaptchaBox").innerHTML = "";
+      recaptcha = null; confirmacion = null;
+      btn.textContent = "Continuar";
+    }
+    return false;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function intentarLogin(){
   let tel = norm($("#loginTel").value);
   const nombre = $("#loginNombre").value.trim();
@@ -943,6 +1012,10 @@ async function intentarLogin(){
     aviso("Escribe un numero valido (minimo 8 digitos).");
     Sound.error(); vib(40);
     return;
+  }
+
+  if(telVerificado !== tel){
+    if(!(await verificarTelefono(tel))) return;
   }
 
   try{
@@ -1001,6 +1074,7 @@ async function intentarLogin(){
 $("#btnLogin").onclick = intentarLogin;
 $("#loginTel").addEventListener("keydown", e => { if(e.key === "Enter") intentarLogin(); });
 $("#loginNombre").addEventListener("keydown", e => { if(e.key === "Enter") intentarLogin(); });
+$("#loginCodigo").addEventListener("keydown", e => { if(e.key === "Enter") intentarLogin(); });
 
 function arrancarTrasLogin(){
   $("#saludoNombre").textContent = (S.user.nombre || "").split(" ")[0].toUpperCase() || "AMIGO";
@@ -1016,6 +1090,10 @@ function pintarCuenta(){
 
 function cerrarSesion(){
   if(!confirm("Cerrar sesion?")) return;
+  signOut(auth).catch(()=>{});
+  telVerificado = null; confirmacion = null;
+  $("#loginCodigoWrap").style.display = "none"; $("#loginCodigo").value = "";
+  $("#btnLogin").textContent = "Continuar";
   S.user = null;
   S.seleccion.clear();
   LS.set("user", null);
