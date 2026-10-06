@@ -1720,18 +1720,54 @@ document.addEventListener("click", e=>{
   else Sound.play(760,.05,"triangle",.045);
 });
 document.addEventListener("focusin", e=>{ if(e.target.matches("input,select,textarea")) Sound.play(1000,.025,"sine",.03); });
+/* Comprime fotos pesadas (ej. las de ChatGPT) para que quepan en Firebase */
+function comprimirImagen(file){
+  return new Promise((ok, err) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let lado = 1400, q = 0.85;
+      for(let i = 0; i < 8; i++){
+        const r = Math.min(1, lado / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        const out = c.toDataURL("image/jpeg", q);
+        if(out.length <= 800000) return ok(out);
+        q = Math.max(0.5, q - 0.1); lado = Math.round(lado * 0.8);
+      }
+      err(new Error("grande"));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); err(new Error("lectura")); };
+    img.src = url;
+  });
+}
 function conectarAdmin(){
   $$("#adminContenido input[type=file]").forEach(inp => {
-    inp.onchange = e => {
+    inp.onchange = async e => {
       const file = e.target.files[0];
       if(!file) return;
       const tipo = inp.dataset.file;
       const item = inp.closest(".admin-item");
       const id = item?.dataset.id;
 
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      const esFoto = file.type !== "image/gif" && ext !== "gif" && !file.type.startsWith("video/") &&
+        (file.type.startsWith("image/") || /^(png|jpe?g|webp|bmp|avif|heic|heif)$/.test(ext) || !file.type || file.type === "application/octet-stream");
+      if(esFoto){
+        if(file.size > 25 * 1024 * 1024){ aviso("La imagen pesa mas de 25MB."); Sound.error(); vib(40); return; }
+        aviso("Comprimiendo imagen...", true);
+        try{
+          const data = await comprimirImagen(file);
+          S.uploads[tipo][id] = { data, esVideo:false };
+          aviso("Imagen lista ("+Math.round(data.length * 0.75 / 1024)+"KB). Toca Guardar.", true);
+          Sound.tap(); vib();
+        }catch(_){ aviso("No se pudo comprimir esa imagen. Prueba con otra."); Sound.error(); vib(40); }
+        return;
+      }
       const kb = Math.round(file.size / 1024);
       if(kb > MAX_ARCHIVO_KB){
-        aviso("Archivo muy grande ("+kb+"KB). Maximo "+MAX_ARCHIVO_KB+"KB.");
+        aviso("Archivo muy grande ("+kb+"KB). Videos y GIF: maximo "+MAX_ARCHIVO_KB+"KB (limite de Firebase). Las fotos, sin importar el peso, se comprimen solas.");
         Sound.error(); vib(40);
         return;
       }
