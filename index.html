@@ -556,29 +556,15 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
   <section class="pagina activa" id="pagLogin">
     <div class="login-wrap">
       <div class="login-logo"><span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span></div>
-      <p class="login-sub">Cocina coreana &amp; cocteles</p>
+      <p class="login-sub">Coreano Eat &#183; bebidas de bartender&#237;a &amp; banderillas coreanas</p>
 
       <div class="login-card">
         <h2>Bienvenido</h2>
-        <p>Ingresa tu numero de telefono para entrar.</p>
-
-        <div class="campo">
-          <label for="loginTel">Telefono</label>
-          <input type="tel" id="loginTel" inputmode="numeric" placeholder="ej. 7845 1234" autocomplete="tel">
-        </div>
-        <div class="campo" id="loginNombreWrap" style="display:none">
-          <label for="loginNombre">Tu nombre</label>
-          <input type="text" id="loginNombre" placeholder="Como te llamas?" autocomplete="name">
-        </div>
-
-        <div class="campo" id="loginCodigoWrap" style="display:none">
-          <label for="loginCodigo">Codigo de verificacion (SMS)</label>
-          <input type="text" id="loginCodigo" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code">
-        </div>
-        <div id="recaptchaBox"></div>
-        <button class="btn" id="btnLogin">Continuar</button>
+        <p>Entra con tu cuenta de Google para pedir y reservar.</p>
+        <button class="btn" id="btnGoogle" type="button">Continuar con Google</button>
         <p style="text-align:center;color:var(--gris);font-size:.78rem;margin:12px 0">o</p>
-        <button class="btn btn-sec" id="btnGoogle" type="button">Continuar con Google</button>
+        <button class="btn btn-sec" id="btnInvitado" type="button">Ver el men&#250; sin cuenta</button>
+        <p style="text-align:center;color:var(--gris);font-size:.72rem;margin-top:10px">Sin cuenta solo puedes ver el men&#250;: no podr&#225;s pedir ni reservar.</p>
       </div>
     </div>
   </section>
@@ -595,6 +581,8 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
     </div>
 
     <h2 class="hero-titulo">HOLA, <span class="g" id="saludoNombre">AMIGO</span></h2>
+    <div class="info-card" style="margin-top:18px"><h4>VISI&#211;N</h4><p>Ser un emprendimiento reconocido dentro de nuestra instituci&#243;n por la calidad, sabor e innovaci&#243;n de nuestras banderillas, buscando satisfacer a nuestros clientes y fortalecer nuestras habilidades de trabajo en equipo y emprendimiento tur&#237;stico.</p></div>
+    <div class="info-card" style="margin-top:12px"><h4>MISI&#211;N</h4><p>1-3 Turismo tiene como misi&#243;n ofrecer banderillas preparadas de manera higi&#233;nica, r&#225;pida y deliciosa, brindando a nuestros clientes una opci&#243;n innovadora y accesible. Buscamos satisfacer sus gustos mediante productos de calidad, excelente sabor y una atenci&#243;n amable, promoviendo el trabajo en equipo y el esp&#237;ritu emprendedor.</p></div>
   </section>
 
   <!-- ================= MENÚ ================= -->
@@ -641,7 +629,7 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
     <div class="resumen" style="margin-bottom:16px">
       <div style="font-size:.7rem;color:var(--gris);letter-spacing:.1em;text-transform:uppercase">Nombre</div>
       <div style="font-size:1.15rem;color:#fff;font-weight:700;margin:2px 0 10px" id="cuentaNombre">-</div>
-      <div style="font-size:.7rem;color:var(--gris);letter-spacing:.1em;text-transform:uppercase">Telefono o correo</div>
+      <div style="font-size:.7rem;color:var(--gris);letter-spacing:.1em;text-transform:uppercase">Correo</div>
       <div style="color:var(--cian);font-weight:600;margin-top:2px" id="cuentaTel">-</div>
     </div>
 
@@ -695,10 +683,20 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
 
     <div class="info-card" style="margin-top:18px">
       <h4>ACERCA DE</h4>
-      <p>Glow &amp; Crunch - Cocina coreana &amp; cocteles.</p>
+      <p>Emprendimiento de servicios tur&#237;sticos: bebidas de bartender&#237;a y banderillas coreanas (Coreano Eat).</p>
       <p>WhatsApp: <a href="https://wa.me/50368405099" target="_blank" rel="noopener">+503 6840 5099</a></p>
-      <p>Horario: Lun-Jue 5pm-12am - Vie-Sab 5pm-2am - Dom 4pm-11pm</p>
       <p style="margin-top:10px;font-size:.72rem;opacity:.6">Version 2.0</p>
+    </div>
+    <div class="info-card" style="margin-top:18px">
+      <h4>CR&#201;DITOS</h4>
+      <p><b>FOR YOU PERSONAL MARKETING</b></p>
+      <p>1. Adriana Sarai Godinez Zepeda <i>(&#161;para que sepan qui&#233;n es ella! &#128518;)</i></p>
+      <p>2. Jullisa Elizabeth Ayala L&#243;pez</p>
+      <p>3. Lucia Maite Lanvandaverde Vasquez</p>
+      <p>4. Dayana Yamileth Martinez Martinez (x2)</p>
+      <p>5. Alexi Antonio Quintanilla Del Valle <i>(traeme un jugo del Valle &#129475;)</i></p>
+      <p style="margin-top:12px;font-style:italic">&#161;Puta, qu&#233; chivo nos qued&#243; este bolado, maje! Puro desvelo, hambre y cero pisto.</p>
+      <p style="font-style:italic">Si llegaste hasta aqu&#237; abajo, qu&#233; ocioso sos, hijo de la gran puta (con cari&#241;o). Mejor and&#225; ped&#237; una banderilla, cabal.</p>
     </div>
   </section>
 </main>
@@ -771,7 +769,7 @@ import {
   collection, onSnapshot, getDocs, runTransaction
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import {
-  getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut,
+  getAuth, signOut,
   GoogleAuthProvider, signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
@@ -905,7 +903,10 @@ const TITULOS = {
 };
 
 function irPagina(id, pushHist=true){
-  if(!S.user && id !== "login"){ id = "login"; }
+  if(!S.user && id !== "login"){
+    if(id === "reservar" || id === "cuenta"){ aviso("Inicia sesion con Google para " + (id === "reservar" ? "reservar" : "ver tu cuenta") + "."); id = "login"; }
+    else if(!S.invitado){ id = "login"; }
+  }
   if(id !== S.pagina && pushHist && S.historial[S.historial.length-1] !== id){
     S.historial.push(id);
   }
@@ -949,7 +950,7 @@ $$("[data-go]").forEach(b => b.onclick = ()=> irPagina(b.dataset.go));
    LOGIN
    ========================================================= */
 /* ---------- Verificacion por SMS (Firebase Authentication) ---------- */
-let confirmacion = null, telVerificado = null, recaptcha = null;
+
 
 function errorSMS(e){
   const m = {
@@ -961,7 +962,7 @@ function errorSMS(e){
     "auth/code-expired": "El codigo vencio. Pide uno nuevo.",
     "auth/captcha-check-failed": "No se pudo comprobar que eres humano. Intenta de nuevo.",
     "auth/network-request-failed": "Sin conexion. Revisa tu internet.",
-    "auth/operation-not-allowed": "Falta activar ese metodo (Telefono o Google) en Firebase Authentication.",
+    "auth/operation-not-allowed": "Falta activar Google en Firebase Authentication.",
     "auth/popup-closed-by-user": "Cerraste la ventana de Google.",
     "auth/cancelled-popup-request": "Ya hay una ventana de Google abierta.",
     "auth/popup-blocked": "El navegador bloqueo la ventana de Google. Permitela e intenta de nuevo.",
@@ -969,118 +970,6 @@ function errorSMS(e){
   };
   return m[e && e.code] || ("No se pudo verificar (" + ((e && e.code) || e) + ").");
 }
-
-async function verificarTelefono(tel){
-  const btn = $("#btnLogin");
-  btn.disabled = true;
-  try{
-    if(!confirmacion || confirmacion.tel !== tel){
-      if(!recaptcha) recaptcha = new RecaptchaVerifier(auth, "recaptchaBox", { size:"invisible" });
-      confirmacion = await signInWithPhoneNumber(auth, "+" + tel, recaptcha);
-      confirmacion.tel = tel;
-      $("#loginCodigoWrap").style.display = "flex";
-      $("#loginCodigo").value = "";
-      $("#loginCodigo").focus();
-      btn.textContent = "Verificar codigo";
-      aviso("Te enviamos un codigo por SMS al +" + tel, true);
-      Sound.tap();
-      return false;
-    }
-    const codigo = $("#loginCodigo").value.trim();
-    if(codigo.length < 6){
-      aviso("Escribe el codigo de 6 digitos que te llego por SMS.");
-      Sound.error(); vib(40);
-      return false;
-    }
-    await confirmacion.confirm(codigo);
-    telVerificado = tel;
-    return true;
-  } catch(e){
-    aviso(errorSMS(e));
-    Sound.error(); vib(40);
-    if(!e || e.code !== "auth/invalid-verification-code"){
-      try{ recaptcha && recaptcha.clear(); }catch(_){}
-      $("#recaptchaBox").innerHTML = "";
-      recaptcha = null; confirmacion = null;
-      btn.textContent = "Continuar";
-    }
-    return false;
-  } finally {
-    btn.disabled = false;
-  }
-}
-
-async function intentarLogin(){
-  let tel = norm($("#loginTel").value);
-  const nombre = $("#loginNombre").value.trim();
-  if(tel.length === 8) tel = "503" + tel;
-  if(tel.length < 8){
-    aviso("Escribe un numero valido (minimo 8 digitos).");
-    Sound.error(); vib(40);
-    return;
-  }
-
-  if(telVerificado !== tel){
-    if(!(await verificarTelefono(tel))) return;
-  }
-
-  try{
-    const ref = doc(db, "usuarios", tel);
-    const snap = await getDoc(ref);
-
-    if(snap.exists()){
-      S.user = { phone: tel, ...snap.data() };
-      LS.set("user", S.user);
-      aviso("Cuenta encontrada: " + (S.user.nombre || tel), true);
-      toast("Bienvenido, " + (S.user.nombre || ""));
-      Sound.success();
-      arrancarTrasLogin();
-    } else {
-      if(!nombre){
-        $("#loginNombreWrap").style.display = "flex";
-        aviso("Escribe tu nombre para crear la cuenta.");
-        Sound.tap();
-        return;
-      }
-      const data = {
-        phone: tel, nombre, creado: new Date().toISOString(),
-        reservasHoy: 0, fechaContador: ""
-      };
-      await setDoc(ref, data);
-      S.user = { phone: tel, ...data };
-      LS.set("user", S.user);
-      aviso("Cuenta creada para " + nombre, true);
-      toast("Cuenta creada");
-      Sound.success();
-      arrancarTrasLogin();
-    }
-  } catch(e){
-    S.online = false;
-    const local = LS.get("cuentas", {});
-    if(local[tel]){
-      S.user = { phone: tel, ...local[tel] };
-      toast("Bienvenido de vuelta");
-    } else {
-      if(!nombre){
-        $("#loginNombreWrap").style.display = "flex";
-        aviso("Escribe tu nombre para crear la cuenta (modo local).");
-        return;
-      }
-      local[tel] = { phone: tel, nombre, creado: new Date().toISOString(), reservasHoy: 0, fechaContador: "" };
-      LS.set("cuentas", local);
-      S.user = local[tel];
-      toast("Cuenta creada (local)");
-    }
-    LS.set("user", S.user);
-    aviso("Firestore no disponible, usando almacenamiento local.");
-    Sound.success();
-    arrancarTrasLogin();
-  }
-}
-$("#btnLogin").onclick = intentarLogin;
-$("#loginTel").addEventListener("keydown", e => { if(e.key === "Enter") intentarLogin(); });
-$("#loginNombre").addEventListener("keydown", e => { if(e.key === "Enter") intentarLogin(); });
-$("#loginCodigo").addEventListener("keydown", e => { if(e.key === "Enter") intentarLogin(); });
 
 /* ---------- Entrar con Google ---------- */
 async function entrarConGoogle(){
@@ -1121,6 +1010,7 @@ async function entrarConGoogle(){
   }
 }
 $("#btnGoogle").onclick = entrarConGoogle;
+$("#btnInvitado").onclick = ()=>{ S.invitado = true; Sound.tap(); S.historial = ["login"]; S.pagina = null; irPagina("menu"); };
 
 function arrancarTrasLogin(){
   $("#saludoNombre").textContent = (S.user.nombre || "").split(" ")[0].toUpperCase() || "AMIGO";
@@ -1137,9 +1027,7 @@ function pintarCuenta(){
 function cerrarSesion(){
   if(!confirm("Cerrar sesion?")) return;
   signOut(auth).catch(()=>{});
-  telVerificado = null; confirmacion = null;
-  $("#loginCodigoWrap").style.display = "none"; $("#loginCodigo").value = "";
-  $("#btnLogin").textContent = "Continuar";
+  S.invitado = false;
   S.user = null;
   S.seleccion.clear();
   LS.set("user", null);
@@ -1331,9 +1219,10 @@ function renderChips(){
 }
 function renderMenu(){
   const cont = $("#listaMenu");
+  $("#pagMenu .sub").textContent = S.user ? 'Toca "Pedir" en un producto para enviarlo por WhatsApp.' : "Vista previa: inicia sesion con Google para pedir o reservar.";
   if(!S.menu.length){
     $("#chips").innerHTML = "";
-    cont.innerHTML = `<div class="vacio"><span class="ic">MENU</span>El menu aun no esta disponible.<br>Vuelve pronto.</div>`;
+    cont.innerHTML = `<div class="vacio"><span class="ic">MENU</span>A&#250;n estamos eligiendo qu&#233; vamos a vender.<br>Pronto ver&#225;s aqu&#237; nuestras bebidas de bartender&#237;a y banderillas coreanas.</div>`;
     return;
   }
   renderChips();
@@ -1359,7 +1248,7 @@ function renderMenu(){
       <div class="fila">
         <span class="precio">${money(p.precio)}</span>
         <button class="btn btn-sm" data-pedir="${esc(p.id)}" ${p.agotado?"disabled":""}>
-          ${p.agotado?"No disponible":"Pedir"}
+          ${p.agotado?"No disponible":(S.user?"Pedir":"Inicia sesion")}
         </button>
       </div>
     </article>`;
@@ -1367,6 +1256,7 @@ function renderMenu(){
   $$("[data-pedir]").forEach(b => b.onclick = ()=>pedirProducto(b.dataset.pedir));
 }
 function pedirProducto(id){
+  if(!S.user){ aviso("Inicia sesion con Google para pedir."); Sound.error(); irPagina("login"); return; }
   const p = S.menu.find(x=>x.id===id);
   if(!p || p.agotado){
     aviso("Este producto ya no esta disponible. Elige otro.");
@@ -2090,7 +1980,7 @@ async function setupPWA(){
   }
   const manifest = {
     name:"Glow & Crunch", short_name:"Glow&Crunch",
-    description:"Cocina coreana y cocteles",
+    description:"Bebidas de bartenderia y banderillas coreanas",
     start_url: location.pathname + location.search,
     scope: location.pathname.replace(/\/[^\/]*$/,"/"),
     display:"standalone", orientation:"portrait",
@@ -2144,7 +2034,7 @@ async function setupPWA(){
   document.addEventListener("click", reanudar, { once:true });
 
   const guardado = LS.get("user", null);
-  if(guardado?.phone){
+  if(guardado?.phone && String(guardado.phone).includes("@")){
     S.user = guardado;
     try{
       const snap = await getDoc(doc(db,"usuarios",guardado.phone));
