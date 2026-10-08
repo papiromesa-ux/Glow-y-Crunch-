@@ -641,6 +641,75 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
 #modalAdmin .preview{border-radius:0;border-color:#333}
 #modalAdmin .preview button{background:#fff;color:#000;border-radius:0}
 #modalAdmin [style*="#2BE08A"],#modalAdmin [style*="#E63946"]{color:#fff !important}
+/* ================= VISOR A PANTALLA COMPLETA ================= */
+/* Imagenes que se pueden tocar para ampliar */
+.item-card .media{cursor:zoom-in}
+.item-card .badge{pointer-events:none} /* el aviso AGOTADO deja pasar el toque a la imagen */
+.slide:not(.activo){pointer-events:none} /* solo el banner visible recibe toques */
+.slide:has(.media-bg){cursor:zoom-in}
+.sala-hero{cursor:zoom-in}
+
+body.visor-abierto{overflow:hidden}
+.visor{
+  position:fixed;inset:0;z-index:500;display:none;flex-direction:column;
+  background:rgba(5,5,8,.97);overscroll-behavior:contain;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);
+}
+.visor.abierto{display:flex;animation:visorIn .24s ease both}
+.visor.cerrando{display:flex;animation:visorOut .18s ease both;pointer-events:none}
+@keyframes visorIn{from{opacity:0}to{opacity:1}}
+@keyframes visorOut{from{opacity:1}to{opacity:0}}
+
+.visor-x{
+  position:absolute;z-index:3;
+  top:calc(10px + var(--safe-top));right:calc(12px + env(safe-area-inset-right,0px));
+  width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.1);color:#fff;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:transform .18s, background .18s;
+}
+.visor-x:active{background:rgba(255,255,255,.22);transform:scale(.9)}
+.visor-x:focus-visible{outline:2px solid var(--cian);outline-offset:2px}
+.visor-x svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+.visor-media{position:relative;flex:1 1 auto;min-height:0;margin-top:calc(60px + var(--safe-top))}
+.visor-media img,.visor-media video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  animation:visorPop .32s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes visorPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+.visor-info{
+  flex:0 0 auto;max-height:46%;overflow-y:auto;overscroll-behavior:contain;
+  background:linear-gradient(165deg,var(--violeta),#0B0A10);
+  border:1px solid rgba(184,184,192,.2);border-bottom:0;
+  border-top-left-radius:26px;border-top-right-radius:26px;
+  padding:22px 22px calc(26px + var(--safe-bottom));
+}
+.visor-titulo{
+  font-family:'Bebas Neue',sans-serif;font-weight:400;
+  font-size:clamp(1.7rem,8vw,2.3rem);letter-spacing:.06em;line-height:1.05;
+  white-space:pre-line;
+}
+.visor-desc{margin-top:8px;color:var(--gris);font-size:.92rem;line-height:1.6;font-weight:300;max-width:62ch}
+.visor-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.visor-precio{color:var(--precio);font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.06em;line-height:1}
+.visor-agotado{background:var(--kimchi);color:#fff;font-size:.62rem;font-weight:800;padding:5px 11px;border-radius:999px;letter-spacing:.08em}
+
+/* Celular acostado: imagen a la izquierda, texto a la derecha */
+@media (orientation:landscape) and (max-height:520px){
+  .visor{flex-direction:row}
+  .visor-media{margin-top:0;flex:1 1 0;min-width:0}
+  .visor-info{
+    flex:0 0 min(42%,380px);max-height:none;border-radius:0;border-top:0;border-right:0;
+    padding-top:calc(64px + var(--safe-top));
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .visor,.visor *{animation:none !important;transition:none !important}
+}
+
 </style>
 </head>
 <body>
@@ -937,6 +1006,22 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
       <button class="admin-tab" data-tab="config">Ajustes</button>
     </div>
     <div id="adminContenido"></div>
+  </div>
+</div>
+
+<!-- ================= VISOR A PANTALLA COMPLETA ================= -->
+<div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+  <button class="visor-x" id="visorCerrar" type="button" aria-label="Cerrar">
+    <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </button>
+  <div class="visor-media" id="visorMedia"></div>
+  <div class="visor-info" id="visorInfo">
+    <h3 class="visor-titulo" id="visorTitulo"></h3>
+    <p class="visor-desc" id="visorDesc"></p>
+    <div class="visor-fila" id="visorFila">
+      <span class="visor-precio" id="visorPrecio"></span>
+      <span class="visor-agotado" id="visorAgotado">Agotado</span>
+    </div>
   </div>
 </div>
 
@@ -2325,6 +2410,228 @@ async function setupPWA(){
 
   await cargarDatos();
   aviso("Glow & Crunch listo.", true);
+})();
+</script>
+<!-- ================= VISOR A PANTALLA COMPLETA (imagen + texto) =================
+     Toca la imagen de un producto del MENU, un banner de INICIO o la foto de LA SALA
+     y se abre a pantalla completa con su texto debajo. Se cierra con la X, tocando
+     fuera de la imagen, con Esc o con el boton Atras del telefono. -->
+<script>
+(function () {
+  var visor = document.getElementById("visor");
+  if (!visor) return;
+
+  var zona    = document.getElementById("visorMedia");
+  var info    = document.getElementById("visorInfo");
+  var tTitulo = document.getElementById("visorTitulo");
+  var tDesc   = document.getElementById("visorDesc");
+  var fila    = document.getElementById("visorFila");
+  var tPrecio = document.getElementById("visorPrecio");
+  var tAgot   = document.getElementById("visorAgotado");
+  var btnX    = document.getElementById("visorCerrar");
+
+  var abierto = false;       /* el visor esta a la vista */
+  var conHistorial = false;  /* guardamos una entrada en el historial para que "Atras" lo cierre */
+  var esperandoPop = false;  /* estamos esperando el popstate de nuestro propio history.back() */
+  var bloqueado = false;     /* evita reabrir mientras se limpia el historial */
+  var timerCierre = null, timerBloqueo = null, focoPrevio = null;
+
+  /* ---------- lectura del texto que ya esta en pantalla ---------- */
+  function leer(el, conSaltos) {
+    if (!el) return "";
+    if (conSaltos) {
+      var c = el.cloneNode(true), brs = c.querySelectorAll("br");
+      for (var i = 0; i < brs.length; i++) {
+        brs[i].parentNode.replaceChild(document.createTextNode("\n"), brs[i]);
+      }
+      return c.textContent.split("\n").map(function (s) {
+        return s.replace(/\s+/g, " ").trim();
+      }).filter(Boolean).join("\n");
+    }
+    return (el.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  /* producto del MENU: imagen + nombre, descripcion, precio */
+  function datosMenu(media) {
+    var card = media.closest(".item-card");
+    return {
+      media: media,
+      titulo: leer(card.querySelector("h3")),
+      desc: leer(card.querySelector(".desc")),
+      precio: leer(card.querySelector(".precio")),
+      agotado: card.classList.contains("agotado")
+    };
+  }
+  /* banner de INICIO: imagen + titulo, texto, precio */
+  function datosSlide(slide) {
+    var media = slide.querySelector(".media-bg");
+    if (!media) return null;
+    return {
+      media: media,
+      titulo: leer(slide.querySelector("h2")),
+      desc: leer(slide.querySelector("p")),
+      precio: leer(slide.querySelector(".precio-big"))
+    };
+  }
+  /* foto de LA SALA: imagen + frase que va abajo */
+  function datosSala(hero) {
+    var media = hero.querySelector(".sala-img");
+    if (!media) return null;
+    return { media: media, titulo: leer(hero.querySelector(".sala-tag"), true) };
+  }
+
+  /* ---------- copia de la imagen o video para mostrarla grande ---------- */
+  function clonarMedia(src, alt) {
+    var url = src.currentSrc || src.getAttribute("src");
+    if (!url) return null;
+    var el;
+    if (src.tagName === "VIDEO") {
+      el = document.createElement("video");
+      el.src = url;
+      el.controls = true; el.autoplay = true; el.loop = true; el.muted = true; el.playsInline = true;
+      el.setAttribute("muted", ""); el.setAttribute("playsinline", "");
+    } else {
+      el = document.createElement("img");
+      el.alt = alt || "";
+      el.draggable = false;
+      el.src = url;
+    }
+    return el;
+  }
+
+  /* ---------- abrir / cerrar ---------- */
+  function abrir(d) {
+    if (!d || abierto || bloqueado) return;
+    var m = clonarMedia(d.media, d.titulo);
+    if (!m) return;
+
+    clearTimeout(timerCierre);
+    zona.innerHTML = "";
+    zona.appendChild(m);
+
+    tTitulo.textContent = d.titulo || "";
+    tDesc.textContent   = d.desc || "";
+    tPrecio.textContent = d.precio || "";
+    tTitulo.style.display = d.titulo ? "" : "none";
+    tDesc.style.display   = d.desc ? "" : "none";
+    tPrecio.style.display = d.precio ? "" : "none";
+    tAgot.style.display   = d.agotado ? "" : "none";
+    fila.style.display    = (d.precio || d.agotado) ? "" : "none";
+    info.style.display    = (d.titulo || d.desc || d.precio || d.agotado) ? "" : "none";
+    info.scrollTop = 0;
+
+    focoPrevio = document.activeElement;
+    visor.classList.remove("cerrando");
+    visor.classList.add("abierto");
+    document.body.classList.add("visor-abierto");
+    abierto = true;
+
+    try { history.pushState({ gcVisor: true }, ""); conHistorial = true; }
+    catch (e) { conHistorial = false; }
+
+    if (m.tagName === "VIDEO") {
+      var p = m.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    try { btnX.focus({ preventScroll: true }); } catch (e) {}
+  }
+
+  function limpiar() {
+    visor.classList.remove("cerrando");
+    var v = zona.querySelector("video");
+    if (v) { try { v.pause(); } catch (e) {} }
+    zona.innerHTML = "";
+  }
+
+  function cerrar(desdePop) {
+    if (!abierto) return;
+    abierto = false;
+    visor.classList.remove("abierto");
+    visor.classList.add("cerrando");
+    document.body.classList.remove("visor-abierto");
+
+    if (conHistorial) {
+      conHistorial = false;
+      if (!desdePop) {
+        esperandoPop = true; bloqueado = true;
+        clearTimeout(timerBloqueo);
+        timerBloqueo = setTimeout(function () { esperandoPop = false; bloqueado = false; }, 700);
+        try { history.back(); } catch (e) { esperandoPop = false; bloqueado = false; }
+      }
+    }
+
+    clearTimeout(timerCierre);
+    timerCierre = setTimeout(limpiar, 200);
+
+    if (focoPrevio && focoPrevio !== document.body && document.contains(focoPrevio)) {
+      try { focoPrevio.focus({ preventScroll: true }); } catch (e) {}
+    }
+    focoPrevio = null;
+  }
+
+  /* boton Atras del telefono / navegador */
+  window.addEventListener("popstate", function () {
+    if (esperandoPop) { esperandoPop = false; bloqueado = false; clearTimeout(timerBloqueo); return; }
+    if (abierto) cerrar(true);
+  });
+
+  /* ---------- toques que abren el visor ---------- */
+  document.addEventListener("click", function (e) {
+    if (abierto) return;
+    var t = e.target;
+    if (!t || !t.closest) return;
+
+    var d = null;
+    var media = t.closest(".item-card .media");
+    if (media) {
+      d = datosMenu(media);
+    } else {
+      var slide = t.closest("#carousel .slide");
+      if (slide) {
+        if (!t.closest("button, a")) d = datosSlide(slide); /* "Ver mas" sigue funcionando */
+      } else {
+        var hero = t.closest(".sala-hero");
+        if (hero) d = datosSala(hero);
+      }
+    }
+    if (d) abrir(d);
+  });
+
+  /* ---------- toques dentro del visor ---------- */
+  /* la imagen ocupa toda el area; esto dice si el toque cayo sobre la foto y no en las franjas oscuras */
+  function sobreLaFoto(img, x, y) {
+    var r = img.getBoundingClientRect(), nw = img.naturalWidth, nh = img.naturalHeight;
+    if (!nw || !nh) return true;
+    var s = Math.min(r.width / nw, r.height / nh), w = nw * s, h = nh * s;
+    var izq = r.left + (r.width - w) / 2, arr = r.top + (r.height - h) / 2;
+    return x >= izq && x <= izq + w && y >= arr && y <= arr + h;
+  }
+
+  visor.addEventListener("click", function (e) {
+    var t = e.target;
+    if (t.closest("#visorCerrar")) { cerrar(); return; }
+    if (t.closest(".visor-info") || t.tagName === "VIDEO") return;
+    if (t.tagName === "IMG" && sobreLaFoto(t, e.clientX, e.clientY)) return;
+    cerrar(); /* toque en el fondo oscuro */
+  });
+
+  /* que la pagina de atras no se mueva (solo el texto largo puede desplazarse) */
+  visor.addEventListener("touchmove", function (e) {
+    if (!e.target.closest(".visor-info, video")) e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("keydown", function (e) {
+    if (!abierto) return;
+    if (e.key === "Escape" || e.key === "Esc") { e.preventDefault(); cerrar(); return; }
+    if (e.key === "Tab") { /* el foco se queda dentro del visor */
+      var f = visor.querySelectorAll("button, video[controls]");
+      if (!f.length) return;
+      var primero = f[0], ultimo = f[f.length - 1], act = document.activeElement;
+      if (!visor.contains(act)) { e.preventDefault(); primero.focus(); }
+      else if (e.shiftKey && act === primero) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && act === ultimo) { e.preventDefault(); primero.focus(); }
+    }
+  });
 })();
 </script>
 <!-- ================= MUSICA DE FONDO ================= -->
