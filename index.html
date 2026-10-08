@@ -473,6 +473,129 @@ body.admin::after{
   to{box-shadow:inset 0 0 80px rgba(255,46,136,.28)}
 }
 
+/* ================= MODO 3D ================= */
+.info-card{transition:transform .18s ease-out}
+body.fx3d main, body.fx3d .bottomnav, body.fx3d .modal-box, body.fx3d .consola{
+  text-shadow:0 1px 2px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.28);
+}
+body.fx3d .topbar-title,
+body.fx3d .login-logo,
+body.fx3d .titulo,
+body.fx3d .hero-titulo,
+body.fx3d .modal-box h3,
+body.fx3d .slide h2,
+body.fx3d .sala-tag,
+body.fx3d .info-card h4{
+  text-shadow:
+    0 1px 0 rgba(0,0,0,.6),
+    0 2px 0 rgba(0,0,0,.5),
+    0 3px 0 rgba(0,0,0,.4),
+    0 4px 0 rgba(0,0,0,.3),
+    0 7px 16px rgba(0,0,0,.55),
+    0 0 24px rgba(0,229,255,.22);
+}
+body.fx3d .precio, body.fx3d .precio-big, body.fx3d .mesa .n{
+  text-shadow:0 2px 0 rgba(0,0,0,.5),0 5px 12px rgba(0,0,0,.4),0 0 18px rgba(255,209,102,.4);
+}
+body.fx3d .btn{
+  box-shadow:
+    0 5px 0 rgba(6,18,26,.55),
+    0 12px 26px rgba(0,229,255,.26),
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -3px 8px rgba(0,0,0,.28);
+  text-shadow:0 1px 1px rgba(255,255,255,.35);
+}
+body.fx3d .btn:active{
+  transform:translateY(4px) scale(.98);
+  box-shadow:0 1px 0 rgba(6,18,26,.55),0 4px 12px rgba(0,229,255,.2),inset 0 1px 0 rgba(255,255,255,.4);
+}
+body.fx3d .btn-sec{box-shadow:0 5px 0 rgba(0,0,0,.5),0 10px 22px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14)}
+body.fx3d .btn-peligro{box-shadow:0 5px 0 rgba(0,0,0,.5),0 10px 22px rgba(230,57,70,.25),inset 0 1px 0 rgba(255,255,255,.14)}
+body.fx3d .chip, body.fx3d .admin-tab, body.fx3d .btn-xs{
+  box-shadow:0 3px 0 rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);
+}
+body.fx3d .chip:active{transform:translateY(2px) scale(.95)}
+body.fx3d .mesa{
+  box-shadow:0 5px 0 rgba(0,0,0,.45),0 10px 20px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);
+}
+body.fx3d .mesa:active:not(:disabled){transform:translateY(3px) scale(.95)}
+body.fx3d .mesa.sel{box-shadow:0 5px 0 rgba(0,0,0,.45),0 0 24px rgba(0,229,255,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+body.fx3d .icon-btn{box-shadow:0 3px 0 rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.14)}
+body.fx3d .icon-btn:active{transform:translateY(2px) scale(.92)}
+body.fx3d .item-card, body.fx3d .info-card, body.fx3d .ajuste, body.fx3d .vol-box, body.fx3d .resumen, body.fx3d .login-card{
+  box-shadow:0 12px 28px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07);
+}
+body.fx3d .switch{box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}
+body.fx3d .switch.on{box-shadow:inset 0 2px 5px rgba(0,0,0,.4),0 0 16px rgba(0,229,255,.4)}
+body.fx3d .dot.activo{box-shadow:0 0 12px rgba(0,229,255,.85),0 2px 0 rgba(0,0,0,.5)}
+
+/* ================= MARCA DE AGUA (alacran G&C) ================= */
+.login-wrap{position:relative}
+.wm-login{
+  position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);
+  width:min(430px,88vw);opacity:.13;pointer-events:none;mix-blend-mode:screen;z-index:0;
+  animation:wmLoginFloat 8s ease-in-out infinite alternate;
+}
+@keyframes wmLoginFloat{
+  from{transform:translate(-50%,-51%) scale(1) rotate(-1deg)}
+  to{transform:translate(-50%,-49%) scale(1.05) rotate(1deg)}
+}
+.login-wrap > *:not(.wm-login){position:relative;z-index:1}
+.wm-corner{
+  position:fixed;right:-26px;bottom:calc(100px + var(--safe-bottom));
+  width:160px;opacity:.09;pointer-events:none;z-index:1;
+  mix-blend-mode:screen;
+  animation:wmCornerFloat 9s ease-in-out infinite alternate;
+}
+@keyframes wmCornerFloat{
+  from{transform:translateY(0) rotate(-3deg)}
+  to{transform:translateY(-14px) rotate(3deg)}
+}
+body.no-wm .wm-corner, body.no-wm .wm-login, body.no-wm .sala-wm{display:none}
+
+/* ================= SALA / SALON ================= */
+.sala-hero{
+  position:relative;border-radius:22px;overflow:hidden;
+  border:1px solid rgba(184,184,192,.16);
+  box-shadow:0 24px 60px -22px rgba(255,46,136,.35),0 24px 60px -30px rgba(0,229,255,.3);
+  transition:transform .18s ease-out;
+  animation:cardIn .55s both cubic-bezier(.22,1,.36,1);
+}
+.sala-img{width:100%;display:block;animation:kenburns 18s ease-in-out infinite alternate}
+@keyframes kenburns{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.12) translate(-1.5%,-1.5%)}
+}
+.sala-wm{
+  position:absolute;left:50%;top:46%;width:60%;transform:translate(-50%,-50%);
+  opacity:.26;pointer-events:none;mix-blend-mode:screen;
+  filter:drop-shadow(0 0 22px rgba(0,229,255,.35));
+  animation:wmSalaFloat 7s ease-in-out infinite alternate;
+}
+@keyframes wmSalaFloat{
+  from{transform:translate(-50%,-52%) scale(1)}
+  to{transform:translate(-50%,-47%) scale(1.06)}
+}
+.sala-overlay{
+  position:absolute;inset:0;display:flex;align-items:flex-end;padding:20px;
+  background:linear-gradient(180deg,rgba(11,11,15,0) 38%,rgba(11,11,15,.9) 100%);
+  pointer-events:none;
+}
+.sala-tag{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.5rem,7vw,2.2rem);letter-spacing:.08em;line-height:1;color:#fff;
+  text-shadow:0 0 18px rgba(255,46,136,.85),0 3px 6px rgba(0,0,0,.7);
+}
+.sala-neonbar{
+  height:3px;border-radius:3px;margin:16px 0;background:var(--grad);
+  box-shadow:0 0 18px rgba(0,229,255,.6);
+  animation:neonBar 3.2s ease-in-out infinite alternate;
+}
+@keyframes neonBar{
+  from{box-shadow:0 0 10px rgba(255,46,136,.55)}
+  to{box-shadow:0 0 22px rgba(0,229,255,.75)}
+}
+
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#2A2438;border-radius:3px}
@@ -546,6 +669,9 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
   <div class="topbar-title" id="tituloPagina"><span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span></div>
+  <button class="icon-btn" id="btnAdmin" aria-label="Panel admin" style="display:none">
+    <svg viewBox="0 0 24 24"><path d="M3 18l2-9.5L9.5 12 12 5l2.5 7L19 8.5 21 18z"/><line x1="5" y1="21" x2="19" y2="21"/></svg>
+  </button>
   <button class="icon-btn" id="btnAjustesTop" aria-label="Ajustes">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
@@ -555,6 +681,7 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
   <!-- ================= LOGIN ================= -->
   <section class="pagina activa" id="pagLogin">
     <div class="login-wrap">
+      <img class="wm-login" src="assets/marca-agua.webp" alt="" aria-hidden="true">
       <div class="login-logo"><span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span></div>
       <p class="login-sub">Coreano Eat &#183; bebidas de bartender&#237;a &amp; banderillas coreanas</p>
 
@@ -583,6 +710,32 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
     <h2 class="hero-titulo">HOLA, <span class="g" id="saludoNombre">AMIGO</span></h2>
     <div class="info-card" style="margin-top:18px"><h4>VISI&#211;N</h4><p>Ser un emprendimiento reconocido dentro de nuestra instituci&#243;n por la calidad, sabor e innovaci&#243;n de nuestras banderillas, buscando satisfacer a nuestros clientes y fortalecer nuestras habilidades de trabajo en equipo y emprendimiento tur&#237;stico.</p></div>
     <div class="info-card" style="margin-top:12px"><h4>MISI&#211;N</h4><p>1-3 Turismo tiene como misi&#243;n ofrecer banderillas preparadas de manera higi&#233;nica, r&#225;pida y deliciosa, brindando a nuestros clientes una opci&#243;n innovadora y accesible. Buscamos satisfacer sus gustos mediante productos de calidad, excelente sabor y una atenci&#243;n amable, promoviendo el trabajo en equipo y el esp&#237;ritu emprendedor.</p></div>
+  </section>
+
+  <!-- ================= SALA / SALON ================= -->
+  <section class="pagina" id="pagSala">
+    <h2 class="titulo cian">LA SALA</h2>
+    <p class="sub">Nuestro salon neon: asi se vive Glow &amp; Crunch por dentro.</p>
+
+    <div class="sala-hero" id="salaHero">
+      <img class="sala-img" src="assets/sala.jpg" alt="Salon Glow and Crunch: banderillas coreanas y bebida Avatar Blue">
+      <img class="sala-wm" src="assets/marca-agua.webp" alt="" aria-hidden="true">
+      <div class="sala-overlay">
+        <div class="sala-tag">Sabor que brilla,<br>mordida que enamora</div>
+      </div>
+    </div>
+
+    <div class="sala-neonbar"></div>
+
+    <div class="info-card">
+      <h4>EL AMBIENTE</h4>
+      <p>Luces neon, banderillas coreanas recien hechas, crujientes por fuera y suaves por dentro, y bebidas de bartenderia bien frias como la Avatar Blue, frutal y refrescante con un toque de menta.</p>
+      <p>Lo que hay disponible cada dia se publica en el MENU: si algo se acaba, se marca como agotado al momento para que nunca pidas algo que no tenemos.</p>
+    </div>
+    <div class="info-card" style="margin-top:12px">
+      <h4>1-3 TURISMO</h4>
+      <p>Proyecto emprendedor del modulo 1.7. Hecho con trabajo en equipo, desvelo y mucho carino. &#161;Te esperamos!</p>
+    </div>
   </section>
 
   <!-- ================= MENÚ ================= -->
@@ -665,6 +818,30 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
       <div class="switch" id="swAnim"></div>
     </div>
 
+    <div class="ajuste" data-toggle="fx3d">
+      <div class="txt">
+        <div class="t">Efecto 3D</div>
+        <div class="d">Letras y botones con relieve</div>
+      </div>
+      <div class="switch" id="swFx3d"></div>
+    </div>
+
+    <div class="ajuste" data-toggle="wm">
+      <div class="txt">
+        <div class="t">Marca de agua</div>
+        <div class="d">El alacran G&amp;C decorando la app</div>
+      </div>
+      <div class="switch" id="swWm"></div>
+    </div>
+
+    <div class="ajuste" data-toggle="music">
+      <div class="txt">
+        <div class="t">Musica de fondo</div>
+        <div class="d">Ambientacion mientras navegas</div>
+      </div>
+      <div class="switch" id="swMusic"></div>
+    </div>
+
     <div class="vol-box"><div class="t">Volumen de la musica <b id="vmN"></b></div><input type="range" min="0" max="100" id="rngMusic"></div>
     <div class="vol-box"><div class="t">Volumen de los sonidos al tocar <b id="vfN"></b></div><input type="range" min="0" max="100" id="rngFx"></div>
     <div class="vol-box"><div class="t">Tamano del texto <b id="fsN"></b></div><input type="range" min="90" max="130" step="5" id="rngFs"></div>
@@ -685,7 +862,7 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
       <h4>ACERCA DE</h4>
       <p>Emprendimiento de servicios tur&#237;sticos: bebidas de bartender&#237;a y banderillas coreanas (Coreano Eat).</p>
       <p>WhatsApp: <a href="https://wa.me/50368405099" target="_blank" rel="noopener">+503 6840 5099</a></p>
-      <p style="margin-top:10px;font-size:.72rem;opacity:.6">Version 2.0</p>
+      <p style="margin-top:10px;font-size:.72rem;opacity:.6">Version 3.0</p>
     </div>
     <div class="info-card" style="margin-top:18px">
       <h4>CR&#201;DITOS</h4>
@@ -703,6 +880,10 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
 
 <!-- ================= BOTTOM NAV ================= -->
 <nav class="bottomnav" id="bottomnav" style="display:none">
+  <button data-go="sala">
+    <svg viewBox="0 0 24 24"><path d="M12 2l2 5.2L19.5 9l-5.5 1.8L12 16l-2-5.2L4.5 9 10 7.2z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/><path d="M5 16l.7 1.6L7.3 18l-1.6.7L5 20.3 4.3 18.7 2.7 18l1.6-.4z"/></svg>
+    SALA
+  </button>
   <button data-go="inicio">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     INICIO
@@ -747,7 +928,7 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
   <div class="modal-box">
     <button class="cerrar" data-cerrar>x</button>
     <h3 style="color:var(--rosa)">PANEL ADMIN</h3>
-    <p class="msub">Modo administrador activo.</p>
+    <p class="msub">Rol de administrador verificado en el servidor.</p>
     <div class="admin-tabs">
       <button class="admin-tab activo" data-tab="banners">Banners</button>
       <button class="admin-tab" data-tab="menu">Menu</button>
@@ -759,11 +940,14 @@ body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animatio
   </div>
 </div>
 
+<img id="wmCorner" class="wm-corner" src="assets/marca-agua-sm.webp" alt="" aria-hidden="true">
+
 <div id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app-check.js";
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
   collection, onSnapshot, getDocs, runTransaction
@@ -788,9 +972,28 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 auth.languageCode = "es";
 
+/* =========================================================
+   APP CHECK - protege Firestore/Auth contra clientes falsos.
+   Sin esto, cualquiera puede abrir "Inspeccionar" y llamar a tu
+   backend con las llaves publicas. Con App Check, Firebase solo
+   acepta peticiones de TU app real.
+   Pasos:
+   1) Firebase Console -> App Check -> Registrar app web con reCAPTCHA v3
+   2) Copia la "clave de sitio" y pegala aqui abajo
+   3) En App Check -> APIs, activa "Aplicar" (Enforce) en Firestore
+   ========================================================= */
+const APPCHECK_SITE_KEY = "";
+if (APPCHECK_SITE_KEY) {
+  try {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(APPCHECK_SITE_KEY),
+      isTokenAutoRefreshEnabled: true
+    });
+  } catch(e){ console.warn("App Check no pudo iniciar:", e); }
+}
+
 /* ========== CONSTANTES ========== */
 let WHATSAPP = "50368405099";
-const ADMIN_PIN = "chontes";
 let MAX_MESAS = 3; const MIN_MESAS = 1;
 let MAX_PERSONAS = 10; const MIN_PERSONAS = 1;
 let MAX_RESERVAS_DIA = 5;
@@ -808,7 +1011,7 @@ const S = {
   reservaPendiente:null, filtroMenu:"Todo",
   pagina:"login", historial:["login"],
   uploads:{ banner:{}, menu:{} },
-  settings:{ sound:true, vibrate:true, anim:true, avisos:true, volMusic:50, volFx:50, fs:100 }
+  settings:{ sound:true, vibrate:true, anim:true, avisos:true, volMusic:50, volFx:50, fs:100, fx3d:true, wm:true, music:true }
 };
 
 /* ========== UTILIDADES ========== */
@@ -823,12 +1026,17 @@ const money = n => "$"+Number(n||0).toFixed(2);
 const hoyISO = ()=>new Date().toISOString().slice(0,10);
 const norm = t => (t||"").replace(/\D/g,"");
 
-/* ========== SONIDO ========== */
+/* ========== SONIDO (motor mejorado: filtro + armonico + envolvente) ========== */
 const Sound = {
-  ctx:null,
+  ctx:null, master:null,
   init(){
     if(!this.ctx){
-      try{ this.ctx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+      try{
+        this.ctx = new (window.AudioContext||window.webkitAudioContext)();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.9;
+        this.master.connect(this.ctx.destination);
+      }catch(e){}
     }
     if(this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(()=>{});
   },
@@ -837,24 +1045,36 @@ const Sound = {
     if(!S.settings.sound) return;
     try{
       this.init();
-      if(!this.ctx) return;
-      const o = this.ctx.createOscillator();
-      const g = this.ctx.createGain();
-      o.type = type;
-      o.frequency.value = freq;
-      g.gain.setValueAtTime(Math.max(0.0002, vol*((S.settings.volFx==null?50:S.settings.volFx)/50)), this.ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
-      o.connect(g); g.connect(this.ctx.destination);
-      o.start(); o.stop(this.ctx.currentTime + dur);
+      if(!this.ctx || !this.master) return;
+      const t = this.ctx.currentTime;
+      const v = Math.max(0.0002, vol*((S.settings.volFx==null?50:S.settings.volFx)/50));
+      const o  = this.ctx.createOscillator();
+      const o2 = this.ctx.createOscillator(); /* armonico: da brillo tipo neon */
+      const g  = this.ctx.createGain();
+      const g2 = this.ctx.createGain();
+      const f  = this.ctx.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.setValueAtTime(Math.min(12000, freq*6), t);
+      f.frequency.exponentialRampToValueAtTime(Math.max(220, freq*1.4), t + dur);
+      o.type  = type;    o.frequency.value = freq;
+      o2.type = "sine";  o2.frequency.value = freq*2;
+      g2.gain.value = 0.22;
+      o.connect(f); o2.connect(g2); g2.connect(f);
+      f.connect(g); g.connect(this.master);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v, t + 0.008); /* ataque suave: sin clicks */
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.start(t); o2.start(t);
+      o.stop(t + dur); o2.stop(t + dur);
     }catch(e){}
   },
-  tap(){ this.play(880, 0.04, "sine", 0.035); },
-  nav(){ this.play(523, 0.05, "sine", 0.05); setTimeout(()=>this.play(784, 0.07, "sine", 0.05), 45); },
+  tap(){ this.play(1150, 0.05, "triangle", 0.04); },
+  nav(){ this.play(523, 0.06, "triangle", 0.05); setTimeout(()=>this.play(880, 0.09, "triangle", 0.05), 55); },
   success(){
-    [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this.play(f,0.12,"sine",0.05), i*65));
+    [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>this.play(f,0.15,"triangle",0.05), i*70));
   },
-  error(){ this.play(160, 0.18, "sawtooth", 0.05); },
-  toggle(){ this.play(660, 0.035, "sine", 0.05); }
+  error(){ this.play(200, 0.16, "sawtooth", 0.05); setTimeout(()=>this.play(150, 0.24, "sawtooth", 0.05), 95); },
+  toggle(){ this.play(660, 0.04, "triangle", 0.05); setTimeout(()=>this.play(990, 0.05, "sine", 0.04), 42); }
 };
 
 /* ========== VIBRACIÓN ========== */
@@ -895,6 +1115,7 @@ function toast(msg){
    ========================================================= */
 const TITULOS = {
   login:   '<span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span>',
+  sala:    'LA SALA',
   inicio:  'INICIO',
   menu:    'MENU',
   reservar:'RESERVAR',
@@ -1015,6 +1236,7 @@ $("#btnInvitado").onclick = ()=>{ S.invitado = true; Sound.tap(); S.historial = 
 function arrancarTrasLogin(){
   $("#saludoNombre").textContent = (S.user.nombre || "").split(" ")[0].toUpperCase() || "AMIGO";
   pintarCuenta();
+  aplicarRol();
   irPagina("inicio", false);
 }
 
@@ -1033,6 +1255,7 @@ function cerrarSesion(){
   LS.set("user", null);
   S.historial = ["login"];
   S.pagina = null;
+  aplicarRol();
   irPagina("login", false);
   toast("Sesion cerrada");
 }
@@ -1051,12 +1274,18 @@ function cargarAjustes(){
 function guardarAjustes(){ LS.set("settings", S.settings); }
 function aplicarAjustes(){
   document.body.classList.toggle("reduce-anim", !S.settings.anim);
+  document.body.classList.toggle("fx3d", S.settings.fx3d!==false);
+  document.body.classList.toggle("no-wm", S.settings.wm===false);
   document.documentElement.style.fontSize = (S.settings.fs||100)+"%";
+  window.__gcMusicSync && window.__gcMusicSync();
 }
 function pintarAjustes(){
   $("#swSound").classList.toggle("on", S.settings.sound);
   $("#swVibrate").classList.toggle("on", S.settings.vibrate);
   $("#swAnim").classList.toggle("on", S.settings.anim);
+  $("#swFx3d").classList.toggle("on", S.settings.fx3d!==false);
+  $("#swWm").classList.toggle("on", S.settings.wm!==false);
+  $("#swMusic").classList.toggle("on", S.settings.music!==false);
   $("#swAvisos").classList.toggle("on", S.settings.avisos!==false);
   $("#rngMusic").value = S.settings.volMusic; $("#vmN").textContent = S.settings.volMusic+"%";
   $("#rngFx").value = S.settings.volFx; $("#vfN").textContent = S.settings.volFx+"%";
@@ -1464,44 +1693,24 @@ $("#btnWa").onclick = ()=>{
 };
 
 /* =========================================================
-   ADMIN - 5 DEDOS x 3
+   ADMIN - POR ROL EN FIRESTORE (sin PIN, sin trucos de dedos)
+   El rol vive en la base de datos: usuarios/{correo} -> rol:"admin".
+   Nadie puede ponerselo solo porque las REGLAS de Firestore lo
+   bloquean en el servidor (ver guia SEGURIDAD-FIREBASE.md).
+   Aqui solo se MUESTRA el panel si el servidor ya confirmo el rol.
    ========================================================= */
-let golpes = 0, golpeT = null;
-function golpeAdmin(){
-  golpes++;
-  clearTimeout(golpeT);
-  golpeT = setTimeout(()=>{ golpes=0; }, 1400);
-  if(golpes >= 3){ golpes = 0; pedirAdmin(); }
+function aplicarRol(){
+  S.admin = !!(S.user && String(S.user.rol || "").toLowerCase() === "admin");
+  document.body.classList.toggle("admin", S.admin);
+  const b = $("#btnAdmin");
+  if(b) b.style.display = S.admin ? "" : "none";
 }
-document.addEventListener("touchstart", e=>{
-  if(e.touches.length === 5){ e.preventDefault(); golpeAdmin(); }
-}, { passive: false });
-
-let clics = 0, clicsT = null;
-$("#tituloPagina").addEventListener("click", ()=>{
-  clics++;
-  clearTimeout(clicsT);
-  clicsT = setTimeout(()=>{ clics=0; }, 1500);
-  if(clics >= 5){ clics = 0; golpeAdmin(); }
-});
-
-function pedirAdmin(){
-  if(S.admin){ renderAdmin(); $("#modalAdmin").classList.add("abierto"); return; }
-  const pin = prompt("PIN de administrador:");
-  if(pin === null) return;
-  if(pin.trim().toLowerCase() !== ADMIN_PIN){
-    aviso("PIN incorrecto.");
-    Sound.error(); vib(50);
-    return;
-  }
-  S.admin = true;
-  document.body.classList.add("admin");
-  toast("Modo admin activo");
-  aviso("Panel administrador activo.", true);
-  Sound.success();
+$("#btnAdmin").onclick = ()=>{
+  if(!S.admin) return;
+  Sound.nav(); vib();
   renderAdmin();
   $("#modalAdmin").classList.add("abierto");
-}
+};
 
 /* =========================================================
    PANEL ADMIN
@@ -1981,6 +2190,23 @@ document.addEventListener("pointerdown", e=>{
   setTimeout(()=>btn.classList.remove("ripple"), 400);
 });
 
+/* =========================================================
+   TILT 3D EN TARJETAS (sigue el dedo / el mouse)
+   ========================================================= */
+document.addEventListener("pointermove", e=>{
+  if(!S.settings.anim || S.settings.fx3d===false) return;
+  const card = e.target.closest(".info-card, .sala-hero");
+  if(!card) return;
+  const r = card.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width  - .5;
+  const y = (e.clientY - r.top)  / r.height - .5;
+  card.style.transform = `perspective(850px) rotateY(${(x*6).toFixed(2)}deg) rotateX(${(-y*6).toFixed(2)}deg)`;
+}, { passive:true });
+document.addEventListener("pointerout", e=>{
+  const card = e.target.closest(".info-card, .sala-hero");
+  if(card) card.style.transform = "";
+});
+
 /* Sonido global en cualquier tap de botón */
 document.addEventListener("click", e=>{
   const b = e.target.closest("button, .ajuste, .item-card");
@@ -2093,14 +2319,15 @@ async function setupPWA(){
   a.loop = true;
   function vol(){ try{ var s = JSON.parse(localStorage.getItem("gc_settings")); return (s && s.volMusic != null) ? s.volMusic/100 : VOLUMEN; }catch(e){ return VOLUMEN; } }
   a.volume = vol(); window.__gcMusicVol = function(){ a.volume = vol(); };
-  function sonidoActivo(){ /* respeta el interruptor Sonido de Ajustes */
-    try{ var s = JSON.parse(localStorage.getItem("gc_settings")); return !s || s.sound !== false; }
+  function sonidoActivo(){ /* respeta los interruptores Sonido y Musica de Ajustes */
+    try{ var s = JSON.parse(localStorage.getItem("gc_settings")); return !s || (s.sound !== false && s.music !== false); }
     catch(e){ return true; }
   }
   function sync(){
     if(sonidoActivo() && !document.hidden){ var p = a.play(); if(p && p.catch) p.catch(function(){}); }
     else a.pause();
   }
+  window.__gcMusicSync = sync;
   /* el navegador bloquea el audio hasta el primer toque: se reintenta en cada toque */
   ["pointerup","touchend","click","keydown"].forEach(function(e){ document.addEventListener(e, sync, {passive:true}); });
   document.addEventListener("visibilitychange", sync);
