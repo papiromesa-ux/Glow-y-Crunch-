@@ -1,0 +1,27 @@
+{
+  "name": "Glow & Crunch",
+  "short_name": "Glow&Crunch",
+  "description": "Bebidas de bartenderia y banderillas coreanas - 1-3 Turismo",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0B0F",
+  "theme_color": "#0B0B0F",
+  "lang": "es",
+  "categories": ["food", "shopping"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230B0B0F'/%3E%3Ccircle cx='256' cy='256' r='190' fill='none' stroke='%23FF2E88' stroke-width='10' opacity='0.55'/%3E%3Ccircle cx='256' cy='256' r='150' fill='none' stroke='%2300E5FF' stroke-width='3' opacity='0.35'/%3E%3Ctext x='256' y='310' font-size='190' text-anchor='middle' font-family='Arial,sans-serif' font-weight='bold' fill='%23FFFFFF'%3EG%26C%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230B0B0F'/%3E%3Ccircle cx='256' cy='256' r='190' fill='none' stroke='%23FF2E88' stroke-width='10' opacity='0.55'/%3E%3Ccircle cx='256' cy='256' r='150' fill='none' stroke='%2300E5FF' stroke-width='3' opacity='0.35'/%3E%3Ctext x='256' y='310' font-size='190' text-anchor='middle' font-family='Arial,sans-serif' font-weight='bold' fill='%23FFFFFF'%3EG%26C%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
