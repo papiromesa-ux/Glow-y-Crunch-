@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Glow &amp; Crunch">
+<title>Glow &amp; Crunch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --negro:#0B0B0F; --violeta:#16121F;
+  --rosa:#FF2E88; --cian:#00E5FF; --dorado:#FFB703;
+  --kimchi:#E63946; --blanco:#FFF; --gris:#B8B8C0;
+  --precio:#FFD166;
+  --grad:linear-gradient(90deg,#FF2E88 0%,#00E5FF 100%);
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --anim:1;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--negro); color:var(--blanco);
+  font-family:'Inter',system-ui,sans-serif;
+  overflow-x:hidden; min-height:100vh;
+  overscroll-behavior-y:none; touch-action:manipulation;
+  transition:background .3s;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(700px 500px at 12% -5%, rgba(255,46,136,.16), transparent 60%),
+    radial-gradient(800px 600px at 95% 8%, rgba(0,229,255,.13), transparent 60%),
+    radial-gradient(900px 700px at 50% 110%, rgba(255,183,3,.06), transparent 60%),
+    var(--negro);
+  animation:bgPulse 12s ease-in-out infinite alternate;
+}
+@keyframes bgPulse{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(20deg)}
+}
+body.reduce-anim::before{animation:none}
+body.reduce-anim *{animation-duration:.001s !important;transition-duration:.001s !important}
+img,video{max-width:100%;display:block}
+button,input,select,textarea{font:inherit;color:inherit;-webkit-appearance:none;appearance:none;border-radius:0}
+input,select,textarea{font-size:16px !important}
+a{color:inherit;text-decoration:none}
+
+.topbar{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;gap:10px;
+  padding:calc(10px + var(--safe-top)) 14px 10px;
+  background:rgba(11,11,15,.85);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(184,184,192,.12);
+  transition:transform .3s;
+}
+.icon-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;color:var(--blanco);flex:0 0 auto;
+  transition:transform .18s, background .18s;
+}
+.icon-btn:active{background:rgba(255,255,255,.15);transform:scale(.9)}
+.icon-btn[disabled]{opacity:.2;pointer-events:none}
+.icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.topbar-title{
+  flex:1;font-family:'Bebas Neue',sans-serif;font-size:1.35rem;
+  letter-spacing:.1em;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.topbar-title .g{color:var(--rosa);text-shadow:0 0 14px rgba(255,46,136,.65)}
+.topbar-title .c{color:var(--cian);text-shadow:0 0 14px rgba(0,229,255,.65)}
+
+main{padding-bottom:calc(88px + var(--safe-bottom))}
+.pagina{display:none;padding:20px 16px 20px;max-width:640px;margin:0 auto}
+.pagina.activa{display:block;animation:pageIn .38s cubic-bezier(.22,1,.36,1)}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(14px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.pagina h2.titulo{
+  font-family:'Bebas Neue',sans-serif;font-size:2.1rem;
+  letter-spacing:.08em;line-height:1;margin-bottom:6px;
+}
+.titulo.rosa{color:var(--rosa);text-shadow:0 0 18px rgba(255,46,136,.35)}
+.titulo.cian{color:var(--cian);text-shadow:0 0 18px rgba(0,229,255,.3)}
+.titulo.dorado{color:var(--dorado);text-shadow:0 0 18px rgba(255,183,3,.3)}
+.titulo.kimchi{color:var(--kimchi)}
+.pagina .sub{color:var(--gris);font-size:.85rem;font-weight:300;line-height:1.55;margin-bottom:18px}
+
+.bottomnav{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  display:flex;align-items:stretch;
+  background:rgba(11,11,15,.94);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(184,184,192,.14);
+  padding-bottom:var(--safe-bottom);
+}
+.bottomnav button{
+  flex:1;background:transparent;border:0;cursor:pointer;
+  padding:10px 4px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--gris);font-size:.6rem;font-weight:700;letter-spacing:.06em;
+  transition:color .2s, transform .2s;
+  position:relative;
+}
+.bottomnav button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+.bottomnav button.activo{color:var(--blanco)}
+.bottomnav button.activo svg{transform:translateY(-2px) scale(1.08);filter:drop-shadow(0 0 8px rgba(0,229,255,.85))}
+.bottomnav button.activo::after{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:26px;height:2px;border-radius:2px;background:var(--grad);
+  box-shadow:0 0 12px rgba(0,229,255,.85);
+  animation:navPulse .3s ease;
+}
+@keyframes navPulse{from{width:0;opacity:0}to{width:26px;opacity:1}}
+
+.login-wrap{
+  min-height:calc(100vh - 60px);display:flex;flex-direction:column;
+  justify-content:center;align-items:center;padding:24px 6px;
+}
+.login-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:3.2rem;letter-spacing:.1em;
+  line-height:1;margin-bottom:4px;
+  animation:logoIn .8s cubic-bezier(.22,1,.36,1);
+}
+@keyframes logoIn{
+  from{opacity:0;transform:translateY(-10px) scale(.92);letter-spacing:.4em}
+  to{opacity:1;transform:translateY(0) scale(1);letter-spacing:.1em}
+}
+.login-logo .g{color:var(--rosa);text-shadow:0 0 30px rgba(255,46,136,.9)}
+.login-logo .c{color:var(--cian);text-shadow:0 0 30px rgba(0,229,255,.85)}
+.login-sub{color:var(--gris);font-size:.85rem;font-weight:300;margin-bottom:32px;letter-spacing:.05em}
+.login-card{
+  width:100%;max-width:380px;
+  background:linear-gradient(165deg,var(--violeta),#0B0A10);
+  border:1px solid rgba(184,184,192,.18);
+  border-radius:22px;padding:24px 22px;
+  animation:cardIn .6s .1s both cubic-bezier(.22,1,.36,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-card h2{
+  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;
+  margin-bottom:4px;
+}
+.login-card > p{color:var(--gris);font-size:.82rem;margin-bottom:18px;font-weight:300}
+
+.campo{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.campo label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gris)}
+.campo input,.campo select,.campo textarea{
+  background:#0B0B0F;border:1px solid rgba(184,184,192,.22);
+  border-radius:12px;padding:13px 14px;outline:none;transition:border-color .2s, box-shadow .2s;width:100%;
+}
+.campo input:focus,.campo select:focus,.campo textarea:focus{
+  border-color:var(--cian);box-shadow:0 0 0 3px rgba(0,229,255,.14)
+}
+
+.btn{
+  position:relative;overflow:hidden;width:100%;border:0;cursor:pointer;padding:15px;
+  border-radius:14px;background:var(--grad);color:#06121a;
+  font-weight:800;font-size:.92rem;letter-spacing:.04em;
+  transition:transform .15s, box-shadow .25s;
+}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at var(--rx,50%) var(--ry,50%), rgba(255,255,255,.5), transparent 45%);
+  opacity:0;transition:opacity .5s;
+}
+.btn.ripple::after{opacity:1;transition:opacity 0s}
+.btn-sec{
+  background:transparent;color:var(--gris);
+  border:1px solid rgba(184,184,192,.25);font-weight:700;
+}
+.btn-peligro{
+  background:rgba(230,57,70,.15);color:#FF8A93;
+  border:1px solid rgba(230,57,70,.4);
+}
+.btn-sm{padding:10px 14px;font-size:.78rem;width:auto;border-radius:10px}
+
+.lista{display:flex;flex-direction:column;gap:14px}
+.item-card{
+  background:linear-gradient(160deg,var(--violeta),#0E0C14);
+  border:1px solid rgba(184,184,192,.13);
+  border-radius:18px;padding:14px;
+  position:relative;overflow:hidden;
+  animation:cardSlide .5s both cubic-bezier(.22,1,.36,1);
+}
+@keyframes cardSlide{
+  from{opacity:0;transform:translateY(18px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.item-card::before{
+  content:"";position:absolute;top:0;left:0;width:3px;height:100%;
+  background:var(--grad);opacity:.85;
+  transform:translateX(-100%);transition:transform .5s;
+}
+.item-card:hover::before,.item-card:active::before{transform:translateX(0)}
+.item-card h3{font-size:1.02rem;font-weight:600;letter-spacing:.01em;margin-top:10px}
+.item-card .desc{color:var(--gris);font-size:.78rem;line-height:1.5;font-weight:300;margin-top:4px}
+.item-card .fila{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.item-card.agotado{opacity:.5;filter:grayscale(.7)}
+.item-card.agotado::before{background:var(--kimchi)}
+.item-card .badge{
+  position:absolute;top:12px;right:12px;z-index:3;
+  background:var(--kimchi);color:#fff;font-size:.6rem;font-weight:800;
+  padding:4px 9px;border-radius:999px;letter-spacing:.08em;
+}
+.item-card .media{
+  width:100%;aspect-ratio:16/10;object-fit:cover;
+  border-radius:12px;background:#000;
+}
+.precio{color:var(--precio);font-weight:800;font-size:1.15rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.06em}
+
+.hero{position:relative;border-radius:20px;overflow:hidden;min-height:340px;margin-bottom:18px;border:1px solid rgba(184,184,192,.14);background:#000;box-shadow:0 20px 50px -20px rgba(255,46,136,.25), 0 20px 50px -30px rgba(0,229,255,.2)}
+.slide{
+  position:absolute;inset:0;opacity:0;
+  transition:opacity .8s ease, transform 1.2s ease;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:26px 22px;
+  background:linear-gradient(135deg,#16121F,#0B0B0F);
+  transform:scale(1.05);
+}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,15,.05) 0%,rgba(11,11,15,.55) 55%,rgba(11,11,15,.95) 100%);pointer-events:none}
+.slide.activo{opacity:1;position:relative;transform:scale(1);min-height:340px}
+.slide > *{position:relative;z-index:2}
+.slide .media-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transform:scale(1.08);transition:transform 8s ease}
+.slide.activo .media-bg{transform:scale(1)}
+.slide h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.4rem,11vw,3.6rem);
+  letter-spacing:.06em;line-height:.92;margin-bottom:8px;
+  text-shadow:0 4px 30px rgba(0,0,0,.8);
+}
+.slide h2 .neon{color:var(--rosa);text-shadow:0 0 26px rgba(255,46,136,.95),0 0 50px rgba(255,46,136,.5)}
+.slide p{color:var(--gris);font-size:.85rem;line-height:1.5;font-weight:300}
+.slide .precio-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2rem;letter-spacing:.08em;color:var(--precio);
+  margin-top:6px;text-shadow:0 0 20px rgba(255,209,102,.6);
+}
+.dots{display:flex;gap:6px;justify-content:center;margin:-8px 0 18px}
+.dot{width:8px;height:8px;border-radius:50%;border:0;background:rgba(184,184,192,.3);cursor:pointer;transition:all .35s}
+.dot.activo{background:var(--cian);width:22px;border-radius:5px;box-shadow:0 0 12px rgba(0,229,255,.85)}
+
+.vacio{
+  text-align:center;padding:50px 20px;color:var(--gris);
+  font-size:.85rem;font-weight:300;line-height:1.7;
+  border:1px dashed rgba(184,184,192,.2);border-radius:16px;
+}
+.vacio .ic{font-size:2rem;display:block;margin-bottom:10px;opacity:.5;font-family:'Bebas Neue',sans-serif}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{
+  border:1px solid rgba(184,184,192,.22);background:transparent;color:var(--gris);
+  padding:8px 15px;border-radius:999px;font-size:.74rem;font-weight:600;cursor:pointer;
+  transition:all .22s;
+}
+.chip:active{transform:scale(.94)}
+.chip.activo{background:var(--grad);color:#06121a;border-color:transparent;box-shadow:0 0 16px rgba(0,229,255,.4)}
+
+.grid-mesas{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin-top:6px}
+.mesa{
+  border-radius:14px;padding:12px 6px;cursor:pointer;
+  border:1.5px solid rgba(43,224,138,.55);
+  background:rgba(43,224,138,.07);color:var(--blanco);
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  transition:all .22s cubic-bezier(.22,1,.36,1);min-height:78px;justify-content:center;
+  animation:mesaIn .4s both;
+}
+@keyframes mesaIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.mesa .n{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;line-height:1;color:#2BE08A}
+.mesa .s{font-size:.62rem;color:var(--gris)}
+.mesa .e{font-size:.55rem;font-weight:800;letter-spacing:.08em;color:#2BE08A}
+.mesa:active:not(:disabled){transform:scale(.94)}
+.mesa.sel{border-color:var(--cian);background:rgba(0,229,255,.16);box-shadow:0 0 22px rgba(0,229,255,.45);transform:scale(1.03)}
+.mesa.sel .n,.mesa.sel .e{color:var(--cian)}
+.mesa.ocupada{border-color:rgba(230,57,70,.7);background:rgba(230,57,70,.13);cursor:not-allowed;opacity:.85}
+.mesa.ocupada .n,.mesa.ocupada .e{color:var(--kimchi)}
+
+.leyenda{display:flex;gap:12px;font-size:.68rem;color:var(--gris);flex-wrap:wrap;margin:14px 0}
+.leyenda span{display:flex;align-items:center;gap:5px}
+.leyenda i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.leyenda .l-libre{background:#2BE08A}
+.leyenda .l-ocup{background:var(--kimchi)}
+.leyenda .l-sel{background:var(--cian)}
+
+.resumen{
+  margin-top:18px;padding:14px 16px;border-radius:14px;
+  background:rgba(0,229,255,.06);border:1px dashed rgba(0,229,255,.35);
+  font-size:.82rem;color:var(--gris);line-height:1.7;
+}
+.resumen b{color:var(--blanco)}
+
+.info-card{
+  background:linear-gradient(160deg,var(--violeta),#0D0B12);
+  border:1px solid rgba(184,184,192,.13);
+  border-radius:16px;padding:18px;margin-bottom:12px;
+}
+.info-card h4{
+  font-family:'Bebas Neue',sans-serif;font-size:1.1rem;
+  letter-spacing:.08em;color:var(--dorado);margin-bottom:8px;
+}
+.info-card p{font-size:.82rem;color:var(--gris);line-height:1.65;font-weight:300}
+.info-card p + p{margin-top:8px}
+.info-card a{color:var(--cian);font-weight:600}
+.paso{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.paso .num{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;
+  background:var(--grad);color:#06121a;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.78rem;
+}
+.paso p{font-size:.83rem;line-height:1.55;color:var(--gris)}
+.paso p b{color:var(--blanco)}
+
+.ajuste{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px;margin-bottom:10px;
+  background:linear-gradient(160deg,var(--violeta),#0D0B12);
+  border:1px solid rgba(184,184,192,.13);
+  border-radius:16px;
+  cursor:pointer;transition:transform .18s, border-color .2s;
+}
+.ajuste:active{transform:scale(.98)}
+.ajuste .txt{flex:1}
+.ajuste .txt .t{font-size:.92rem;font-weight:600}
+.ajuste .txt .d{font-size:.72rem;color:var(--gris);font-weight:300;margin-top:2px}
+.switch{
+  position:relative;width:48px;height:28px;border-radius:14px;
+  background:rgba(184,184,192,.2);transition:background .25s;flex:0 0 auto;
+}
+.switch::after{
+  content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;
+  border-radius:50%;background:#fff;transition:transform .3s cubic-bezier(.22,1.4,.36,1);
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+}
+.switch.on{background:var(--grad);box-shadow:0 0 16px rgba(0,229,255,.4)}
+.switch.on::after{transform:translateX(20px)}
+
+.modal{
+  position:fixed;inset:0;z-index:200;display:none;
+  align-items:flex-end;justify-content:center;
+  background:rgba(5,5,8,.85);backdrop-filter:blur(10px);
+}
+.modal.abierto{display:flex;animation:fadeModal .25s}
+@keyframes fadeModal{from{opacity:0}to{opacity:1}}
+.modal-box{
+  position:relative;width:100%;max-width:560px;max-height:92vh;
+  overflow-y:auto;background:linear-gradient(165deg,var(--violeta),#0B0A10);
+  border-top-left-radius:26px;border-top-right-radius:26px;
+  border:1px solid rgba(184,184,192,.2);border-bottom:0;
+  padding:26px 20px calc(28px + var(--safe-bottom));
+  animation:slideUp .38s cubic-bezier(.2,.9,.3,1.15);
+}
+@keyframes slideUp{from{transform:translateY(60px);opacity:.4}to{transform:translateY(0);opacity:1}}
+.modal-box h3{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.07em;margin-bottom:6px}
+.modal-box .msub{color:var(--gris);font-size:.8rem;font-weight:300;margin-bottom:16px;line-height:1.5}
+.cerrar{
+  position:absolute;top:12px;right:12px;
+  background:rgba(255,255,255,.06);border:0;color:var(--gris);
+  font-size:1.1rem;cursor:pointer;width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.cerrar:active{background:rgba(255,255,255,.15)}
+
+.consola{
+  position:fixed;left:12px;right:12px;
+  bottom:calc(78px + var(--safe-bottom));z-index:300;
+  background:rgba(5,5,8,.96);border:1px solid rgba(230,57,70,.55);
+  border-radius:12px;overflow:hidden;display:none;
+  box-shadow:0 14px 40px rgba(0,0,0,.7);
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+}
+.consola.visible{display:block;animation:slideUp .3s ease}
+.consola-head{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:rgba(230,57,70,.18);border-bottom:1px solid rgba(230,57,70,.35);
+  font-size:.66rem;font-weight:700;letter-spacing:.12em;color:#FF8A93;
+}
+.consola-head button{margin-left:auto;background:transparent;border:0;color:#FF8A93;cursor:pointer;font-size:1rem;padding:4px 8px}
+.consola-body{max-height:140px;overflow-y:auto;padding:8px 12px}
+.log-line{font-size:.68rem;line-height:1.5;color:#FF8A93;padding:2px 0;word-break:break-word}
+.log-line.ok{color:#2BE08A}
+
+#toast{
+  position:fixed;left:50%;bottom:calc(90px + var(--safe-bottom));
+  transform:translate(-50%,140%);
+  z-index:400;padding:13px 22px;border-radius:999px;
+  background:var(--grad);color:#06121a;font-weight:800;font-size:.8rem;
+  transition:transform .38s cubic-bezier(.2,.9,.3,1.4);
+  white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 10px 30px rgba(0,229,255,.35);
+}
+#toast.ver{transform:translate(-50%,0)}
+
+.admin-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(184,184,192,.15)}
+.admin-tab{
+  border:1px solid rgba(184,184,192,.22);background:transparent;color:var(--gris);
+  padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;
+}
+.admin-tab.activo{background:var(--grad);color:#06121a;border-color:transparent}
+.admin-item{
+  border:1px solid rgba(184,184,192,.14);border-radius:14px;
+  padding:14px;margin-bottom:10px;background:rgba(11,11,15,.6);
+}
+.admin-item .fila{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.admin-item .fila:last-child{margin-bottom:0}
+.admin-item input,.admin-item select,.admin-item textarea{
+  background:#0B0B0F;border:1px solid rgba(184,184,192,.22);
+  border-radius:10px;padding:10px 12px;outline:none;flex:1;min-width:110px;
+}
+.admin-item input:focus,.admin-item select:focus{border-color:var(--cian)}
+.admin-item label{font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);font-weight:700;display:block;margin-bottom:4px}
+.file-btn{
+  display:flex;align-items:center;gap:8px;
+  border:1px dashed rgba(0,229,255,.5);
+  border-radius:10px;padding:10px 12px;color:var(--cian);
+  font-size:.75rem;font-weight:700;cursor:pointer;background:rgba(0,229,255,.06);
+  width:100%;
+}
+.file-btn input{display:none}
+.preview{
+  position:relative;margin-top:8px;border-radius:10px;overflow:hidden;
+  border:1px solid rgba(184,184,192,.2);
+}
+.preview img,.preview video{width:100%;max-height:140px;object-fit:cover;display:block}
+.preview button{
+  position:absolute;top:6px;right:6px;
+  background:rgba(230,57,70,.9);border:0;color:#fff;
+  width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:.85rem;
+}
+.btn-xs{border:0;cursor:pointer;padding:9px 13px;border-radius:9px;font-size:.72rem;font-weight:800;transition:transform .15s}
+.btn-xs:active{transform:scale(.94)}
+.btn-guardar{background:rgba(0,229,255,.16);color:var(--cian);border:1px solid rgba(0,229,255,.45)}
+.btn-borrar{background:rgba(230,57,70,.16);color:#FF8A93;border:1px solid rgba(230,57,70,.45)}
+.btn-libre{background:rgba(43,224,138,.14);color:#2BE08A;border:1px solid rgba(43,224,138,.45)}
+.admin-vacio{color:var(--gris);font-size:.8rem;text-align:center;padding:22px;font-weight:300}
+body.admin::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:150;
+  border:3px solid rgba(255,46,136,.55);
+  box-shadow:inset 0 0 60px rgba(255,46,136,.18);
+  animation:adminPulse 2s ease-in-out infinite alternate;
+}
+@keyframes adminPulse{
+  from{box-shadow:inset 0 0 40px rgba(255,46,136,.15)}
+  to{box-shadow:inset 0 0 80px rgba(255,46,136,.28)}
+}
+
+.info-card{transition:transform .18s ease-out}
+body.fx3d main, body.fx3d .bottomnav, body.fx3d .modal-box, body.fx3d .consola{
+  text-shadow:0 1px 2px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.28);
+}
+body.fx3d .topbar-title,
+body.fx3d .login-logo,
+body.fx3d .titulo,
+body.fx3d .hero-titulo,
+body.fx3d .modal-box h3,
+body.fx3d .slide h2,
+body.fx3d .sala-tag,
+body.fx3d .info-card h4{
+  text-shadow:
+    0 1px 0 rgba(0,0,0,.6),
+    0 2px 0 rgba(0,0,0,.5),
+    0 3px 0 rgba(0,0,0,.4),
+    0 4px 0 rgba(0,0,0,.3),
+    0 7px 16px rgba(0,0,0,.55),
+    0 0 24px rgba(0,229,255,.22);
+}
+body.fx3d .precio, body.fx3d .precio-big, body.fx3d .mesa .n{
+  text-shadow:0 2px 0 rgba(0,0,0,.5),0 5px 12px rgba(0,0,0,.4),0 0 18px rgba(255,209,102,.4);
+}
+body.fx3d .btn{
+  box-shadow:
+    0 5px 0 rgba(6,18,26,.55),
+    0 12px 26px rgba(0,229,255,.26),
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -3px 8px rgba(0,0,0,.28);
+  text-shadow:0 1px 1px rgba(255,255,255,.35);
+}
+body.fx3d .btn:active{
+  transform:translateY(4px) scale(.98);
+  box-shadow:0 1px 0 rgba(6,18,26,.55),0 4px 12px rgba(0,229,255,.2),inset 0 1px 0 rgba(255,255,255,.4);
+}
+body.fx3d .btn-sec{box-shadow:0 5px 0 rgba(0,0,0,.5),0 10px 22px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14)}
+body.fx3d .btn-peligro{box-shadow:0 5px 0 rgba(0,0,0,.5),0 10px 22px rgba(230,57,70,.25),inset 0 1px 0 rgba(255,255,255,.14)}
+body.fx3d .chip, body.fx3d .admin-tab, body.fx3d .btn-xs{
+  box-shadow:0 3px 0 rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);
+}
+body.fx3d .chip:active{transform:translateY(2px) scale(.95)}
+body.fx3d .mesa{
+  box-shadow:0 5px 0 rgba(0,0,0,.45),0 10px 20px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);
+}
+body.fx3d .mesa:active:not(:disabled){transform:translateY(3px) scale(.95)}
+body.fx3d .mesa.sel{box-shadow:0 5px 0 rgba(0,0,0,.45),0 0 24px rgba(0,229,255,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+body.fx3d .icon-btn{box-shadow:0 3px 0 rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.14)}
+body.fx3d .icon-btn:active{transform:translateY(2px) scale(.92)}
+body.fx3d .item-card, body.fx3d .info-card, body.fx3d .ajuste, body.fx3d .vol-box, body.fx3d .resumen, body.fx3d .login-card{
+  box-shadow:0 12px 28px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07);
+}
+body.fx3d .switch{box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}
+body.fx3d .switch.on{box-shadow:inset 0 2px 5px rgba(0,0,0,.4),0 0 16px rgba(0,229,255,.4)}
+body.fx3d .dot.activo{box-shadow:0 0 12px rgba(0,229,255,.85),0 2px 0 rgba(0,0,0,.5)}
+
+.login-wrap{position:relative}
+.wm-login{
+  position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);
+  width:min(430px,88vw);opacity:.13;pointer-events:none;mix-blend-mode:screen;z-index:0;
+  animation:wmLoginFloat 8s ease-in-out infinite alternate;
+}
+@keyframes wmLoginFloat{
+  from{transform:translate(-50%,-51%) scale(1) rotate(-1deg)}
+  to{transform:translate(-50%,-49%) scale(1.05) rotate(1deg)}
+}
+.login-wrap > *:not(.wm-login){position:relative;z-index:1}
+.wm-corner{
+  position:fixed;right:-26px;bottom:calc(100px + var(--safe-bottom));
+  width:160px;opacity:.09;pointer-events:none;z-index:1;
+  mix-blend-mode:screen;
+  animation:wmCornerFloat 9s ease-in-out infinite alternate;
+}
+@keyframes wmCornerFloat{
+  from{transform:translateY(0) rotate(-3deg)}
+  to{transform:translateY(-14px) rotate(3deg)}
+}
+body.no-wm .wm-corner, body.no-wm .wm-login, body.no-wm .sala-wm{display:none}
+
+.sala-hero{
+  position:relative;border-radius:22px;overflow:hidden;
+  border:1px solid rgba(184,184,192,.16);
+  box-shadow:0 24px 60px -22px rgba(255,46,136,.35),0 24px 60px -30px rgba(0,229,255,.3);
+  transition:transform .18s ease-out;
+  animation:cardIn .55s both cubic-bezier(.22,1,.36,1);
+}
+.sala-img{width:100%;display:block;animation:kenburns 18s ease-in-out infinite alternate}
+@keyframes kenburns{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.12) translate(-1.5%,-1.5%)}
+}
+.sala-wm{
+  position:absolute;left:50%;top:46%;width:60%;transform:translate(-50%,-50%);
+  opacity:.26;pointer-events:none;mix-blend-mode:screen;
+  filter:drop-shadow(0 0 22px rgba(0,229,255,.35));
+  animation:wmSalaFloat 7s ease-in-out infinite alternate;
+}
+@keyframes wmSalaFloat{
+  from{transform:translate(-50%,-52%) scale(1)}
+  to{transform:translate(-50%,-47%) scale(1.06)}
+}
+.sala-overlay{
+  position:absolute;inset:0;display:flex;align-items:flex-end;padding:20px;
+  background:linear-gradient(180deg,rgba(11,11,15,0) 38%,rgba(11,11,15,.9) 100%);
+  pointer-events:none;
+}
+.sala-tag{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.5rem,7vw,2.2rem);letter-spacing:.08em;line-height:1;color:#fff;
+  text-shadow:0 0 18px rgba(255,46,136,.85),0 3px 6px rgba(0,0,0,.7);
+}
+.sala-neonbar{
+  height:3px;border-radius:3px;margin:16px 0;background:var(--grad);
+  box-shadow:0 0 18px rgba(0,229,255,.6);
+  animation:neonBar 3.2s ease-in-out infinite alternate;
+}
+@keyframes neonBar{
+  from{box-shadow:0 0 10px rgba(255,46,136,.55)}
+  to{box-shadow:0 0 22px rgba(0,229,255,.75)}
+}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#2A2438;border-radius:3px}
+
+.hero-titulo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,10vw,3rem);
+  letter-spacing:.06em;line-height:1;
+  margin:8px 0 14px;
+}
+.hero-titulo .g{color:var(--rosa);text-shadow:0 0 24px rgba(255,46,136,.8)}
+
+#toast{bottom:calc(84px + var(--safe-bottom));padding:7px 14px;font-size:.72rem;font-weight:600;background:rgba(20,20,26,.92);color:#e8e8ee;border:1px solid rgba(255,255,255,.12);box-shadow:none;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,10px);transition:opacity .25s,transform .25s,visibility .25s}
+#toast.ver{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.consola{left:50%;right:auto;transform:translateX(-50%);top:calc(58px + var(--safe-top));bottom:auto;max-width:88vw;background:rgba(10,10,14,.82);border:1px solid rgba(255,255,255,.1);border-radius:999px;box-shadow:none;pointer-events:none}
+.consola.visible{animation:none}
+.consola-head{display:none}
+.consola-body{max-height:none;padding:5px 12px}
+.log-line{font-size:.66rem;color:#c9c9d1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.log-line.ok{color:#9be8c3}
+.vol-box{border:1px solid rgba(184,184,192,.14);border-radius:14px;padding:14px;margin-bottom:10px;background:rgba(11,11,15,.6)}
+.vol-box .t{display:flex;justify-content:space-between;font-weight:700;font-size:.85rem;margin-bottom:10px}
+.vol-box input{width:100%;height:28px;accent-color:#00E5FF;-webkit-appearance:auto;appearance:auto}
+body.admin::after{border:1px solid rgba(255,255,255,.9);box-shadow:none;animation:none}
+#modalAdmin .modal-box{background:#000;border:1px solid #fff;border-bottom:0;border-radius:0;max-width:640px;max-height:96vh}
+#modalAdmin .modal-box h3{color:#fff !important;font-size:2.6rem;letter-spacing:.14em;line-height:1;border-bottom:1px solid #fff;padding-bottom:10px;margin-bottom:10px}
+#modalAdmin .msub{color:#8a8a8a;letter-spacing:.16em;text-transform:uppercase;font-size:.64rem;font-family:ui-monospace,Menlo,monospace}
+#modalAdmin .cerrar{background:#fff;color:#000;border-radius:0;font-weight:900}
+#modalAdmin .admin-tabs{border-bottom:1px solid #333}
+#modalAdmin .admin-tab{background:#000;border:1px solid #333;color:#a1a1a1;border-radius:0;text-transform:uppercase;letter-spacing:.1em}
+#modalAdmin .admin-tab.activo{background:#fff;color:#000;border-color:#fff}
+#modalAdmin .admin-item{background:#000;border:1px solid #333;border-radius:0}
+#modalAdmin .admin-item:hover{border-color:#fff}
+#modalAdmin .admin-item input,#modalAdmin .admin-item select,#modalAdmin .admin-item textarea{background:#000;border:1px solid #444;border-radius:0;color:#fff}
+#modalAdmin .admin-item input:focus,#modalAdmin .admin-item select:focus{border-color:#fff}
+#modalAdmin .admin-item label{color:#8a8a8a}
+#modalAdmin .btn-xs{background:#fff;color:#000;border:1px solid #fff;border-radius:0;text-transform:uppercase;letter-spacing:.08em}
+#modalAdmin .btn-borrar,#modalAdmin .btn-libre{background:#000;color:#fff;border:1px solid #fff}
+#modalAdmin .btn-borrar:active,#modalAdmin .btn-libre:active{background:#fff;color:#000}
+#modalAdmin .file-btn{background:#000;color:#fff;border:1px dashed #666;border-radius:0}
+#modalAdmin .preview{border-radius:0;border-color:#333}
+#modalAdmin .preview button{background:#fff;color:#000;border-radius:0}
+#modalAdmin [style*="#2BE08A"],#modalAdmin [style*="#E63946"]{color:#fff !important}
+
+.item-card .media{cursor:zoom-in}
+.item-card .badge{pointer-events:none}
+.slide:not(.activo){pointer-events:none}
+.slide:has(.media-bg){cursor:zoom-in}
+.sala-hero{cursor:zoom-in}
+
+body.visor-abierto{overflow:hidden}
+.visor{
+  position:fixed;inset:0;z-index:500;display:none;flex-direction:column;
+  background:rgba(5,5,8,.97);overscroll-behavior:contain;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);
+}
+.visor.abierto{display:flex;animation:visorIn .24s ease both}
+.visor.cerrando{display:flex;animation:visorOut .18s ease both;pointer-events:none}
+@keyframes visorIn{from{opacity:0}to{opacity:1}}
+@keyframes visorOut{from{opacity:1}to{opacity:0}}
+
+.visor-x{
+  position:absolute;z-index:3;
+  top:calc(10px + var(--safe-top));right:calc(12px + env(safe-area-inset-right,0px));
+  width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.1);color:#fff;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:transform .18s, background .18s;
+}
+.visor-x:active{background:rgba(255,255,255,.22);transform:scale(.9)}
+.visor-x:focus-visible{outline:2px solid var(--cian);outline-offset:2px}
+.visor-x svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+.visor-media{position:relative;flex:1 1 auto;min-height:0;margin-top:calc(60px + var(--safe-top))}
+.visor-media img,.visor-media video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  animation:visorPop .32s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes visorPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+.visor-info{
+  flex:0 0 auto;max-height:46%;overflow-y:auto;overscroll-behavior:contain;
+  background:linear-gradient(165deg,var(--violeta),#0B0A10);
+  border:1px solid rgba(184,184,192,.2);border-bottom:0;
+  border-top-left-radius:26px;border-top-right-radius:26px;
+  padding:22px 22px calc(26px + var(--safe-bottom));
+}
+.visor-titulo{
+  font-family:'Bebas Neue',sans-serif;font-weight:400;
+  font-size:clamp(1.7rem,8vw,2.3rem);letter-spacing:.06em;line-height:1.05;
+  white-space:pre-line;
+}
+.visor-desc{margin-top:8px;color:var(--gris);font-size:.92rem;line-height:1.6;font-weight:300;max-width:62ch}
+.visor-fila{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.visor-precio{color:var(--precio);font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.06em;line-height:1}
+.visor-agotado{background:var(--kimchi);color:#fff;font-size:.62rem;font-weight:800;padding:5px 11px;border-radius:999px;letter-spacing:.08em}
+
+@media (orientation:landscape) and (max-height:520px){
+  .visor{flex-direction:row}
+  .visor-media{margin-top:0;flex:1 1 0;min-width:0}
+  .visor-info{
+    flex:0 0 min(42%,380px);max-height:none;border-radius:0;border-top:0;border-right:0;
+    padding-top:calc(64px + var(--safe-top));
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .visor,.visor *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<script>
+(function(){
+  var DURACION = 10000;
+  var st = document.createElement("style");
+  st.textContent = "#creditos{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .5s;touch-action:none;overscroll-behavior:contain}#creditos video{width:100%;height:100%;object-fit:contain}#creditos.fuera{opacity:0;pointer-events:none}";
+  document.head.appendChild(st);
+  var box = document.createElement("div"), vid = document.createElement("video"), ya = false;
+  box.id = "creditos";
+  vid.muted = true; vid.autoplay = true; vid.playsInline = true; vid.preload = "auto";
+  vid.setAttribute("muted",""); vid.setAttribute("playsinline","");
+  box.appendChild(vid); document.body.appendChild(box);
+  function cerrar(){ vid.pause(); box.classList.add("fuera"); setTimeout(function(){ box.remove(); }, 600); }
+  vid.onplaying = function(){ if(!ya){ ya = true; setTimeout(cerrar, DURACION); } };
+  vid.onended = cerrar;
+  vid.onerror = cerrar;
+  vid.src = "ALACRÁN.mp4";
+  var p = vid.play(); if(p && p.catch) p.catch(cerrar);
+  setTimeout(function(){ if(!ya) cerrar(); }, 10000);
+})();
+</script>
+
+<header class="topbar" id="topbar" style="display:none">
+  <button class="icon-btn" id="btnAtras" aria-label="Atras">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="topbar-title" id="tituloPagina"><span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span></div>
+  <button class="icon-btn" id="btnAdmin" aria-label="Panel admin" style="display:none">
+    <svg viewBox="0 0 24 24"><path d="M3 18l2-9.5L9.5 12 12 5l2.5 7L19 8.5 21 18z"/><line x1="5" y1="21" x2="19" y2="21"/></svg>
+  </button>
+  <button class="icon-btn" id="btnAjustesTop" aria-label="Ajustes">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="pagina activa" id="pagLogin">
+    <div class="login-wrap">
+      <img class="wm-login" data-img="logo" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" aria-hidden="true">
+      <div class="login-logo"><span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span></div>
+      <p class="login-sub">comida 1-3 turimodeliciosa &#183; bebidas exoticas&#237;a &amp; banderillas coreanas</p>
+
+      <div class="login-card">
+        <h2>Bienvenido</h2>
+        <p>Entra con tu cuenta de Google para pedir y reservar.</p>
+        <button class="btn" id="btnGoogle" type="button">Continuar con Google</button>
+        <p style="text-align:center;color:var(--gris);font-size:.78rem;margin:12px 0">o</p>
+        <button class="btn btn-sec" id="btnInvitado" type="button">Ver el men&#250; sin cuenta</button>
+        <p style="text-align:center;color:var(--gris);font-size:.72rem;margin-top:10px">Sin cuenta solo puedes ver el men&#250;: no podr&#225;s pedir ni reservar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pagina" id="pagInicio">
+    <div id="heroWrap" style="display:none">
+      <div class="hero" id="carousel"></div>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div id="heroVacio" class="vacio" style="display:none">
+      <span class="ic">G&amp;C</span>
+      Todavia no hay novedades.<br>Vuelve pronto.
+    </div>
+
+    <h2 class="hero-titulo">HOLA, <span class="g" id="saludoNombre">AMIGO</span></h2>
+    <div class="info-card" style="margin-top:18px"><h4>VISI&#211;N</h4><p>Ser un emprendimiento reconocido dentro de nuestra instituci&#243;n por la calidad, sabor e innovaci&#243;n de nuestras banderillas, buscando satisfacer a nuestros clientes y fortalecer nuestras habilidades de trabajo en equipo y emprendimiento tur&#237;stico.</p></div>
+    <div class="info-card" style="margin-top:12px"><h4>MISI&#211;N</h4><p>1-3 Turismo tiene como misi&#243;n ofrecer banderillas preparadas de manera higi&#233;nica, r&#225;pida y deliciosa, brindando a nuestros clientes una opci&#243;n innovadora y accesible. Buscamos satisfacer sus gustos mediante productos de calidad, excelente sabor y una atenci&#243;n amable, promoviendo el trabajo en equipo y el esp&#237;ritu emprendedor.</p></div>
+  </section>
+
+  <section class="pagina" id="pagSala">
+    <h2 class="titulo cian">LA SALA</h2>
+    <p class="sub">Nuestro salon neon: asi se vive Glow &amp; Crunch por dentro.</p>
+
+    <div class="sala-hero" id="salaHero">
+      <img class="sala-img" data-img="sala" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Salon Glow and Crunch: banderillas coreanas y bebida Avatar Blue">
+      <img class="sala-wm" data-img="logo" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" aria-hidden="true">
+      <div class="sala-overlay">
+        <div class="sala-tag">Sabor que brilla,<br>mordida que enamora</div>
+      </div>
+    </div>
+
+    <div class="sala-neonbar"></div>
+
+    <div class="info-card">
+      <h4>INSTRUCIONES</h4>
+      <p><h3>¿COMO RESRVAR OMG JAJA?</h3>para necesitas ver hecho secion con tu cuenta si ya lo hiciste iremos directo a los botones de abajo en stilo carrucel hay sale un boton que dice reservas lo apretas y te mandara a una tabla y no llenamos lo que te pide te saldra un mensaje abajo con tus credenciales si las credenciales son correcta envialas y acuerda de tu codigo para decirlo y sepamos quien eres</p>
+      <p><h3>¿COMO PEDIR POR SI NO ENTENDES?</h3> Para pedir es casi igual a reservar solo que pedir es usando el boton de menu busca el producto que te guste y toca el boton de pedir que se encuentra en el tabloide del producto en la esquina abajo y acuerdate de tu codigo</p>
+    </div>
+    <div class="info-card" style="margin-top:12px">
+      <h4>1-3 TURISMO</h4>
+      <p>Proyecto de la 1-3 turismo sisi &#161;Te esperamos! para engordarte</p>
+    </div>
+  </section>
+
+  <section class="pagina" id="pagMenu">
+    <h2 class="titulo rosa">MENU</h2>
+    <p class="sub">Toca "Pedir" en un producto.</p>
+    <div class="chips" id="chips"></div>
+    <div class="lista" id="listaMenu"></div>
+  </section>
+
+  <section class="pagina" id="pagReservar">
+    <h2 class="titulo cian">RESERVAR MESA</h2>
+    <p class="sub">Elige tu mesa chonte</p>
+    
+    <p class="titulo"><h1>instrucciones</h1></p>
+    
+    <p class="sub"><h1>Día De reservas</h1></p>
+    
+    <p class="sub">Sera el aula #1 tercera planta edificio A Hora 1.15pm-3.30pm. Reserva digital con juliana Camila 50% de cobro adelantado.</p>
+
+    <input type="date" id="rFecha" style="display:none">
+    <div class="campo">
+      <label for="rHora">Hora</label>
+      <select id="rHora"></select>
+    </div>
+    <div class="campo">
+      <label for="rPersonas">Personas (1-10)</label>
+      <input type="number" id="rPersonas" min="1" max="10" value="2" inputmode="numeric">
+    </div>
+
+    <div class="leyenda">
+      <span><i class="l-libre"></i> Libre</span>
+      <span><i class="l-ocup"></i> Ocupada</span>
+      <span><i class="l-sel"></i> Tu seleccion</span>
+    </div>
+
+    <div class="grid-mesas" id="gridMesas"></div>
+
+    <div class="resumen" id="resumen"></div>
+
+    <button class="btn" id="btnReservar" style="margin-top:16px" disabled>Confirmar reserva por WhatsApp</button>
+  </section>
+
+  <section class="pagina" id="pagCuenta">
+    <h2 class="titulo kimchi">MI CUENTA</h2>
+    <p class="sub">Tu informacion.</p>
+
+    <div class="resumen" style="margin-bottom:16px">
+      <div style="font-size:.7rem;color:var(--gris);letter-spacing:.1em;text-transform:uppercase">Nombre</div>
+      <div style="font-size:1.15rem;color:#fff;font-weight:700;margin:2px 0 10px" id="cuentaNombre">-</div>
+      <div style="font-size:.7rem;color:var(--gris);letter-spacing:.1em;text-transform:uppercase">Correo</div>
+      <div style="color:var(--cian);font-weight:600;margin-top:2px" id="cuentaTel">-</div>
+    </div>
+
+    <button class="btn btn-peligro" id="btnSalir">Cerrar sesion</button>
+  </section>
+
+  <section class="pagina" id="pagAjustes">
+    <h2 class="titulo dorado">AJUSTES</h2>
+    <p class="sub">Personaliza tu experiencia.</p>
+
+    <div class="ajuste" data-toggle="sound">
+      <div class="txt"><div class="t">Sonido</div><div class="d">Efectos al tocar y navegar</div></div>
+      <div class="switch" id="swSound"></div>
+    </div>
+    <div class="ajuste" data-toggle="vibrate">
+      <div class="txt"><div class="t">Vibracion</div><div class="d">Respuesta haptica al tocar</div></div>
+      <div class="switch" id="swVibrate"></div>
+    </div>
+    <div class="ajuste" data-toggle="anim">
+      <div class="txt"><div class="t">Animaciones</div><div class="d">Transiciones y movimiento</div></div>
+      <div class="switch" id="swAnim"></div>
+    </div>
+    <div class="ajuste" data-toggle="fx3d">
+      <div class="txt"><div class="t">Efecto 3D</div><div class="d">Letras y botones con relieve</div></div>
+      <div class="switch" id="swFx3d"></div>
+    </div>
+    <div class="ajuste" data-toggle="wm">
+      <div class="txt"><div class="t">Marca de agua</div><div class="d">El alacran G&amp;C decorando la app</div></div>
+      <div class="switch" id="swWm"></div>
+    </div>
+    <div class="ajuste" data-toggle="music">
+      <div class="txt"><div class="t">Musica de fondo</div><div class="d">Ambientacion mientras navegas</div></div>
+      <div class="switch" id="swMusic"></div>
+    </div>
+
+    <div class="vol-box"><div class="t">Volumen de la musica <b id="vmN"></b></div><input type="range" min="0" max="100" id="rngMusic"></div>
+    <div class="vol-box"><div class="t">Volumen de los sonidos al tocar <b id="vfN"></b></div><input type="range" min="0" max="100" id="rngFx"></div>
+    <div class="vol-box"><div class="t">Tamano del texto <b id="fsN"></b></div><input type="range" min="90" max="130" step="5" id="rngFs"></div>
+    <div class="ajuste" data-toggle="avisos">
+      <div class="txt"><div class="t">Avisos del sistema</div><div class="d">Mensajes pequenos de estado</div></div>
+      <div class="switch" id="swAvisos"></div>
+    </div>
+    <div class="ajuste" data-toggle="install">
+      <div class="txt"><div class="t">Instalar app</div><div class="d">Agregala a tu pantalla de inicio</div></div>
+      <div style="color:var(--cian);font-size:1.2rem">+</div>
+    </div>
+
+    <div class="info-card" style="margin-top:18px">
+      <h4>ACERCA DE</h4>
+      <p>Emprendimiento de servicios tur&#237;sticos: BEBIDAS EXOTICAS y banderillas coreanas (COMIDA 1-3 TURISMODELICIOSA).</p>
+      <p>WhatsApp: <a href="https://wa.me/50368405099" target="_blank" rel="noopener">+503 6840 5099</a></p>
+      <p style="margin-top:10px;font-size:.72rem;opacity:.6">Version 3.0</p>
+    </div>
+    <div class="info-card" style="margin-top:18px">
+      <h4>CR&#201;DITOS</h4>
+      <p><b>FOR YOU PERSONAL MARKETING</b></p>
+      <p>1. Adriana Sarai Godinez Zepeda</p>
+      <p>2. Jullisa Elizabeth Ayala L&#243;pez</p>
+      <p>3. Lucia Maite Lanvandaverde Vasquez</p>
+      <p>4. Dayana Yamileth Martinez Martinez (x2)</p>
+      <p>5. Alexi Antonio Quintanilla Del Valle</p>
+      <p style="margin-top:12px;font-style:italic"> 1-3 TURISMO LOS CHONTES</p>
+    </div>
+  </section>
+</main>
+
+<nav class="bottomnav" id="bottomnav" style="display:none">
+  <button data-go="sala">
+    <svg viewBox="0 0 24 24"><path d="M12 2l2 5.2L19.5 9l-5.5 1.8L12 16l-2-5.2L4.5 9 10 7.2z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/><path d="M5 16l.7 1.6L7.3 18l-1.6.7L5 20.3 4.3 18.7 2.7 18l1.6-.4z"/></svg>
+    SALA
+  </button>
+  <button data-go="inicio">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    INICIO
+  </button>
+  <button data-go="menu">
+    <svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><line x1="7" y1="2" x2="7" y2="22"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"/><line x1="18" y1="15" x2="18" y2="22"/></svg>
+    MENU
+  </button>
+  <button data-go="reservar">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    RESERVAR
+  </button>
+  <button data-go="cuenta">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    CUENTA
+  </button>
+</nav>
+
+<div class="consola" id="consola">
+  <div class="consola-head"><span>ERROR</span><button id="cerrarConsola">x</button></div>
+  <div class="consola-body" id="consolaBody"></div>
+</div>
+
+<div class="modal" id="modalOk">
+  <div class="modal-box">
+    <button class="cerrar" data-cerrar>x</button>
+    <h3 style="color:var(--cian)">RESERVA LISTA</h3>
+    <p class="msub">Tus mesas quedaron bloqueadas a tu nombre. Envia el mensaje por WhatsApp para confirmarla.</p>
+    <div class="resumen" id="okDetalle"></div>
+    <button class="btn" id="btnWa" style="margin-top:14px">Enviar a WhatsApp</button>
+    <button class="btn btn-sec" data-cerrar style="margin-top:8px">Cerrar</button>
+  </div>
+</div>
+
+<div class="modal" id="modalAdmin">
+  <div class="modal-box">
+    <button class="cerrar" data-cerrar>x</button>
+    <h3 style="color:var(--rosa)">PANEL ADMIN</h3>
+    <p class="msub">Rol de administrador verificado en el servidor.</p>
+    <div class="admin-tabs">
+      <button class="admin-tab activo" data-tab="banners">Banners</button>
+      <button class="admin-tab" data-tab="menu">Menu</button>
+      <button class="admin-tab" data-tab="mesas">Mesas</button>
+      <button class="admin-tab" data-tab="reservas">Reservas</button>
+      <button class="admin-tab" data-tab="config">Ajustes</button>
+    </div>
+    <div id="adminContenido"></div>
+  </div>
+</div>
+
+<div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+  <button class="visor-x" id="visorCerrar" type="button" aria-label="Cerrar">
+    <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </button>
+  <div class="visor-media" id="visorMedia"></div>
+  <div class="visor-info" id="visorInfo">
+    <h3 class="visor-titulo" id="visorTitulo"></h3>
+    <p class="visor-desc" id="visorDesc"></p>
+    <div class="visor-fila" id="visorFila">
+      <span class="visor-precio" id="visorPrecio"></span>
+      <span class="visor-agotado" id="visorAgotado">Agotado</span>
+    </div>
+  </div>
+</div>
+
+<img id="wmCorner" class="wm-corner" data-img="logo" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" aria-hidden="true">
+
+<script id="imagenes-incrustadas">
+(function () {
+  var fuentes = { sala: "marca-agua-sm.webp", logo: "marca-agua-sm.webp" };
+  var imgs = document.querySelectorAll("img[data-img]");
+  for (var i = 0; i < imgs.length; i++) {
+    var dato = fuentes[imgs[i].getAttribute("data-img")];
+    if (dato) imgs[i].src = dato;
+  }
+})();
+</script>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app-check.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
+  collection, onSnapshot, getDocs, runTransaction
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  getAuth, signOut,
+  GoogleAuthProvider, signInWithPopup
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDjaFVYXKncCU5ybtPRQXi4LKi8mkbXEe8",
+  authDomain: "glow-y-crunch.firebaseapp.com",
+  projectId: "glow-y-crunch",
+  storageBucket: "glow-y-crunch.firebasestorage.app",
+  messagingSenderId: "168300469547",
+  appId: "1:168300469547:web:a6eacfab1a50e49117396e",
+  measurementId: "G-NT4TMHST3K"
+};
+const app = initializeApp(firebaseConfig);
+try { getAnalytics(app); } catch(e){}
+const db = getFirestore(app);
+const auth = getAuth(app);
+auth.languageCode = "es";
+
+const APPCHECK_SITE_KEY = "";
+if (APPCHECK_SITE_KEY) {
+  try {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(APPCHECK_SITE_KEY),
+      isTokenAutoRefreshEnabled: true
+    });
+  } catch(e){ console.warn("App Check no pudo iniciar:", e); }
+}
+
+let WHATSAPP = "50375926812";
+let MAX_MESAS = 3; const MIN_MESAS = 1;
+let MAX_PERSONAS = 10; const MIN_PERSONAS = 1;
+let MAX_RESERVAS_DIA = 5;
+const MAX_ARCHIVO_KB = 700;
+
+const MESAS_BASE = Array.from({length:12},(_,i)=>({
+  id:"mesa_"+(i+1), numero:i+1, sillas:4, estado:"libre", cliente:"", desde:""
+}));
+
+const S = {
+  user:null, admin:false, online:true,
+  mesas:[], menu:[], banners:[], reservas:[],
+  seleccion:new Set(), slide:0, slideTimer:null,
+  reservaPendiente:null, filtroMenu:"Todo",
+  pagina:"login", historial:["login"],
+  uploads:{ banner:{}, menu:{} },
+  settings:{ sound:true, vibrate:true, anim:true, avisos:true, volMusic:50, volFx:50, fs:100, fx3d:true, wm:true, music:true }
+};
+
+const $  = (s,c=document)=>c.querySelector(s);
+const $$ = (s,c=document)=>[...c.querySelectorAll(s)];
+const LS = {
+  get(k,d){try{const v=localStorage.getItem("gc_"+k);return v?JSON.parse(v):d}catch{return d}},
+  set(k,v){try{localStorage.setItem("gc_"+k,JSON.stringify(v))}catch{}}
+};
+const esc = s => String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const money = n => "$"+Number(n||0).toFixed(2);
+const hoyISO = ()=>new Date().toISOString().slice(0,10);
+const norm = t => (t||"").replace(/\D/g,"");
+
+const Sound = {
+  ctx:null, master:null,
+  init(){
+    if(!this.ctx){
+      try{
+        this.ctx = new (window.AudioContext||window.webkitAudioContext)();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.9;
+        this.master.connect(this.ctx.destination);
+      }catch(e){}
+    }
+    if(this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(()=>{});
+  },
+  play(freq, dur=0.06, type="sine", vol=0.05){
+    this.last = performance.now();
+    if(!S.settings.sound) return;
+    try{
+      this.init();
+      if(!this.ctx || !this.master) return;
+      const t = this.ctx.currentTime;
+      const v = Math.max(0.0002, vol*((S.settings.volFx==null?50:S.settings.volFx)/50));
+      const o  = this.ctx.createOscillator();
+      const o2 = this.ctx.createOscillator();
+      const g  = this.ctx.createGain();
+      const g2 = this.ctx.createGain();
+      const f  = this.ctx.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.setValueAtTime(Math.min(12000, freq*6), t);
+      f.frequency.exponentialRampToValueAtTime(Math.max(220, freq*1.4), t + dur);
+      o.type  = type;    o.frequency.value = freq;
+      o2.type = "sine";  o2.frequency.value = freq*2;
+      g2.gain.value = 0.22;
+      o.connect(f); o2.connect(g2); g2.connect(f);
+      f.connect(g); g.connect(this.master);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.start(t); o2.start(t);
+      o.stop(t + dur); o2.stop(t + dur);
+    }catch(e){}
+  },
+  tap(){ this.play(1150, 0.05, "triangle", 0.04); },
+  nav(){ this.play(523, 0.06, "triangle", 0.05); setTimeout(()=>this.play(880, 0.09, "triangle", 0.05), 55); },
+  success(){
+    [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>this.play(f,0.15,"triangle",0.05), i*70));
+  },
+  error(){ this.play(200, 0.16, "sawtooth", 0.05); setTimeout(()=>this.play(150, 0.24, "sawtooth", 0.05), 95); },
+  toggle(){ this.play(660, 0.04, "triangle", 0.05); setTimeout(()=>this.play(990, 0.05, "sine", 0.04), 42); }
+};
+
+function vib(ms=12){
+  if(!S.settings.vibrate) return;
+  try{ navigator.vibrate && navigator.vibrate(ms); }catch(e){}
+}
+
+const consolaEl = $("#consola"), consolaBody = $("#consolaBody");
+let consolaTimer = null;
+function aviso(msg, ok=false){
+  if(S.settings.avisos===false){ if(!ok) console.warn("[GC]", msg); return; }
+  const l = document.createElement("div");
+  l.className = "log-line" + (ok?" ok":"");
+  l.textContent = (ok?"OK ":"! ") + msg;
+  consolaBody.innerHTML = ""; consolaBody.appendChild(l);
+  consolaBody.scrollTop = consolaBody.scrollHeight;
+  consolaEl.classList.add("visible");
+  clearTimeout(consolaTimer);
+  consolaTimer = setTimeout(()=>consolaEl.classList.remove("visible"), 3200);
+  if(!ok) console.warn("[GC]", msg);
+}
+$("#cerrarConsola").onclick = ()=>consolaEl.classList.remove("visible");
+
+let toastT = null;
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("ver");
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>t.classList.remove("ver"), 2200);
+}
+
+const TITULOS = {
+  login:   '<span class="g">GLOW</span> <span class="c">&amp;CRUNCH</span>',
+  sala:    'LA SALA',
+  inicio:  'INICIO',
+  menu:    'MENU',
+  reservar:'RESERVAR',
+  cuenta:  'MI CUENTA',
+  ajustes: 'AJUSTES'
+};
+
+function irPagina(id, pushHist=true){
+  if(!S.user && id !== "login"){
+    if(id === "reservar" || id === "cuenta"){ aviso("Inicia sesion con Google para " + (id === "reservar" ? "reservar" : "ver tu cuenta") + "."); id = "login"; }
+    else if(!S.invitado){ id = "login"; }
+  }
+  if(id !== S.pagina && pushHist && S.historial[S.historial.length-1] !== id){
+    S.historial.push(id);
+  }
+  const changed = id !== S.pagina;
+  S.pagina = id;
+
+  $$(".pagina").forEach(p => p.classList.toggle("activa", p.id === "pag" + cap(id)));
+  $("#tituloPagina").innerHTML = TITULOS[id] || TITULOS.inicio;
+
+  const mostrar = (id !== "login");
+  $("#topbar").style.display = mostrar ? "" : "none";
+  $("#bottomnav").style.display = mostrar ? "" : "none";
+  $("#btnAtras").disabled = (S.historial.length <= 1);
+
+  $$("#bottomnav button").forEach(b => b.classList.toggle("activo", b.dataset.go === id));
+
+  window.scrollTo({top:0, behavior:"instant"});
+
+  if(id === "menu") renderMenu();
+  if(id === "reservar") renderMesas();
+  if(id === "cuenta") pintarCuenta();
+  if(id === "ajustes") pintarAjustes();
+
+  if(changed) Sound.nav();
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+function irAtras(){
+  if(S.historial.length <= 1){ irPagina("inicio", false); return; }
+  S.historial.pop();
+  const prev = S.historial[S.historial.length-1] || "inicio";
+  S.pagina = null;
+  irPagina(prev, false);
+}
+
+$("#btnAtras").onclick = irAtras;
+$("#btnAjustesTop").onclick = ()=> irPagina("ajustes");
+$$("[data-go]").forEach(b => b.onclick = ()=> irPagina(b.dataset.go));
+
+function errorSMS(e){
+  const m = {
+    "auth/invalid-phone-number": "El numero no es valido.",
+    "auth/missing-phone-number": "Escribe tu numero.",
+    "auth/too-many-requests": "Demasiados intentos. Espera un rato y vuelve a probar.",
+    "auth/quota-exceeded": "Se acabaron los SMS de hoy. Intenta mas tarde.",
+    "auth/invalid-verification-code": "Codigo incorrecto.",
+    "auth/code-expired": "El codigo vencio. Pide uno nuevo.",
+    "auth/captcha-check-failed": "No se pudo comprobar que eres humano. Intenta de nuevo.",
+    "auth/network-request-failed": "Sin conexion. Revisa tu internet.",
+    "auth/operation-not-allowed": "Falta activar Google en Firebase Authentication.",
+    "auth/popup-closed-by-user": "Cerraste la ventana de Google.",
+    "auth/cancelled-popup-request": "Ya hay una ventana de Google abierta.",
+    "auth/popup-blocked": "El navegador bloqueo la ventana de Google. Permitela e intenta de nuevo.",
+    "auth/unauthorized-domain": "Este dominio no esta autorizado en Firebase Authentication."
+  };
+  return m[e && e.code] || ("No se pudo verificar (" + ((e && e.code) || e) + ").");
+}
+
+async function entrarConGoogle(){
+  const btn = $("#btnGoogle");
+  btn.disabled = true;
+  try{
+    const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
+    const correo = (user.email || "").toLowerCase();
+    if(!correo){
+      aviso("Esa cuenta de Google no tiene correo.");
+      Sound.error(); vib(40);
+      return;
+    }
+    const ref = doc(db, "usuarios", correo);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      S.user = { phone: correo, ...snap.data() };
+      toast("Bienvenido, " + (S.user.nombre || ""));
+    } else {
+      const data = {
+        phone: correo, email: correo,
+        nombre: user.displayName || correo.split("@")[0],
+        proveedor: "google", creado: new Date().toISOString(),
+        reservasHoy: 0, fechaContador: ""
+      };
+      await setDoc(ref, data);
+      S.user = { ...data };
+      toast("Cuenta creada");
+    }
+    LS.set("user", S.user);
+    Sound.success();
+    arrancarTrasLogin();
+  } catch(e){
+    aviso(errorSMS(e));
+    Sound.error(); vib(40);
+  } finally {
+    btn.disabled = false;
+  }
+}
+$("#btnGoogle").onclick = entrarConGoogle;
+$("#btnInvitado").onclick = ()=>{ S.invitado = true; Sound.tap(); S.historial = ["login"]; S.pagina = null; irPagina("menu"); };
+
+function arrancarTrasLogin(){
+  $("#saludoNombre").textContent = (S.user.nombre || "").split(" ")[0].toUpperCase() || "AMIGO";
+  pintarCuenta();
+  aplicarRol();
+  irPagina("inicio", false);
+}
+
+function pintarCuenta(){
+  if(!S.user) return;
+  $("#cuentaNombre").textContent = S.user.nombre || "-";
+  $("#cuentaTel").textContent = String(S.user.phone).includes("@") ? S.user.phone : "+" + S.user.phone;
+}
+
+function cerrarSesion(){
+  if(!confirm("Cerrar sesion?")) return;
+  signOut(auth).catch(()=>{});
+  S.invitado = false;
+  S.user = null;
+  S.seleccion.clear();
+  LS.set("user", null);
+  S.historial = ["login"];
+  S.pagina = null;
+  aplicarRol();
+  irPagina("login", false);
+  toast("Sesion cerrada");
+}
+$("#btnSalir").onclick = cerrarSesion;
+
+function cargarAjustes(){
+  const s = LS.get("settings", null);
+  if(s) S.settings = { ...S.settings, ...s };
+  aplicarCfg(LS.get("cfg",null));
+  getDoc(doc(db,"config","app")).then(x=>{ if(x.exists()){ aplicarCfg(x.data()); LS.set("cfg",x.data()); } }).catch(()=>{});
+  aplicarAjustes();
+}
+function guardarAjustes(){ LS.set("settings", S.settings); }
+function aplicarAjustes(){
+  document.body.classList.toggle("reduce-anim", !S.settings.anim);
+  document.body.classList.toggle("fx3d", S.settings.fx3d!==false);
+  document.body.classList.toggle("no-wm", S.settings.wm===false);
+  document.documentElement.style.fontSize = (S.settings.fs||100)+"%";
+  window.__gcMusicSync && window.__gcMusicSync();
+}
+function pintarAjustes(){
+  $("#swSound").classList.toggle("on", S.settings.sound);
+  $("#swVibrate").classList.toggle("on", S.settings.vibrate);
+  $("#swAnim").classList.toggle("on", S.settings.anim);
+  $("#swFx3d").classList.toggle("on", S.settings.fx3d!==false);
+  $("#swWm").classList.toggle("on", S.settings.wm!==false);
+  $("#swMusic").classList.toggle("on", S.settings.music!==false);
+  $("#swAvisos").classList.toggle("on", S.settings.avisos!==false);
+  $("#rngMusic").value = S.settings.volMusic; $("#vmN").textContent = S.settings.volMusic+"%";
+  $("#rngFx").value = S.settings.volFx; $("#vfN").textContent = S.settings.volFx+"%";
+  $("#rngFs").value = S.settings.fs; $("#fsN").textContent = S.settings.fs+"%";
+}
+$("#rngMusic").oninput = e=>{ S.settings.volMusic=+e.target.value; $("#vmN").textContent=S.settings.volMusic+"%"; guardarAjustes(); window.__gcMusicVol && window.__gcMusicVol(); };
+$("#rngFx").oninput = e=>{ S.settings.volFx=+e.target.value; $("#vfN").textContent=S.settings.volFx+"%"; guardarAjustes(); };
+$("#rngFx").onchange = ()=>Sound.tap();
+$("#rngFs").oninput = e=>{ S.settings.fs=+e.target.value; $("#fsN").textContent=S.settings.fs+"%"; guardarAjustes(); aplicarAjustes(); };
+$$(".ajuste").forEach(el => {
+  el.onclick = ()=>{
+    const t = el.dataset.toggle;
+    if(t === "install"){
+      Sound.tap(); vib();
+      window.__instalarPWA && window.__instalarPWA();
+      return;
+    }
+    S.settings[t] = !S.settings[t];
+    Sound.toggle(); vib(15);
+    guardarAjustes();
+    aplicarAjustes();
+    pintarAjustes();
+  };
+});
+
+async function cargarDatos(){
+  try{
+    onSnapshot(collection(db,"banners"), s => {
+      S.banners = s.docs.map(d=>({id:d.id,...d.data()}));
+      renderBanners();
+    }, err => { throw err; });
+  } catch(e){
+    S.banners = LS.get("banners", []);
+    renderBanners();
+    aviso("Banners en modo local.");
+  }
+
+  try{
+    onSnapshot(collection(db,"menu"), s => {
+      S.menu = s.docs.map(d=>({id:d.id,...d.data()}));
+      if(S.pagina === "menu") renderMenu();
+      if(S.admin) renderAdmin();
+    }, err => { throw err; });
+  } catch(e){
+    S.online = false;
+    S.menu = LS.get("menu", []);
+    if(S.pagina === "menu") renderMenu();
+    aviso("Menu en modo local.");
+  }
+
+  try{
+    const snap = await getDocs(collection(db,"mesas"));
+    if(snap.empty){
+      for(const m of MESAS_BASE) await setDoc(doc(db,"mesas",m.id), m);
+      S.mesas = [...MESAS_BASE];
+    } else {
+      S.mesas = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.numero-b.numero);
+    }
+    onSnapshot(collection(db,"mesas"), s => {
+      S.mesas = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.numero-b.numero);
+      if(S.pagina === "reservar"){ renderMesas(); renderResumen(); }
+      if(S.admin) renderAdmin();
+    }, err => {
+      S.online = false;
+      S.mesas = LS.get("mesas", MESAS_BASE);
+      if(S.pagina === "reservar"){ renderMesas(); renderResumen(); }
+      aviso("Mesas en modo local.");
+    });
+  } catch(e){
+    S.online = false;
+    S.mesas = LS.get("mesas", MESAS_BASE);
+    if(S.pagina === "reservar"){ renderMesas(); renderResumen(); }
+    aviso("No se pudo leer mesas.");
+  }
+
+  try{
+    onSnapshot(collection(db,"reservas"), s => {
+      S.reservas = s.docs.map(d=>({id:d.id,...d.data()}))
+                    .sort((a,b)=>(b.creadaMs||0)-(a.creadaMs||0));
+      if(S.admin) renderAdmin();
+    }, err => aviso("Reservas: " + (err.code||"offline")));
+  } catch(e){}
+}
+
+function renderBanners(){
+  const wrap = $("#heroWrap"), vacio = $("#heroVacio");
+  if(!S.banners.length){
+    wrap.style.display = "none";
+    vacio.style.display = "block";
+    return;
+  }
+  wrap.style.display = "block";
+  vacio.style.display = "none";
+
+  const c = $("#carousel"), d = $("#dots");
+  c.innerHTML = S.banners.map((b,i) => {
+    let bg = "";
+    if(b.media){
+      if(b.tipo === "video"){
+        bg = `<video class="media-bg" src="${b.media}" autoplay muted loop playsinline></video>`;
+      } else {
+        bg = `<img class="media-bg" src="${b.media}" alt="">`;
+      }
+    }
+    const precio = b.precio ? `<div class="precio-big">${money(b.precio)}</div>` : "";
+    const texto = b.texto ? `<p>${esc(b.texto)}</p>` : "";
+    const link = b.link ? `<button class="btn btn-sm" data-link="${esc(b.link)}" style="margin-top:12px;width:auto;align-self:flex-start">Ver mas</button>` : "";
+    return `<article class="slide ${i===S.slide?"activo":""}">
+      ${bg}<h2>${neoniza(b.titulo)}</h2>${precio}${texto}${link}
+    </article>`;
+  }).join("");
+
+  d.innerHTML = S.banners.map((_,i)=>
+    `<button class="dot ${i===S.slide?"activo":""}" data-dot="${i}" aria-label="Banner ${i+1}"></button>`
+  ).join("");
+  $$("[data-dot]", d).forEach(b => b.onclick = ()=>{ Sound.tap(); vib(); irSlide(+b.dataset.dot); });
+  $$("[data-link]", c).forEach(b => b.onclick = ()=>window.open(b.dataset.link,"_blank"));
+
+  clearInterval(S.slideTimer);
+  if(S.banners.length > 1){
+    S.slideTimer = setInterval(()=>irSlide((S.slide+1)%S.banners.length), 6500);
+  }
+}
+function irSlide(i){
+  S.slide = i;
+  $$(".slide").forEach((s,k)=>s.classList.toggle("activo",k===i));
+  $$(".dot").forEach((s,k)=>s.classList.toggle("activo",k===i));
+}
+function neoniza(txt){
+  const t = esc(txt||"");
+  const partes = t.split(" ");
+  if(partes.length < 2) return `<span class="neon">${t}</span>`;
+  const ult = partes.pop();
+  return partes.join(" ") + ` <span class="neon">${ult}</span>`;
+}
+
+function renderChips(){
+  const cats = ["Todo", ...new Set(S.menu.map(m=>m.categoria).filter(Boolean))];
+  $("#chips").innerHTML = cats.map(c =>
+    `<button class="chip ${c===S.filtroMenu?"activo":""}" data-cat="${esc(c)}">${esc(c)}</button>`
+  ).join("");
+  $$("#chips .chip").forEach(b => b.onclick = ()=>{
+    Sound.tap(); vib();
+    S.filtroMenu = b.dataset.cat;
+    renderMenu();
+  });
+}
+function renderMenu(){
+  const cont = $("#listaMenu");
+  $("#pagMenu .sub").textContent = S.user ? 'Toca "Pedir" en un producto para enviarlo por WhatsApp.' : "Vista previa: inicia sesion con Google para pedir o reservar.";
+  if(!S.menu.length){
+    $("#chips").innerHTML = "";
+    cont.innerHTML = `<div class="vacio"><span class="ic">MENU</span>A&#250;n estamos eligiendo qu&#233; vamos a vender.<br>Pronto ver&#225;s aqu&#237; nuestras bebidas de bartender&#237;a y banderillas coreanas.</div>`;
+    return;
+  }
+  renderChips();
+  const lista = S.filtroMenu === "Todo" ? S.menu : S.menu.filter(m=>m.categoria===S.filtroMenu);
+  if(!lista.length){
+    cont.innerHTML = `<div class="vacio">Sin productos en esta categoria.</div>`;
+    return;
+  }
+  cont.innerHTML = lista.map((p,i)=>{
+    const media = p.media || p.foto;
+    const esVideo = p.tipo === "video";
+    const mediaHTML = media
+      ? (esVideo
+          ? `<video class="media" src="${media}" muted loop playsinline autoplay></video>`
+          : `<img class="media" src="${media}" alt="${esc(p.nombre)}" loading="lazy">`)
+      : "";
+    return `
+    <article class="item-card ${p.agotado?"agotado":""}" style="animation-delay:${i*40}ms">
+      ${p.agotado ? '<span class="badge">AGOTADO</span>' : ""}
+      ${mediaHTML}
+      <h3>${esc(p.nombre)}</h3>
+      ${p.desc ? `<p class="desc">${esc(p.desc)}</p>` : ""}
+      <div class="fila">
+        <span class="precio">${money(p.precio)}</span>
+        <button class="btn btn-sm" data-pedir="${esc(p.id)}" ${p.agotado?"disabled":""}>
+          ${p.agotado?"No disponible":(S.user?"Pedir":"Inicia sesion")}
+        </button>
+      </div>
+    </article>`;
+  }).join("");
+  $$("[data-pedir]").forEach(b => b.onclick = ()=>pedirProducto(b.dataset.pedir));
+}
+function pedirProducto(id){
+  if(!S.user){ aviso("Inicia sesion con Google para pedir."); Sound.error(); irPagina("login"); return; }
+  const p = S.menu.find(x=>x.id===id);
+  if(!p || p.agotado){
+    aviso("Este producto ya no esta disponible. Elige otro.");
+    Sound.error(); vib(40);
+    return;
+  }
+  Sound.tap(); vib();
+  const txt = `Hola Glow & Crunch\nQuiero pedir: *${p.nombre}*\nPrecio: ${money(p.precio)}\nCliente: ${S.user.nombre} (${S.user.phone})`;
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(txt)}`, "_blank");
+}
+
+function initFormulario(){
+  const f = $("#rFecha");
+  f.value = hoyISO();
+  f.min = hoyISO();
+  const horas = [];
+  for(let h=12; h<=23; h++){
+    horas.push(`${String(h).padStart(2,"0")}:00`);
+    horas.push(`${String(h).padStart(2,"0")}:30`);
+  }
+  $("#rHora").innerHTML = horas.map(h=>`<option value="${h}">${h}</option>`).join("");
+  ["rFecha","rHora","rPersonas"].forEach(id => {
+    $("#"+id).addEventListener("input", ()=>{
+      const p = parseInt($("#rPersonas").value,10);
+      if($("#rPersonas").value !== "" && (isNaN(p)||p<1||p>10)){
+        aviso("Las personas deben ser entre 1 y 10.");
+      }
+      renderResumen();
+    });
+  });
+  $("#btnReservar").onclick = crearReserva;
+}
+
+function renderMesas(){
+  const cont = $("#gridMesas");
+  if(!S.mesas.length){
+    cont.innerHTML = `<p class="admin-vacio">Cargando mesas...</p>`;
+    return;
+  }
+  cont.innerHTML = S.mesas.map((m,i)=>{
+    const ocupada = m.estado !== "libre";
+    const sel = S.seleccion.has(m.numero);
+    return `<button class="mesa ${ocupada?"ocupada":""} ${sel?"sel":""}" data-mesa="${m.numero}" ${ocupada?"disabled":""} style="animation-delay:${i*25}ms">
+      <span class="n">${String(m.numero).padStart(2,"0")}</span>
+      <span class="s">${m.sillas} sillas</span>
+      <span class="e">${ocupada?"OCUPADA":"LIBRE"}</span>
+    </button>`;
+  }).join("");
+  $$("[data-mesa]", cont).forEach(b => b.onclick = ()=>toggleMesa(+b.dataset.mesa));
+}
+
+function toggleMesa(n){
+  const mesa = S.mesas.find(m=>m.numero===n);
+  if(!mesa) return;
+  if(mesa.estado !== "libre"){ aviso("Mesa "+n+" ocupada. Elige una verde."); Sound.error(); vib(30); return; }
+  if(S.seleccion.has(n)){ S.seleccion.delete(n); Sound.tap(); vib(); }
+  else {
+    if(S.seleccion.size >= MAX_MESAS){
+      aviso("No puedes reservar mas de "+MAX_MESAS+" mesas.");
+      Sound.error(); vib(40);
+      return;
+    }
+    S.seleccion.add(n);
+    Sound.toggle(); vib(15);
+  }
+  renderMesas();
+  renderResumen();
+}
+
+function renderResumen(){
+  const box = $("#resumen");
+  if(!S.user){ box.innerHTML = "Inicia sesion para reservar."; $("#btnReservar").disabled = true; return; }
+  const mesas = [...S.seleccion].sort((a,b)=>a-b);
+  const sillas = mesas.reduce((t,n)=>t+(S.mesas.find(m=>m.numero===n)?.sillas||0),0);
+  const personas = parseInt($("#rPersonas")?.value||0,10);
+  const fecha = $("#rFecha")?.value||"";
+  const hora = $("#rHora")?.value||"";
+  $("#btnReservar").disabled = mesas.length === 0;
+  box.innerHTML = `
+    <div>Cliente: <b>${esc(S.user.nombre)}</b></div>
+    <div>Hora: <b>${hora}</b></div>
+    <div>Personas: <b>${personas||"-"}</b></div>
+    <div>Mesas: <b>${mesas.length?mesas.join(", "):"ninguna"}</b></div>
+    <div>Sillas: <b>${sillas}</b></div>
+    <div style="margin-top:6px;font-size:.72rem">Max. ${MAX_MESAS} mesas - ${MAX_PERSONAS} personas - ${MAX_RESERVAS_DIA} reservas/dia.</div>
+  `;
+}
+
+function validarReserva(){
+  const mesas = [...S.seleccion];
+  const personas = parseInt($("#rPersonas").value,10);
+  const fecha = $("#rFecha").value;
+  const hora = $("#rHora").value;
+
+  if(!Number.isInteger(personas)||personas<MIN_PERSONAS||personas>MAX_PERSONAS){
+    aviso("Error de cantidad: personas entre "+MIN_PERSONAS+" y "+MAX_PERSONAS+".");
+    Sound.error(); vib(40); return null;
+  }
+  if(mesas.length<MIN_MESAS||mesas.length>MAX_MESAS){
+    aviso("Error de cantidad: entre "+MIN_MESAS+" y "+MAX_MESAS+" mesas.");
+    Sound.error(); vib(40); return null;
+  }
+  if(!fecha){ aviso("Falta la fecha."); Sound.error(); return null; }
+  if(fecha < hoyISO()){ aviso("La fecha ya paso."); Sound.error(); return null; }
+  if(!hora){ aviso("Falta la hora."); Sound.error(); return null; }
+  const sillas = mesas.reduce((t,n)=>t+(S.mesas.find(m=>m.numero===n)?.sillas||0),0);
+  if(personas>sillas){
+    aviso("Error de cantidad: "+personas+" personas no caben en "+sillas+" sillas.");
+    Sound.error(); vib(40); return null;
+  }
+  const reservasHoy = (S.user.fechaContador===hoyISO()) ? (S.user.reservasHoy||0) : 0;
+  if(reservasHoy >= MAX_RESERVAS_DIA){
+    aviso("Error limitador: ya hiciste "+MAX_RESERVAS_DIA+" reservas hoy.");
+    Sound.error(); vib(40); return null;
+  }
+  const ocup = mesas.find(n=>S.mesas.find(m=>m.numero===n)?.estado!=="libre");
+  if(ocup){
+    aviso("La mesa "+ocup+" acaba de ocuparse. Elige otra.");
+    S.seleccion.delete(ocup);
+    renderMesas(); renderResumen();
+    Sound.error(); vib(50);
+    return null;
+  }
+  return { mesas, personas, fecha, hora };
+}
+
+async function crearReserva(){
+  if(!S.user){ aviso("Necesitas iniciar sesion."); irPagina("login"); return; }
+  const v = validarReserva();
+  if(!v) return;
+
+  const codigo = "GC-"+(S.user.phone.replace(/\D/g,"").slice(-4) || "WEB")+"-"+Date.now().toString().slice(-4);
+  const reserva = {
+    codigo, phone:S.user.phone, nombre:S.user.nombre,
+    mesas:v.mesas, personas:v.personas, fecha:v.fecha, hora:v.hora,
+    estado:"pendiente", creada:new Date().toISOString(), creadaMs:Date.now()
+  };
+
+  try{
+    if(S.online){
+      await runTransaction(db, async tx => {
+        const refs = v.mesas.map(n=>doc(db,"mesas","mesa_"+n));
+        const snaps = await Promise.all(refs.map(r=>tx.get(r)));
+        snaps.forEach((s,i)=>{
+          if(!s.exists()||s.data().estado!=="libre"){
+            throw new Error("La mesa "+v.mesas[i]+" acaba de ser ocupada.");
+          }
+        });
+        refs.forEach(r=>tx.update(r,{
+          estado:"ocupada", cliente:S.user.nombre, desde:new Date().toISOString()
+        }));
+        tx.set(doc(collection(db,"reservas")), reserva);
+        tx.set(doc(db,"usuarios",S.user.phone),{
+          reservasHoy: ((S.user.fechaContador===hoyISO())?(S.user.reservasHoy||0):0)+1,
+          fechaContador: hoyISO()
+        },{merge:true});
+      });
+      aviso("Reserva "+codigo+" registrada.", true);
+    } else {
+      S.mesas = S.mesas.map(m => v.mesas.includes(m.numero)
+        ? {...m, estado:"ocupada", cliente:S.user.nombre, desde:new Date().toISOString()}
+        : m);
+      LS.set("mesas", S.mesas);
+      LS.set("reservas", [reserva, ...LS.get("reservas", [])]);
+    }
+  } catch(e){
+    aviso("No se pudo registrar: " + (e.message || e.code));
+    Sound.error(); vib(50);
+    return;
+  }
+
+  S.user.reservasHoy = ((S.user.fechaContador===hoyISO())?(S.user.reservasHoy||0):0)+1;
+  S.user.fechaContador = hoyISO();
+  LS.set("user", S.user);
+  pintarCuenta();
+
+  const txt =
+`*NUEVA RESERVA - GLOW & CRUNCH*
+Codigo: ${codigo}
+Cliente: ${S.user.nombre}
+${String(S.user.phone).includes("@") ? "Correo" : "Telefono"}: ${S.user.phone}
+Hora: ${v.hora}
+Personas: ${v.personas}
+Mesas: ${v.mesas.join(", ")}`;
+
+  S.reservaPendiente = txt;
+  $("#okDetalle").innerHTML = `
+    <div>Codigo: <b style="color:var(--precio)">${codigo}</b></div>
+    <div>${v.hora}</div>
+    <div>${v.personas} personas - Mesas ${v.mesas.join(", ")}</div>
+  `;
+  $("#modalOk").classList.add("abierto");
+  Sound.success(); vib([20,40,20]);
+
+  S.seleccion.clear();
+  renderMesas(); renderResumen();
+}
+
+$("#btnWa").onclick = ()=>{
+  if(!S.reservaPendiente) return;
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(S.reservaPendiente)}`,"_blank");
+};
+
+function aplicarRol(){
+  S.admin = !!(S.user && String(S.user.rol || "").toLowerCase() === "admin");
+  document.body.classList.toggle("admin", S.admin);
+  const b = $("#btnAdmin");
+  if(b) b.style.display = S.admin ? "" : "none";
+}
+$("#btnAdmin").onclick = ()=>{
+  if(!S.admin) return;
+  Sound.nav(); vib();
+  renderAdmin();
+  $("#modalAdmin").classList.add("abierto");
+};
+
+let tabAdmin = "banners";
+$$(".admin-tab").forEach(b => b.onclick = ()=>{
+  Sound.tap(); vib();
+  tabAdmin = b.dataset.tab;
+  $$(".admin-tab").forEach(x=>x.classList.toggle("activo", x===b));
+  renderAdmin();
+});
+
+function renderAdmin(){
+  const c = $("#adminContenido");
+  if(!c) return;
+  if(tabAdmin === "banners")   c.innerHTML = adminBanners();
+  if(tabAdmin === "menu")      c.innerHTML = adminMenu();
+  if(tabAdmin === "mesas")     c.innerHTML = adminMesas();
+  if(tabAdmin === "reservas")  c.innerHTML = adminReservas();
+  if(tabAdmin === "config")    c.innerHTML = adminConfig();
+  conectarAdmin();
+}
+
+function adminBanners(){
+  const items = S.banners.map(b => `
+    <div class="admin-item" data-id="${esc(b.id)}">
+      <div class="fila">
+        <div style="flex:1"><label>Nombre del producto</label>
+        <input type="text" data-campo="titulo" value="${esc(b.titulo||"")}" placeholder="Nombre grande"></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1"><label>Precio</label>
+        <input type="number" step="0.01" inputmode="decimal" data-campo="precio" value="${b.precio!=null?Number(b.precio).toFixed(2):""}" placeholder="0.00"></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1"><label>Texto corto (opcional)</label>
+        <input type="text" data-campo="texto" value="${esc(b.texto||"")}" placeholder="Descripcion breve"></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1"><label>Enlace del boton (opcional)</label>
+        <input type="text" data-campo="link" value="${esc(b.link||"")}" placeholder="https://..."></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1">
+          <label>Imagen o video</label>
+          <label class="file-btn">
+            Elegir archivo
+            <input type="file" accept="image/*,video/*" data-file="banner">
+          </label>
+        </div>
+      </div>
+      ${b.media ? `<div class="preview">
+        ${b.tipo==="video"
+          ? `<video src="${b.media}" muted playsinline></video>`
+          : `<img src="${b.media}" alt="">`}
+        <button data-accion="borrar-media">x</button>
+      </div>` : ""}
+      <div class="fila">
+        <button class="btn-xs btn-guardar" data-accion="guardar-banner" style="flex:1">Guardar</button>
+        <button class="btn-xs btn-borrar" data-accion="borrar-banner" style="flex:1">Borrar</button>
+      </div>
+    </div>
+  `).join("");
+  return (items || `<p class="admin-vacio">No hay banners. Agrega el primero.</p>`) +
+    `<button class="btn" data-accion="nuevo-banner" style="margin-top:8px">+ Agregar banner</button>`;
+}
+
+function adminMenu(){
+  const cats = ["Coreano","Cocteles","Combos","Postres","Bebidas","Otros"];
+  const items = S.menu.map(p => `
+    <div class="admin-item" data-id="${esc(p.id)}">
+      <div class="fila">
+        <div style="flex:1"><label>Nombre</label>
+        <input type="text" data-campo="nombre" value="${esc(p.nombre||"")}" placeholder="Nombre del producto"></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1"><label>Descripcion (opcional)</label>
+        <input type="text" data-campo="desc" value="${esc(p.desc||"")}" placeholder="Breve"></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1;min-width:100px"><label>Precio</label>
+        <input type="number" step="0.01" inputmode="decimal" data-campo="precio" value="${Number(p.precio||0).toFixed(2)}"></div>
+        <div style="flex:1;min-width:120px"><label>Categoria</label>
+        <select data-campo="categoria">
+          ${cats.map(c=>`<option value="${c}" ${p.categoria===c?"selected":""}>${c}</option>`).join("")}
+        </select></div>
+      </div>
+      <div class="fila">
+        <div style="flex:1">
+          <label>Imagen o video</label>
+          <label class="file-btn">
+            Elegir archivo
+            <input type="file" accept="image/*,video/*" data-file="menu">
+          </label>
+        </div>
+      </div>
+      ${(p.media||p.foto) ? `<div class="preview">
+        ${p.tipo==="video"
+          ? `<video src="${p.media}" muted playsinline></video>`
+          : `<img src="${p.media||p.foto}" alt="">`}
+        <button data-accion="borrar-media">x</button>
+      </div>` : ""}
+      <div class="fila">
+        <label style="display:flex;align-items:center;gap:8px;flex:0 0 auto;text-transform:none;font-size:.8rem;color:var(--gris)">
+          <input type="checkbox" data-campo="agotado" ${p.agotado?"checked":""} style="flex:0 0 auto;width:auto">
+          Agotado (no mostrar)
+        </label>
+      </div>
+      <div class="fila">
+        <button class="btn-xs btn-guardar" data-accion="guardar-menu" style="flex:1">Guardar</button>
+        <button class="btn-xs btn-borrar" data-accion="borrar-menu" style="flex:1">Borrar</button>
+      </div>
+    </div>
+  `).join("");
+  return (items || `<p class="admin-vacio">El menu esta vacio. Agrega el primer producto.</p>`) +
+    `<button class="btn" data-accion="nuevo-menu" style="margin-top:8px">+ Agregar producto</button>`;
+}
+
+function adminMesas(){
+  return `<div class="admin-item"><div class="fila"><div style="flex:1"><label>Agregar mesas (cantidad)</label><input type="number" id="mxN" min="1" max="50" value="1" inputmode="numeric"></div><button class="btn-xs" data-mx="add">Agregar</button></div></div>` + S.mesas.map(m => `
+    <div class="admin-item" data-num="${m.numero}">
+      <div class="fila">
+        <strong style="font-family:'Bebas Neue';font-size:1.3rem;letter-spacing:.06em">MESA ${String(m.numero).padStart(2,"0")}</strong>
+        <span style="color:${m.estado==="libre"?"#2BE08A":"#E63946"};font-size:.72rem;font-weight:800">
+          ${m.estado==="libre"?"LIBRE":"OCUPADA"}
+        </span>
+        <span style="color:var(--gris);font-size:.74rem;flex:1">${m.cliente?esc(m.cliente):"-"}</span>
+      </div>
+      <div class="fila">
+        <div style="flex:1"><label>Sillas</label>
+        <input type="number" min="1" max="12" inputmode="numeric" data-campo="sillas" value="${m.sillas}"></div>
+        ${m.estado !== "libre"
+          ? `<button class="btn-xs btn-libre" data-accion="liberar">Liberar</button>`
+          : `<button class="btn-xs btn-borrar" data-accion="ocupar">Ocupar</button>`}
+        <button class="btn-xs btn-borrar" data-mx="del">Quitar mesa</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function adminReservas(){
+  const lista = S.online ? S.reservas : LS.get("reservas", []);
+  if(!lista.length) return `<p class="admin-vacio">Todavia no hay reservas.</p>`;
+  return lista.map(r => `
+    <div class="admin-item" data-id="${esc(r.id||r.codigo)}" data-mesas="${(r.mesas||[]).join(",")}">
+      <div class="fila">
+        <strong style="color:var(--precio)">${esc(r.codigo||"-")}</strong>
+        <span style="font-size:.78rem">${esc(r.nombre)}</span>
+        <span style="color:var(--cian);font-size:.74rem">${esc(r.phone)}</span>
+      </div>
+      <div class="fila" style="font-size:.74rem;color:var(--gris)">
+        <span>${esc(r.hora)}</span>
+        <span>${r.personas} pers.</span>
+        <span>Mesas ${(r.mesas||[]).join(", ")}</span>
+      </div>
+      <div class="fila" style="justify-content:flex-end">
+        ${r.estado!=="completada" ? `<button class="btn-xs btn-libre" data-accion="completar">Completar y liberar</button>`:""}
+        <button class="btn-xs btn-borrar" data-accion="borrar-reserva">Borrar</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function aplicarCfg(c){
+  if(!c) return;
+  WHATSAPP = c.wa || WHATSAPP; MAX_MESAS = c.mm || MAX_MESAS; MAX_PERSONAS = c.mp || MAX_PERSONAS; MAX_RESERVAS_DIA = c.mr || MAX_RESERVAS_DIA;
+  const p = $("#rPersonas"); if(p) p.max = MAX_PERSONAS;
+}
+function adminConfig(){
+  return `<div class="admin-item">
+    <div class="fila"><div style="flex:1"><label>WhatsApp (con codigo de pais)</label><input id="cfgWa" inputmode="numeric" value="${esc(WHATSAPP)}"></div></div>
+    <div class="fila"><div style="flex:1"><label>Max. mesas por reserva</label><input id="cfgMesas" type="number" min="1" max="20" value="${MAX_MESAS}"></div>
+    <div style="flex:1"><label>Max. personas</label><input id="cfgPers" type="number" min="1" max="30" value="${MAX_PERSONAS}"></div></div>
+    <div class="fila"><div style="flex:1"><label>Max. reservas por dia</label><input id="cfgRes" type="number" min="1" max="20" value="${MAX_RESERVAS_DIA}"></div>
+    <button class="btn-xs" data-mx="cfg">Guardar</button></div></div>`;
+}
+document.addEventListener("click", async e=>{
+  const b = e.target.closest("[data-mx]"); if(!b || !S.admin) return;
+  try{
+    if(b.dataset.mx === "cfg"){
+      const c = { wa:norm($("#cfgWa").value)||WHATSAPP, mm:+$("#cfgMesas").value||MAX_MESAS, mp:+$("#cfgPers").value||MAX_PERSONAS, mr:+$("#cfgRes").value||MAX_RESERVAS_DIA };
+      aplicarCfg(c); LS.set("cfg", c);
+      try{ if(S.online) await setDoc(doc(db,"config","app"), c); }catch(err){ aviso("Guardado solo en este dispositivo."); }
+      toast("Ajustes guardados"); Sound.success(); return;
+    }
+    if(b.dataset.mx === "add"){
+      const k = Math.max(1, Math.min(50, parseInt($("#mxN").value,10)||1));
+      let n = S.mesas.reduce((a,m)=>Math.max(a,m.numero),0);
+      for(let i=0;i<k;i++){
+        n++; const m = { id:"mesa_"+n, numero:n, sillas:4, estado:"libre", cliente:"", desde:"" };
+        if(S.online) await setDoc(doc(db,"mesas",m.id), m); else S.mesas.push(m);
+      }
+      toast(k+(k>1?" mesas agregadas":" mesa agregada"));
+    } else {
+      const num = +b.closest("[data-num]").dataset.num;
+      if(!confirm("Quitar la mesa "+num+"?")) return;
+      if(S.online) await deleteDoc(doc(db,"mesas","mesa_"+num)); else S.mesas = S.mesas.filter(m=>m.numero!==num);
+      toast("Mesa "+num+" eliminada");
+    }
+    if(!S.online) LS.set("mesas", S.mesas);
+    Sound.tap(); renderAdmin(); if(S.pagina === "reservar"){ renderMesas(); renderResumen(); }
+  }catch(err){ aviso("No se pudo cambiar las mesas: "+(err.code||err.message)); }
+});
+document.addEventListener("click", e=>{
+  if(performance.now()-(Sound.last||0) < 80) return;
+  const t = e.target.closest("button,a,.mesa,.chip,.ajuste,.admin-tab,[data-go]"); if(!t) return;
+  if(t.matches(".mesa")) Sound.play(700,.05,"triangle",.05);
+  else if(t.matches("[data-go],.admin-tab")) Sound.nav();
+  else if(t.matches(".chip")) Sound.play(620,.04,"square",.02);
+  else Sound.play(760,.05,"triangle",.045);
+});
+document.addEventListener("focusin", e=>{ if(e.target.matches("input,select,textarea")) Sound.play(1000,.025,"sine",.03); });
+
+function comprimirImagen(file){
+  return new Promise((ok, err) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let lado = 1400, q = 0.85;
+      for(let i = 0; i < 8; i++){
+        const r = Math.min(1, lado / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        const out = c.toDataURL("image/jpeg", q);
+        if(out.length <= 800000) return ok(out);
+        q = Math.max(0.5, q - 0.1); lado = Math.round(lado * 0.8);
+      }
+      err(new Error("grande"));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); err(new Error("lectura")); };
+    img.src = url;
+  });
+}
+function conectarAdmin(){
+  $$("#adminContenido input[type=file]").forEach(inp => {
+    inp.onchange = async e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const tipo = inp.dataset.file;
+      const item = inp.closest(".admin-item");
+      const id = item?.dataset.id;
+
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      const esFoto = file.type !== "image/gif" && ext !== "gif" && !file.type.startsWith("video/") &&
+        (file.type.startsWith("image/") || /^(png|jpe?g|webp|bmp|avif|heic|heif)$/.test(ext) || !file.type || file.type === "application/octet-stream");
+      if(esFoto){
+        if(file.size > 25 * 1024 * 1024){ aviso("La imagen pesa mas de 25MB."); Sound.error(); vib(40); return; }
+        aviso("Comprimiendo imagen...", true);
+        try{
+          const data = await comprimirImagen(file);
+          S.uploads[tipo][id] = { data, esVideo:false };
+          aviso("Imagen lista ("+Math.round(data.length * 0.75 / 1024)+"KB). Toca Guardar.", true);
+          Sound.tap(); vib();
+        }catch(_){ aviso("No se pudo comprimir esa imagen. Prueba con otra."); Sound.error(); vib(40); }
+        return;
+      }
+      const kb = Math.round(file.size / 1024);
+      if(kb > MAX_ARCHIVO_KB){
+        aviso("Archivo muy grande ("+kb+"KB). Videos y GIF: maximo "+MAX_ARCHIVO_KB+"KB (limite de Firebase). Las fotos, sin importar el peso, se comprimen solas.");
+        Sound.error(); vib(40);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const dataURL = ev.target.result;
+        const esVideo = file.type.startsWith("video/");
+        S.uploads[tipo][id] = { data: dataURL, esVideo };
+        aviso("Archivo cargado ("+kb+"KB). Toca Guardar.", true);
+        Sound.tap(); vib();
+      };
+      reader.onerror = ()=> aviso("Error leyendo el archivo.");
+      reader.readAsDataURL(file);
+    };
+  });
+
+  $$("#adminContenido [data-accion]").forEach(btn => {
+    btn.onclick = () => accionAdmin(btn.dataset.accion, btn.closest(".admin-item"));
+  });
+}
+
+async function accionAdmin(accion, item){
+  const id = item?.dataset.id;
+  const num = item ? parseInt(item.dataset.num,10) : null;
+  const val = campo => $(`[data-campo="${campo}"]`, item)?.value ?? "";
+
+  try{
+    if(accion === "guardar-banner"){
+      const up = S.uploads.banner[id];
+      const precioRaw = val("precio");
+      const data = {
+        titulo: val("titulo").trim(),
+        texto: val("texto").trim(),
+        link: val("link").trim(),
+        precio: precioRaw === "" ? null : parseFloat(precioRaw)
+      };
+      if(!data.titulo){ aviso("El banner necesita un nombre."); return; }
+      if(up){
+        data.media = up.data;
+        data.tipo = up.esVideo ? "video" : "imagen";
+      }
+      if(S.online) await updateDoc(doc(db,"banners",id), data);
+      else {
+        S.banners = S.banners.map(b => b.id===id ? {...b, ...data} : b);
+        LS.set("banners", S.banners);
+        renderBanners();
+      }
+      delete S.uploads.banner[id];
+      toast("Banner actualizado");
+      Sound.success();
+    }
+    if(accion === "borrar-media"){
+      if(!confirm("Quitar la imagen/video?")) return;
+      if(S.online) await updateDoc(doc(db,"banners",id), { media:"", tipo:"gradiente" });
+      else {
+        S.banners = S.banners.map(b => b.id===id ? {...b, media:"", tipo:"gradiente"} : b);
+        LS.set("banners", S.banners);
+        renderBanners();
+      }
+      toast("Media borrada");
+      Sound.tap();
+    }
+    if(accion === "borrar-banner"){
+      if(!confirm("Borrar este banner completo?")) return;
+      if(S.online) await deleteDoc(doc(db,"banners",id));
+      else {
+        S.banners = S.banners.filter(b => b.id !== id);
+        LS.set("banners", S.banners);
+        renderBanners();
+      }
+      toast("Banner borrado");
+      Sound.tap();
+    }
+    if(accion === "nuevo-banner"){
+      const nuevo = {
+        id:"b"+Date.now(), tipo:"gradiente", media:"",
+        titulo:"NUEVO PRODUCTO", texto:"", link:"", precio:null
+      };
+      if(S.online) await setDoc(doc(db,"banners",nuevo.id), nuevo);
+      else { S.banners.push(nuevo); LS.set("banners", S.banners); renderBanners(); }
+      toast("Banner agregado");
+      Sound.tap();
+    }
+
+    if(accion === "guardar-menu"){
+      const precio = parseFloat(val("precio"));
+      if(!val("nombre").trim()){ aviso("El producto necesita un nombre."); return; }
+      if(isNaN(precio) || precio < 0){ aviso("Precio invalido."); return; }
+      const up = S.uploads.menu[id];
+      const data = {
+        nombre: val("nombre").trim(),
+        desc: val("desc").trim(),
+        precio,
+        categoria: val("categoria"),
+        agotado: $('[data-campo="agotado"]', item).checked
+      };
+      if(up){
+        data.media = up.data;
+        data.tipo = up.esVideo ? "video" : "imagen";
+        data.foto = "";
+      }
+      if(S.online) await updateDoc(doc(db,"menu",id), data);
+      else {
+        S.menu = S.menu.map(p => p.id===id ? {...p, ...data} : p);
+        LS.set("menu", S.menu);
+        if(S.pagina === "menu") renderMenu();
+      }
+      delete S.uploads.menu[id];
+      toast("Producto actualizado");
+      Sound.success();
+    }
+    if(accion === "borrar-media" && item?.dataset.id && !item.closest('[data-num]')){
+      if(S.online) await updateDoc(doc(db,"menu",id), { media:"", foto:"", tipo:"" });
+      else {
+        S.menu = S.menu.map(p => p.id===id ? {...p, media:"", foto:"", tipo:""} : p);
+        LS.set("menu", S.menu);
+        if(S.pagina === "menu") renderMenu();
+      }
+      toast("Media borrada");
+    }
+    if(accion === "borrar-menu"){
+      if(!confirm("Borrar este producto?")) return;
+      if(S.online) await deleteDoc(doc(db,"menu",id));
+      else {
+        S.menu = S.menu.filter(p => p.id !== id);
+        LS.set("menu", S.menu);
+        if(S.pagina === "menu") renderMenu();
+      }
+      toast("Producto borrado");
+      Sound.tap();
+    }
+    if(accion === "nuevo-menu"){
+      const nuevo = {
+        id:"m"+Date.now(), nombre:"NUEVO PRODUCTO", desc:"",
+        precio:0, categoria:"Coreano", agotado:false, foto:"", media:"", tipo:""
+      };
+      if(S.online) await setDoc(doc(db,"menu",nuevo.id), nuevo);
+      else { S.menu.push(nuevo); LS.set("menu", S.menu); if(S.pagina === "menu") renderMenu(); }
+      toast("Producto agregado");
+      Sound.tap();
+    }
+
+    if(accion === "liberar" || accion === "ocupar"){
+      const sillas = parseInt($('[data-campo="sillas"]', item)?.value || 4, 10);
+      const data = accion === "liberar"
+        ? { estado:"libre", cliente:"", desde:"", sillas }
+        : { estado:"ocupada", cliente:"Admin", desde:new Date().toISOString(), sillas };
+      if(S.online) await updateDoc(doc(db,"mesas","mesa_"+num), data);
+      else {
+        S.mesas = S.mesas.map(m => m.numero===num ? {...m, ...data} : m);
+        LS.set("mesas", S.mesas);
+        if(S.pagina === "reservar") renderMesas();
+      }
+      toast("Mesa "+num+" actualizada");
+      Sound.tap();
+    }
+
+    if(accion === "completar"){
+      const mesas = (item.dataset.mesas||"").split(",").filter(Boolean).map(Number);
+      if(S.online){
+        for(const n of mesas){
+          await updateDoc(doc(db,"mesas","mesa_"+n), { estado:"libre", cliente:"", desde:"" });
+        }
+        if(id && !id.startsWith("GC-")){
+          try { await updateDoc(doc(db,"reservas",id), { estado:"completada" }); } catch{}
+        }
+      } else {
+        S.mesas = S.mesas.map(m => mesas.includes(m.numero) ? {...m, estado:"libre", cliente:"", desde:""} : m);
+        LS.set("mesas", S.mesas);
+        if(S.pagina === "reservar") renderMesas();
+      }
+      aviso("Mesas "+mesas.join(", ")+" liberadas.", true);
+      toast("Mesas liberadas");
+      Sound.success();
+    }
+    if(accion === "borrar-reserva"){
+      if(!confirm("Borrar esta reserva?")) return;
+      if(S.online && id){ try { await deleteDoc(doc(db,"reservas",id)); } catch{} }
+      else {
+        LS.set("reservas", LS.get("reservas",[]).filter(r => (r.id||r.codigo) !== id));
+      }
+      toast("Reserva borrada");
+      Sound.tap();
+    }
+
+    setTimeout(renderAdmin, 300);
+  } catch(e){
+    aviso("Admin: " + (e.code||e.message));
+    Sound.error();
+  }
+}
+
+$$("[data-cerrar]").forEach(b => b.onclick = ()=> $$(".modal").forEach(m=>m.classList.remove("abierto")));
+$$(".modal").forEach(m => m.addEventListener("click", e => { if(e.target === m) m.classList.remove("abierto"); }));
+
+document.addEventListener("pointerdown", e=>{
+  const btn = e.target.closest(".btn, .chip, .mesa, .admin-tab, .btn-xs");
+  if(!btn || !S.settings.anim) return;
+  const r = btn.getBoundingClientRect();
+  btn.style.setProperty("--rx", ((e.clientX-r.left)/r.width*100)+"%");
+  btn.style.setProperty("--ry", ((e.clientY-r.top)/r.height*100)+"%");
+  btn.classList.add("ripple");
+  setTimeout(()=>btn.classList.remove("ripple"), 400);
+});
+
+document.addEventListener("pointermove", e=>{
+  if(!S.settings.anim || S.settings.fx3d===false) return;
+  const card = e.target.closest(".info-card, .sala-hero");
+  if(!card) return;
+  const r = card.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width  - .5;
+  const y = (e.clientY - r.top)  / r.height - .5;
+  card.style.transform = `perspective(850px) rotateY(${(x*6).toFixed(2)}deg) rotateX(${(-y*6).toFixed(2)}deg)`;
+}, { passive:true });
+document.addEventListener("pointerout", e=>{
+  const card = e.target.closest(".info-card, .sala-hero");
+  if(card) card.style.transform = "";
+});
+
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button, .ajuste, .item-card");
+  if(b) { Sound.tap(); vib(8); }
+}, true);
+
+async function setupPWA(){
+  if ("serviceWorker" in navigator) {
+    try {
+      const reg = await navigator.serviceWorker.register("sw.js", { scope: "./" });
+      console.log("[GC] SW registrado:", reg.scope);
+    } catch (e) {
+      console.warn("[GC] SW falló:", e);
+    }
+  }
+
+  let deferred = null;
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    deferred = e;
+  });
+  window.addEventListener("appinstalled", () => {
+    toast("App instalada");
+    aviso("PWA instalada.", true);
+  });
+
+  window.__instalarPWA = async () => {
+    if (deferred) {
+      deferred.prompt();
+      const { outcome } = await deferred.userChoice;
+      deferred = null;
+      return;
+    }
+    const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (esIOS) {
+      alert("Para instalar en iPhone:\n\n1. Toca Compartir (cuadrado con flecha)\n2. Desliza y toca «Añadir a pantalla de inicio»\n3. Confirma «Añadir»");
+    } else {
+      alert("Abre el menú del navegador y elige «Instalar app» o «Añadir a pantalla de inicio».");
+    }
+  };
+}
+
+(async function boot(){
+  cargarAjustes();
+  initFormulario();
+  await setupPWA();
+
+  const reanudar = ()=>{ Sound.init(); document.removeEventListener("touchstart", reanudar); document.removeEventListener("click", reanudar); };
+  document.addEventListener("touchstart", reanudar, { once:true, passive:true });
+  document.addEventListener("click", reanudar, { once:true });
+
+  const guardado = LS.get("user", null);
+  if(guardado?.phone && String(guardado.phone).includes("@")){
+    S.user = guardado;
+    try{
+      const snap = await getDoc(doc(db,"usuarios",guardado.phone));
+      if(snap.exists()) S.user = { phone:guardado.phone, ...snap.data() };
+    } catch(e){}
+    arrancarTrasLogin();
+  } else {
+    irPagina("login", false);
+  }
+
+  await cargarDatos();
+  aviso("Glow & Crunch listo.", true);
+})();
+</script>
+
+<!-- jax -->
+<script>
+(function () {
+  var visor = document.getElementById("visor");
+  if (!visor) return;
+
+  var zona    = document.getElementById("visorMedia");
+  var info    = document.getElementById("visorInfo");
+  var tTitulo = document.getElementById("visorTitulo");
+  var tDesc   = document.getElementById("visorDesc");
+  var fila    = document.getElementById("visorFila");
+  var tPrecio = document.getElementById("visorPrecio");
+  var tAgot   = document.getElementById("visorAgotado");
+  var btnX    = document.getElementById("visorCerrar");
+
+  var abierto = false;
+  var conHistorial = false;
+  var esperandoPop = false;
+  var bloqueado = false;
+  var timerCierre = null, timerBloqueo = null, focoPrevio = null;
+
+  function leer(el, conSaltos) {
+    if (!el) return "";
+    if (conSaltos) {
+      var c = el.cloneNode(true), brs = c.querySelectorAll("br");
+      for (var i = 0; i < brs.length; i++) {
+        brs[i].parentNode.replaceChild(document.createTextNode("\n"), brs[i]);
+      }
+      return c.textContent.split("\n").map(function (s) {
+        return s.replace(/\s+/g, " ").trim();
+      }).filter(Boolean).join("\n");
+    }
+    return (el.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function datosMenu(media) {
+    var card = media.closest(".item-card");
+    return {
+      media: media,
+      titulo: leer(card.querySelector("h3")),
+      desc: leer(card.querySelector(".desc")),
+      precio: leer(card.querySelector(".precio")),
+      agotado: card.classList.contains("agotado")
+    };
+  }
+  function datosSlide(slide) {
+    var media = slide.querySelector(".media-bg");
+    if (!media) return null;
+    return {
+      media: media,
+      titulo: leer(slide.querySelector("h2")),
+      desc: leer(slide.querySelector("p")),
+      precio: leer(slide.querySelector(".precio-big"))
+    };
+  }
+  function datosSala(hero) {
+    var media = hero.querySelector(".sala-img");
+    if (!media) return null;
+    return { media: media, titulo: leer(hero.querySelector(".sala-tag"), true) };
+  }
+
+  function clonarMedia(src, alt) {
+    var url = src.currentSrc || src.getAttribute("src");
+    if (!url) return null;
+    var el;
+    if (src.tagName === "VIDEO") {
+      el = document.createElement("video");
+      el.src = url;
+      el.controls = true; el.autoplay = true; el.loop = true; el.muted = true; el.playsInline = true;
+      el.setAttribute("muted", ""); el.setAttribute("playsinline", "");
+    } else {
+      el = document.createElement("img");
+      el.alt = alt || "";
+      el.draggable = false;
+      el.src = url;
+    }
+    return el;
+  }
+
+  function abrir(d) {
+    if (!d || abierto || bloqueado) return;
+    var m = clonarMedia(d.media, d.titulo);
+    if (!m) return;
+
+    clearTimeout(timerCierre);
+    zona.innerHTML = "";
+    zona.appendChild(m);
+
+    tTitulo.textContent = d.titulo || "";
+    tDesc.textContent   = d.desc || "";
+    tPrecio.textContent = d.precio || "";
+    tTitulo.style.display = d.titulo ? "" : "none";
+    tDesc.style.display   = d.desc ? "" : "none";
+    tPrecio.style.display = d.precio ? "" : "none";
+    tAgot.style.display   = d.agotado ? "" : "none";
+    fila.style.display    = (d.precio || d.agotado) ? "" : "none";
+    info.style.display    = (d.titulo || d.desc || d.precio || d.agotado) ? "" : "none";
+    info.scrollTop = 0;
+
+    focoPrevio = document.activeElement;
+    visor.classList.remove("cerrando");
+    visor.classList.add("abierto");
+    document.body.classList.add("visor-abierto");
+    abierto = true;
+
+    try { history.pushState({ gcVisor: true }, ""); conHistorial = true; }
+    catch (e) { conHistorial = false; }
+
+    if (m.tagName === "VIDEO") {
+      var p = m.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    try { btnX.focus({ preventScroll: true }); } catch (e) {}
+  }
+
+  function limpiar() {
+    visor.classList.remove("cerrando");
+    var v = zona.querySelector("video");
+    if (v) { try { v.pause(); } catch (e) {} }
+    zona.innerHTML = "";
+  }
+
+  function cerrar(desdePop) {
+    if (!abierto) return;
+    abierto = false;
+    visor.classList.remove("abierto");
+    visor.classList.add("cerrando");
+    document.body.classList.remove("visor-abierto");
+
+    if (conHistorial) {
+      conHistorial = false;
+      if (!desdePop) {
+        esperandoPop = true; bloqueado = true;
+        clearTimeout(timerBloqueo);
+        timerBloqueo = setTimeout(function () { esperandoPop = false; bloqueado = false; }, 700);
+        try { history.back(); } catch (e) { esperandoPop = false; bloqueado = false; }
+      }
+    }
+
+    clearTimeout(timerCierre);
+    timerCierre = setTimeout(limpiar, 200);
+
+    if (focoPrevio && focoPrevio !== document.body && document.contains(focoPrevio)) {
+      try { focoPrevio.focus({ preventScroll: true }); } catch (e) {}
+    }
+    focoPrevio = null;
+  }
+
+  window.addEventListener("popstate", function () {
+    if (esperandoPop) { esperandoPop = false; bloqueado = false; clearTimeout(timerBloqueo); return; }
+    if (abierto) cerrar(true);
+  });
+
+  document.addEventListener("click", function (e) {
+    if (abierto) return;
+    var t = e.target;
+    if (!t || !t.closest) return;
+
+    var d = null;
+    var media = t.closest(".item-card .media");
+    if (media) {
+      d = datosMenu(media);
+    } else {
+      var slide = t.closest("#carousel .slide");
+      if (slide) {
+        if (!t.closest("button, a")) d = datosSlide(slide);
+      } else {
+        var hero = t.closest(".sala-hero");
+        if (hero) d = datosSala(hero);
+      }
+    }
+    if (d) abrir(d);
+  });
+
+  function sobreLaFoto(img, x, y) {
+    var r = img.getBoundingClientRect(), nw = img.naturalWidth, nh = img.naturalHeight;
+    if (!nw || !nh) return true;
+    var s = Math.min(r.width / nw, r.height / nh), w = nw * s, h = nh * s;
+    var izq = r.left + (r.width - w) / 2, arr = r.top + (r.height - h) / 2;
+    return x >= izq && x <= izq + w && y >= arr && y <= arr + h;
+  }
+
+  visor.addEventListener("click", function (e) {
+    var t = e.target;
+    if (t.closest("#visorCerrar")) { cerrar(); return; }
+    if (t.closest(".visor-info") || t.tagName === "VIDEO") return;
+    if (t.tagName === "IMG" && sobreLaFoto(t, e.clientX, e.clientY)) return;
+    cerrar();
+  });
+
+  visor.addEventListener("touchmove", function (e) {
+    if (!e.target.closest(".visor-info, video")) e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("keydown", function (e) {
+    if (!abierto) return;
+    if (e.key === "Escape" || e.key === "Esc") { e.preventDefault(); cerrar(); return; }
+    if (e.key === "Tab") {
+      var f = visor.querySelectorAll("button, video[controls]");
+      if (!f.length) return;
+      var primero = f[0], ultimo = f[f.length - 1], act = document.activeElement;
+      if (!visor.contains(act)) { e.preventDefault(); primero.focus(); }
+      else if (e.shiftKey && act === primero) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && act === ultimo) { e.preventDefault(); primero.focus(); }
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var VOLUMEN = 0.5;
+  var a = new Audio();
+  a.loop = true;
+  a.preload = "auto";
+
+  function vol(){
+    try {
+      var s = JSON.parse(localStorage.getItem("gc_settings"));
+      return (s && s.volMusic != null) ? s.volMusic / 100 : VOLUMEN;
+    } catch(e){ return VOLUMEN; }
+  }
+  a.volume = vol();
+  window.__gcMusicVol = function(){ a.volume = vol(); };
+
+  function sonidoActivo(){
+    try {
+      var s = JSON.parse(localStorage.getItem("gc_settings"));
+      return !s || (s.sound !== false && s.music !== false);
+    } catch(e){ return true; }
+  }
+
+  function sync(){
+    if (!a.src) return;
+    if (sonidoActivo() && !document.hidden) {
+      var p = a.play();
+      if (p && p.catch) p.catch(function(){});
+    } else {
+      a.pause();
+    }
+  }
+  window.__gcMusicSync = sync;
+
+  ["pointerup","touchend","click","keydown"].forEach(function(e){
+    document.addEventListener(e, sync, { passive: true });
+  });
+  document.addEventListener("visibilitychange", sync);
+  sync();
+})();
+</script>
+</body>
+</html>
