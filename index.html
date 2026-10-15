@@ -705,7 +705,7 @@ body.visor-abierto{overflow:hidden}
   vid.onplaying = function(){ if(!ya){ ya = true; setTimeout(cerrar, DURACION); } };
   vid.onended = cerrar;
   vid.onerror = cerrar;
-  vid.src = "ALACRÁN.mp4";
+  vid.src = "alacran.mp4";
   var p = vid.play(); if(p && p.catch) p.catch(cerrar);
   setTimeout(function(){ if(!ya) cerrar(); }, 10000);
 })();
@@ -970,7 +970,7 @@ body.visor-abierto{overflow:hidden}
 
 <script id="imagenes-incrustadas">
 (function () {
-  var fuentes = { sala: "marca-agua-sm.webp", logo: "marca-agua-sm.webp" };
+  var fuentes = { sala: "salon.png", logo: "marca-agua-sm.webp" };
   var imgs = document.querySelectorAll("img[data-img]");
   for (var i = 0; i < imgs.length; i++) {
     var dato = fuentes[imgs[i].getAttribute("data-img")];
@@ -2451,7 +2451,9 @@ async function setupPWA(){
 <script>
 (function(){
   var VOLUMEN = 0.5;
-  var a = new Audio();
+  var canciones = ["Musica1.mp3", "Musica2.mp3"];
+  var elegida = canciones[Math.floor(Math.random() * canciones.length)];
+  var a = new Audio(elegida);
   a.loop = true;
   a.preload = "auto";
 
