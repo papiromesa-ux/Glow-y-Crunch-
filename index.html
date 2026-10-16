@@ -140,7 +140,7 @@ main{padding-bottom:calc(88px + var(--safe-bottom))}
 }
 .login-logo .g{color:var(--rosa);text-shadow:0 0 30px rgba(255,46,136,.9)}
 .login-logo .c{color:var(--cian);text-shadow:0 0 30px rgba(0,229,255,.85)}
-.login-sub{color:var(--gris);font-size:.85rem;font-weight:300;margin-bottom:32px;letter-spacing:.05em}
+.login-sub{color:var(--gris);font-size:.85rem;font-weight:300;margin-bottom:32px;letter-spacing:.05em;text-align:center}
 .login-card{
   width:100%;max-width:380px;
   background:linear-gradient(165deg,var(--violeta),#0B0A10);
@@ -207,6 +207,12 @@ main{padding-bottom:calc(88px + var(--safe-bottom))}
   transform:translateX(-100%);transition:transform .5s;
 }
 .item-card:hover::before,.item-card:active::before{transform:translateX(0)}
+.item-card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(circle at 100% 0%, rgba(0,229,255,.08), transparent 45%);
+  opacity:0;transition:opacity .35s;
+}
+.item-card:hover::after{opacity:1}
 .item-card h3{font-size:1.02rem;font-weight:600;letter-spacing:.01em;margin-top:10px}
 .item-card .desc{color:var(--gris);font-size:.78rem;line-height:1.5;font-weight:300;margin-top:4px}
 .item-card .fila{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
@@ -299,6 +305,11 @@ main{padding-bottom:calc(88px + var(--safe-bottom))}
   margin-top:18px;padding:14px 16px;border-radius:14px;
   background:rgba(0,229,255,.06);border:1px dashed rgba(0,229,255,.35);
   font-size:.82rem;color:var(--gris);line-height:1.7;
+  position:relative;overflow:hidden;
+}
+.resumen::before{
+  content:"";position:absolute;top:0;left:0;width:100%;height:2px;
+  background:var(--grad);opacity:.6;
 }
 .resumen b{color:var(--blanco)}
 
@@ -306,6 +317,12 @@ main{padding-bottom:calc(88px + var(--safe-bottom))}
   background:linear-gradient(160deg,var(--violeta),#0D0B12);
   border:1px solid rgba(184,184,192,.13);
   border-radius:16px;padding:18px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.info-card::before{
+  content:"";position:absolute;top:-40px;right:-40px;width:120px;height:120px;
+  border-radius:50%;background:radial-gradient(circle,rgba(255,46,136,.15),transparent 70%);
+  pointer-events:none;
 }
 .info-card h4{
   font-family:'Bebas Neue',sans-serif;font-size:1.1rem;
@@ -314,6 +331,10 @@ main{padding-bottom:calc(88px + var(--safe-bottom))}
 .info-card p{font-size:.82rem;color:var(--gris);line-height:1.65;font-weight:300}
 .info-card p + p{margin-top:8px}
 .info-card a{color:var(--cian);font-weight:600}
+.info-card h3{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;
+  color:var(--cian);letter-spacing:.05em;margin-bottom:4px;
+}
 .paso{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
 .paso .num{
   flex:0 0 auto;width:26px;height:26px;border-radius:50%;
@@ -686,6 +707,51 @@ body.visor-abierto{overflow:hidden}
 @media (prefers-reduced-motion:reduce){
   .visor,.visor *{animation:none !important;transition:none !important}
 }
+
+/* ============ MÚSICA FLOTANTE ============ */
+.music-fab{
+  position:fixed;
+  right:14px;
+  bottom:calc(148px + var(--safe-bottom));
+  z-index:80;
+  display:flex;gap:8px;align-items:center;
+}
+.music-fab button{
+  width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(11,11,15,.88);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  color:var(--cian);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.55),0 0 0 1px rgba(0,229,255,.4);
+  transition:transform .18s, background .18s, box-shadow .25s;
+}
+.music-fab button:hover{box-shadow:0 8px 24px rgba(0,0,0,.55),0 0 0 1px rgba(0,229,255,.8),0 0 18px rgba(0,229,255,.35)}
+.music-fab button:active{transform:scale(.88)}
+.music-fab button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.music-fab #mToggle{background:var(--grad);color:#06121a;box-shadow:0 8px 24px rgba(0,229,255,.4)}
+.music-fab #mToggle svg{fill:currentColor;stroke:none}
+body.reduce-anim .music-fab button{transition:none}
+
+/* ============ SOPORTE & VENTAS ============ */
+.soporte-box{
+  background:linear-gradient(160deg,rgba(0,229,255,.09),rgba(255,46,136,.06));
+  border:1px solid rgba(0,229,255,.3);
+  border-radius:16px;padding:16px 18px;margin-bottom:12px;
+}
+.soporte-box h4{
+  font-family:'Bebas Neue',sans-serif;letter-spacing:.09em;
+  color:var(--cian);font-size:1.1rem;margin-bottom:8px;
+}
+.soporte-box p{color:var(--gris);font-size:.82rem;line-height:1.65;font-weight:300}
+.soporte-box p + p{margin-top:6px}
+.soporte-box b{color:#fff;font-weight:700}
+
+/* ============ DISEÑO EXTRA ============ */
+.titulo{position:relative;padding-bottom:8px}
+.titulo::after{
+  content:"";display:block;width:44px;height:3px;border-radius:3px;
+  background:var(--grad);margin-top:8px;box-shadow:0 0 12px rgba(0,229,255,.6);
+}
 </style>
 </head>
 <body>
@@ -694,13 +760,23 @@ body.visor-abierto{overflow:hidden}
 (function(){
   var DURACION = 10000;
   var st = document.createElement("style");
-  st.textContent = "#creditos{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .5s;touch-action:none;overscroll-behavior:contain}#creditos video{width:100%;height:100%;object-fit:contain}#creditos.fuera{opacity:0;pointer-events:none}";
+  st.textContent = "#creditos{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .5s;touch-action:none;overscroll-behavior:contain}#creditos video{width:100%;height:100%;object-fit:contain}#creditos.fuera{opacity:0;pointer-events:none}#creditos .skip{position:absolute;bottom:30px;right:30px;z-index:2;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(255,255,255,.35);padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;letter-spacing:.06em;cursor:pointer;transition:background .2s,transform .15s}#creditos .skip:active{background:rgba(255,255,255,.28);transform:scale(.95)}";
   document.head.appendChild(st);
   var box = document.createElement("div"), vid = document.createElement("video"), ya = false;
   box.id = "creditos";
   vid.muted = true; vid.autoplay = true; vid.playsInline = true; vid.preload = "auto";
   vid.setAttribute("muted",""); vid.setAttribute("playsinline","");
-  box.appendChild(vid); document.body.appendChild(box);
+  box.appendChild(vid);
+
+  var skip = document.createElement("button");
+  skip.className = "skip";
+  skip.type = "button";
+  skip.textContent = "Saltar ▶";
+  skip.onclick = function(){ cerrar(); };
+  box.appendChild(skip);
+
+  document.body.appendChild(box);
+
   function cerrar(){ vid.pause(); box.classList.add("fuera"); setTimeout(function(){ box.remove(); }, 600); }
   vid.onplaying = function(){ if(!ya){ ya = true; setTimeout(cerrar, DURACION); } };
   vid.onended = cerrar;
@@ -773,8 +849,10 @@ body.visor-abierto{overflow:hidden}
 
     <div class="info-card">
       <h4>INSTRUCIONES</h4>
-      <p><h3>¿COMO RESRVAR OMG JAJA?</h3>para necesitas ver hecho secion con tu cuenta si ya lo hiciste iremos directo a los botones de abajo en stilo carrucel hay sale un boton que dice reservas lo apretas y te mandara a una tabla y no llenamos lo que te pide te saldra un mensaje abajo con tus credenciales si las credenciales son correcta envialas y acuerda de tu codigo para decirlo y sepamos quien eres</p>
-      <p><h3>¿COMO PEDIR POR SI NO ENTENDES?</h3> Para pedir es casi igual a reservar solo que pedir es usando el boton de menu busca el producto que te guste y toca el boton de pedir que se encuentra en el tabloide del producto en la esquina abajo y acuerdate de tu codigo</p>
+      <h3>¿COMO RESRVAR OMG JAJA?</h3>
+      <p>Para reservar necesitas haber hecho sesión con tu cuenta. Si ya lo hiciste, iremos directo a los botones de abajo en estilo carrusel. Hay sale un botón que dice "Reservar", lo apretás y te manda a una tabla. Llenamos lo que te pide y te saldrá un mensaje abajo con tus credenciales. Si las credenciales son correctas, envialas y acuerdate de tu código para decirlo y sepamos quién eres.</p>
+      <h3>¿COMO PEDIR POR SI NO ENTENDES?</h3>
+      <p>Para pedir es casi igual a reservar, solo que pedir es usando el botón de menú. Buscá el producto que te guste y tocá el botón de "Pedir" que se encuentra en el tabloide del producto, en la esquina abajo. Y acordate de tu código.</p>
     </div>
     <div class="info-card" style="margin-top:12px">
       <h4>1-3 TURISMO</h4>
@@ -792,12 +870,12 @@ body.visor-abierto{overflow:hidden}
   <section class="pagina" id="pagReservar">
     <h2 class="titulo cian">RESERVAR MESA</h2>
     <p class="sub">Elige tu mesa chonte</p>
-    
-    <p class="titulo"><h1>instrucciones</h1></p>
-    
-    <p class="sub"><h1>Día De reservas</h1></p>
-    
-    <p class="sub">Sera el aula #1 tercera planta edificio A Hora 1.15pm-3.30pm. Reserva digital con juliana Camila 50% de cobro adelantado.</p>
+
+    <div class="info-card" style="margin-bottom:16px">
+      <h4>INSTRUCCIONES</h4>
+      <p><b>Día de reservas:</b> Será el aula #1, tercera planta, edificio A. Horario de 1:15 pm a 3:30 pm.</p>
+      <p>Reserva digital con <b>Juliana Camila</b> — 50% de cobro adelantado.</p>
+    </div>
 
     <input type="date" id="rFecha" style="display:none">
     <div class="campo">
@@ -876,6 +954,20 @@ body.visor-abierto{overflow:hidden}
       <div class="txt"><div class="t">Instalar app</div><div class="d">Agregala a tu pantalla de inicio</div></div>
       <div style="color:var(--cian);font-size:1.2rem">+</div>
     </div>
+    <div class="ajuste" id="btnNotif">
+      <div class="txt"><div class="t">Activar notificaciones</div><div class="d">Recibe avisos de pedidos y reservas</div></div>
+      <div style="color:var(--dorado);font-size:1.2rem">&#128276;</div>
+    </div>
+    <div class="ajuste" id="btnShare">
+      <div class="txt"><div class="t">Compartir la app</div><div class="d">Mandale el link a un amigo</div></div>
+      <div style="color:var(--rosa);font-size:1.2rem">&#8599;</div>
+    </div>
+
+    <div class="soporte-box">
+      <h4>SOPORTE &amp; VENTAS</h4>
+      <p><b>Ventas de productos:</b> Brian Omar, &#193;ngel Enrique y Juliana Camila.</p>
+      <p><b>Asistencia web:</b> Alexi Antonio — si tienes problemas con la p&#225;gina, contactalo.</p>
+    </div>
 
     <div class="info-card" style="margin-top:18px">
       <h4>ACERCA DE</h4>
@@ -886,11 +978,11 @@ body.visor-abierto{overflow:hidden}
     <div class="info-card" style="margin-top:18px">
       <h4>CR&#201;DITOS</h4>
       <p><b>FOR YOU PERSONAL MARKETING</b></p>
-      <p>1. Adriana Sarai Godinez Zepeda</p>
-      <p>2. Jullisa Elizabeth Ayala L&#243;pez</p>
-      <p>3. Lucia Maite Lanvandaverde Vasquez</p>
-      <p>4. Dayana Yamileth Martinez Martinez (x2)</p>
-      <p>5. Alexi Antonio Quintanilla Del Valle</p>
+      <p>1. Adriana Sarai Godinez Zepeda <i>(&#161;Zepeda, se la pasa de peda! &#127867;)</i></p>
+      <p>2. Jullisa Elizabeth Ayala L&#243;pez <i>(Ayala... &#161;pero no se calla! &#128518;)</i></p>
+      <p>3. Lucia Maite Lanvandaverde Vasquez <i>(Vasquez, la que siempre se aparece &#128064;)</i></p>
+      <p>4. Dayana Yamileth Martinez Martinez <i>(Martinez, martinez... &#161;p&#243;ngase los dos, ya entend&#237;! &#128580;)</i></p>
+      <p>5. Alexi Antonio Quintanilla Del Valle <i>(Del Valle, &#161;traeme un jugo del Valle! &#129475;)</i></p>
       <p style="margin-top:12px;font-style:italic"> 1-3 TURISMO LOS CHONTES</p>
     </div>
   </section>
@@ -918,6 +1010,19 @@ body.visor-abierto{overflow:hidden}
     CUENTA
   </button>
 </nav>
+
+<div class="music-fab" id="musicFab" role="group" aria-label="Controles de música">
+  <button id="mPrev" type="button" aria-label="Música anterior">
+    <svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+  </button>
+  <button id="mToggle" type="button" aria-label="Reproducir / Pausar">
+    <svg id="mIconPlay" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <svg id="mIconPause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+  </button>
+  <button id="mNext" type="button" aria-label="Siguiente música">
+    <svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+  </button>
+</div>
 
 <div class="consola" id="consola">
   <div class="consola-head"><span>ERROR</span><button id="cerrarConsola">x</button></div>
@@ -1310,6 +1415,7 @@ $$(".ajuste").forEach(el => {
       window.__instalarPWA && window.__instalarPWA();
       return;
     }
+    if(!t) return;
     S.settings[t] = !S.settings[t];
     Sound.toggle(); vib(15);
     guardarAjustes();
@@ -2004,7 +2110,7 @@ async function accionAdmin(accion, item){
       toast("Banner actualizado");
       Sound.success();
     }
-    if(accion === "borrar-media"){
+    if(accion === "borrar-media" && item?.closest("#adminContenido") && !item.querySelector('input[data-campo="nombre"]')){
       if(!confirm("Quitar la imagen/video?")) return;
       if(S.online) await updateDoc(doc(db,"banners",id), { media:"", tipo:"gradiente" });
       else {
@@ -2064,7 +2170,7 @@ async function accionAdmin(accion, item){
       toast("Producto actualizado");
       Sound.success();
     }
-    if(accion === "borrar-media" && item?.dataset.id && !item.closest('[data-num]')){
+    if(accion === "borrar-media" && item?.querySelector('input[data-campo="nombre"]')){
       if(S.online) await updateDoc(doc(db,"menu",id), { media:"", foto:"", tipo:"" });
       else {
         S.menu = S.menu.map(p => p.id===id ? {...p, media:"", foto:"", tipo:""} : p);
@@ -2451,9 +2557,9 @@ async function setupPWA(){
 <script>
 (function(){
   var VOLUMEN = 0.5;
-  var canciones = ["Musica1.mp3", "Musica2.mp3"];
-  var elegida = canciones[Math.floor(Math.random() * canciones.length)];
-  var a = new Audio(elegida);
+  var canciones = ["Musica1.mp3", "Musica2.mp3", "Musica3.mp3"];
+  var idx = Math.floor(Math.random() * canciones.length);
+  var a = new Audio(canciones[idx]);
   a.loop = true;
   a.preload = "auto";
 
@@ -2473,22 +2579,140 @@ async function setupPWA(){
     } catch(e){ return true; }
   }
 
+  var pausadoManual = false;
+
+  function iconos(reproduciendo){
+    var p = document.getElementById("mIconPlay");
+    var q = document.getElementById("mIconPause");
+    if(!p || !q) return;
+    p.style.display = reproduciendo ? "none" : "";
+    q.style.display = reproduciendo ? "" : "none";
+  }
+
   function sync(){
-    if (!a.src) return;
-    if (sonidoActivo() && !document.hidden) {
+    if(!a.src) return;
+    if(sonidoActivo() && !document.hidden && !pausadoManual){
       var p = a.play();
-      if (p && p.catch) p.catch(function(){});
+      if(p && p.catch) p.catch(function(){});
     } else {
       a.pause();
     }
   }
+
+  function cargar(i){
+    idx = (i + canciones.length) % canciones.length;
+    var estaba = !a.paused && !pausadoManual;
+    a.src = canciones[idx];
+    a.load();
+    a.volume = vol();
+    if(estaba || !pausadoManual){
+      var p = a.play();
+      if(p && p.catch) p.catch(function(){});
+    }
+  }
+
+  window.__gcMusicNext = function(){ cargar(idx + 1); };
+  window.__gcMusicPrev = function(){ cargar(idx - 1); };
+  window.__gcMusicToggle = function(){
+    if(a.paused){
+      pausadoManual = false;
+      var p = a.play();
+      if(p && p.catch) p.catch(function(){});
+    } else {
+      pausadoManual = true;
+      a.pause();
+    }
+  };
   window.__gcMusicSync = sync;
+
+  a.addEventListener("play",  function(){ iconos(true); });
+  a.addEventListener("pause", function(){ iconos(false); });
 
   ["pointerup","touchend","click","keydown"].forEach(function(e){
     document.addEventListener(e, sync, { passive: true });
   });
   document.addEventListener("visibilitychange", sync);
   sync();
+
+  function conectarBotones(){
+    var t = document.getElementById("mToggle");
+    var p = document.getElementById("mPrev");
+    var n = document.getElementById("mNext");
+    if(t) t.onclick = window.__gcMusicToggle;
+    if(p) p.onclick = window.__gcMusicPrev;
+    if(n) n.onclick = window.__gcMusicNext;
+    iconos(!a.paused);
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", conectarBotones);
+  } else {
+    conectarBotones();
+  }
+})();
+
+/* ============ NOTIFICACIONES Y COMPARTIR ============ */
+(function(){
+  function conecta(){
+    var bn = document.getElementById("btnNotif");
+    var bs = document.getElementById("btnShare");
+    if(bn) bn.onclick = pedirNotif;
+    if(bs) bs.onclick = compartir;
+  }
+
+  async function pedirNotif(){
+    if(!("Notification" in window)){
+      alert("Este navegador no soporta notificaciones.");
+      return;
+    }
+    if(Notification.permission === "granted"){
+      alert("Las notificaciones ya están activadas ✅");
+      return;
+    }
+    if(Notification.permission === "denied"){
+      alert("Bloqueaste las notificaciones. Actívalas desde los ajustes del navegador.");
+      return;
+    }
+    try {
+      var perm = await Notification.requestPermission();
+      if(perm === "granted"){
+        try {
+          new Notification("Glow & Crunch", {
+            body: "¡Listo! Vas a recibir avisos de pedidos y reservas.",
+            icon: "launchericon-192x192.png"
+          });
+        } catch(e){}
+      } else {
+        alert("No activaste las notificaciones.");
+      }
+    } catch(e){
+      alert("No se pudieron activar las notificaciones.");
+    }
+  }
+
+  async function compartir(){
+    var url = "https://papiromesa-ux.github.io/Glow-y-Crunch-/";
+    var data = {
+      title: "Glow & Crunch",
+      text: "¡Mirá la app de Glow & Crunch! Banderillas coreanas y bebidas exóticas 🍢🥤",
+      url: url
+    };
+    if(navigator.share){
+      try { await navigator.share(data); } catch(e){}
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      alert("Link copiado ✅ Pégalo donde quieras.");
+    } catch(e){
+      prompt("Copia el enlace:", url);
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", conecta);
+  } else {
+    conecta();
+  }
 })();
 </script>
 </body>
